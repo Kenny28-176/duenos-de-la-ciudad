@@ -64,6 +64,7 @@ node tools/serve.js    # servidor local en http://localhost:8080/public/
 
 - Cómo está organizado y las normas del proyecto: [`CLAUDE.md`](CLAUDE.md).
 - Cómo colaborar: [`CONTRIBUTING.md`](CONTRIBUTING.md).
+- Cómo crear el proyecto de Firebase que conecta el tablero con los celulares: [`docs/FIREBASE.md`](docs/FIREBASE.md).
 
 ## Licencia
 

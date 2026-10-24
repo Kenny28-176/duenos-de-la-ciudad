@@ -64,3 +64,4 @@ Aquí se anotan los cambios de cada versión. Las versiones siguen el esquema ma
 - Cifras de las habilidades ajustadas con el simulador. Con 4 jugadores, todas las fichas quedan a menos de 3 puntos
   del 25 % de victorias que les correspondería. Los resultados, también con 2, 3, 6 y 8 jugadores, están en
   `docs/DISENO.md` (sección 10).
+- Guía paso a paso para crear el proyecto de Firebase: [`docs/FIREBASE.md`](docs/FIREBASE.md).

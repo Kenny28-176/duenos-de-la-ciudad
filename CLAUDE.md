@@ -89,7 +89,7 @@ tools/                   serve.js (servidor local), construir-sitio.js (revisa y
 tests/                   pruebas (node:test, sin dependencias): reglas del motor, partidas entre bots, marcas,
                          documentación, web e imágenes
 docs/                    DISENO.md (las reglas tal como las aplica el motor), VISUALES.md (todo lo que hay que dibujar),
-                         IDEAS.md (para después)
+                         IDEAS.md (para después) y FIREBASE.md (cómo crear el proyecto de Firebase)
 ```
 
 Lo que llega en las fases 2 y 3:
