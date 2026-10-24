@@ -85,11 +85,23 @@ function valorDePerder(ctx, s, id, otro, i) {
 
 // --- Subastas, deudas y tratos -------------------------------------------------------------------------
 
+// Un número entre 0 y 1 que depende del momento de la partida, del jugador y de la casilla, sin gastar el azar del
+// estado. Así cada bot valora cada subasta a su manera, como haría una persona, y no se plantan todos en la misma cifra
+// (con valoraciones idénticas, quien gana los empates, el Tiburón, se llevaría casi todas las subastas).
+function capricho(s, id, casilla) {
+  let h = (s.rng ^ Math.imul(casilla + 1, 0x9e3779b1)) >>> 0;
+  for (const letra of id) h = Math.imul(h ^ letra.charCodeAt(0), 0x85ebca6b) >>> 0;
+  h = Math.imul(h ^ (h >>> 15), 0xc2b2ae35) >>> 0;
+  return ((h ^ (h >>> 13)) >>> 0) / 4294967296;
+}
+
 function decidirSubasta(ctx, s, id) {
   const sub = s.subasta;
   const j = s.jugadores[id];
   const minima = pujaMinima(ctx, s, id);
-  const maxima = Math.min(j.dinero - 20, Math.round(valorParaMi(ctx, s, id, sub.casilla) * 0.95));
+  // Entre el 86 y el 104 % de lo que vale para él (el 95 % de media).
+  const aprecio = 0.86 + 0.18 * capricho(s, id, sub.casilla);
+  const maxima = Math.min(j.dinero - 20, Math.round(valorParaMi(ctx, s, id, sub.casilla) * aprecio));
   if (minima > maxima) return { type: 'retirarse', id };
   const salto = Math.max(10, Math.round((maxima - sub.puja) / 40) * 10);
   return { type: 'pujar', id, cantidad: Math.max(minima, Math.min(maxima, sub.puja + salto)) };

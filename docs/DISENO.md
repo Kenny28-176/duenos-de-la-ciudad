@@ -130,13 +130,29 @@ referencia a la metáfora de su ficha. Las cifras salen del simulador (ver la se
 | 🐀 La Rata | **Horas extra:** cobra 270 $ de sueldo en la Salida, en vez de 250 $. | **Esprint** (5): antes de tirar, suma un tercer dado a su tirada. Los dobles solo cuentan con los dos dados normales. No se puede usar en el Calabozo. |
 | ☕ La Taza | **Interés a favor:** al pasar por la Salida, el banco le paga el 5 % de su dinero en efectivo (máximo 150 $). | **Préstamo exprés** (6, contado desde que lo devuelve): pide al banco hasta 600 $, de 10 en 10. Tres turnos suyos después se le cobra lo pedido más un 10 % (660 $ si pidió 600 $). Mientras lo debe, la deuda se resta de su patrimonio. |
 | 🐂 El Toro | **Optimista:** cobra sus dividendos multiplicados por 2,2. | **Rally** (5): elige un barrio y sus acciones suben un 30 % hasta su próximo turno. En ese rato cualquiera puede vender caro, él también. |
-| 🐻 El Oso | **Apuesta bajista:** cobra 60 $ del banco cada vez que otro jugador hipoteca una propiedad o vende un edificio. | **Hibernar** (5): antes de tirar. Hasta su próximo turno no paga alquileres, pero sus propiedades tampoco cobran. |
+| 🐻 El Oso | **Apuesta bajista:** cobra 70 $ del banco cada vez que otro jugador hipoteca una propiedad o vende un edificio. | **Hibernar** (5): antes de tirar. Hasta su próximo turno no paga alquileres, pero sus propiedades tampoco cobran. |
 | 🫧 La Burbuja | **Valor inflado:** para la meta, sus calles cuentan un 80 % más. Solo vale para la meta: para el impuesto, al vender o al hipotecar valen lo normal. | **Inflar** (5): elige una calle suya sin hipotecar, que cobra el triple hasta su próximo turno. Luego estalla y durante la ronda siguiente esa calle cobra un 25 % menos. |
 | 🐄 La Vaca Lechera | **Renta fija:** al empezar cada turno cobra el 0,5 % del valor de sus calles y edificios (máximo 12 $). | **Temporada alta** (6): hasta su próximo turno, todos los alquileres que cobra suben un 15 %. |
 | 🐘 El Elefante Blanco | **Constructora:** construye casas y torres un 20 % más barato. | **Obras eternas** (6): pone en obras una calle de otro jugador, que no cobra alquiler hasta el final del siguiente turno de su dueño. |
-| 🐜 La Hormiga | **Peaje hormiga:** cada vez que otro jugador pasa por una calle suya sin caer en ella, le paga 4 $ (máximo 8 $ por ronda). Nunca deja a nadie en deuda: si no le alcanza, paga lo que tiene. | **Hormiguero** (5): hasta su próximo turno, el peaje sube a 8 $ por calle, sin máximo. |
+| 🐜 La Hormiga | **Peaje hormiga:** cada vez que otro jugador pasa por una calle suya sin caer en ella, le paga 4 $ (máximo 7 $ por ronda). Nunca deja a nadie en deuda: si no le alcanza, paga lo que tiene. | **Hormiguero** (5): hasta su próximo turno, el peaje sube a 8 $ por calle, sin máximo. |
 | 🦈 El Tiburón | **Cazador de gangas:** en las subastas puede igualar la puja más alta, y así gana los empates. | **Frenesí** (7): marca a un jugador. La próxima vez que caiga en una propiedad libre no podrá comprarla: se subasta entre todos. |
 | 🦢 El Cisne Negro | **Antifrágil:** las cartas que le hacen pagar al banco le cuestan la cuarta parte, y las que le hacen cobrar del banco le dan el doble. | **Imprevisto** (6): elige a un jugador, que pierde su próximo turno. No tira, pero sigue cobrando y puede negociar. |
+
+**Según el número de jugadores.** La tabla de arriba es la de las partidas de 4. Algunas habilidades rinden distinto
+con pocos o con muchos rivales, así que estas cifras cambian para que ninguna ficha tenga ventaja:
+
+| Cifra | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
+|---|---|---|---|---|---|---|---|
+| Rata: sueldo | 270 $ | 270 $ | 270 $ | 270 $ | 270 $ | 270 $ | 255 $ |
+| Toro: multiplica sus dividendos por | 3,4 | 2,7 | 2,2 | 2,2 | 1,9 | 1,8 | 1,6 |
+| Oso: Apuesta bajista | 60 $ | 60 $ | 70 $ | 85 $ | 115 $ | 120 $ | 140 $ |
+| Vaca Lechera: Renta fija | 0,3 %, hasta 8 $ | 0,4 %, hasta 10 $ | 0,5 %, hasta 12 $ | 0,5 %, hasta 12 $ | 0,5 %, hasta 12 $ | 0,5 %, hasta 12 $ | 0,7 %, hasta 16 $ |
+| Hormiga: peaje (máximo por ronda) | 2 $ (4 $) | 3 $ (6 $) | 4 $ (7 $) | 4 $ (7 $) | 4 $ (8 $) | 4 $ (8 $) | 4 $ (8 $) |
+| Hormiga: peaje con el Hormiguero | 4 $ | 6 $ | 8 $ | 8 $ | 8 $ | 8 $ | 8 $ |
+
+- **Con pocos jugadores,** las habilidades que cobran de los rivales o en cada turno (la Hormiga y la Vaca) rinden más.
+- **Con muchos,** rinden más las que dependen de lo que hacen los demás (los dividendos del Toro).
+- **El Oso** cobra menos con muchos jugadores, porque se hipoteca y se vende menos.
 
 **Reglas para todas:**
 
@@ -152,7 +168,8 @@ referencia a la metáfora de su ficha. Las cifras salen del simulador (ver la se
 
 - El simulador juega miles de partidas entre bots y ajusta las cifras hasta que ninguna ficha gana más de lo que le
   toca. Con 4 jugadores, todas quedan a menos de 3 puntos del 25 % de victorias que les correspondería.
-- Con otro número de jugadores todavía hay fichas que se alejan bastante (ver la sección 10).
+- Con otro número de jugadores, todas quedan cerca de lo justo gracias a las cifras de la tabla de arriba (ver la
+  sección 10).
 - Las que podrían crecer sin control tienen un máximo, para que no hagan cada vez más rico al que ya va ganando.
 - Los ataques tienen los enfriamientos más largos y sirven, sobre todo, para frenar a quien está por llegar a la meta.
 
@@ -416,33 +433,34 @@ Son 6.000 partidas con las cifras actuales:
 
 | Qué se mide | Objetivo | Resultado |
 |---|---|---|
-| Duración | De 60 a 90 minutos | 193 turnos: unos 97 minutos, si cada turno dura 30 segundos |
-| Ventaja del primer jugador | Menos de 5 puntos | El 1.º gana el 27,1 % de las partidas y el 4.º, el 22,2 % |
+| Duración | De 60 a 90 minutos | 192 turnos: unos 96 minutos, si cada turno dura 30 segundos |
+| Ventaja del primer jugador | Menos de 5 puntos | El 1.º gana el 28,1 % de las partidas: 3 puntos más de lo justo |
 | Parte del patrimonio del ganador que está en acciones | Entre el 20 y el 35 % | El 25 % |
-| Equilibrio de las fichas | El 25 %, 3 puntos arriba o abajo | Del 22,8 % (el Oso) al 27,6 % (la Hormiga) |
-| Cómo terminan | Casi siempre, por la meta | El 99,4 %, por la meta |
+| Equilibrio de las fichas | El 25 %, 3 puntos arriba o abajo | Del 24,1 % (el Oso y el Elefante Blanco) al 27 % (la Hormiga) |
+| Cómo terminan | Casi siempre, por la meta | El 99,2 %, por la meta |
 
 En cada partida hay unas 9 subastas y 3 tratos, y una bancarrota cada dos partidas. Ninguna casilla se pisa mucho más
 que otra: todas, entre el 2 y el 3,4 % de las veces.
 
 ### Con otro número de jugadores
 
+Con las cifras de la sección 2, que cambian según el número de jugadores:
+
 | Jugadores | Duración | La ficha que más gana | La que menos gana | Lo justo |
 |---|---|---|---|---|
-| 2 | 78 min | Hormiga, 60 % | Toro, 42 % | 50 % |
-| 3 | 89 min | Vaca Lechera, 39 % | Toro, 28 % | 33 % |
-| 4 | 97 min | Hormiga, 28 % | Oso, 23 % | 25 % |
-| 6 | 109 min | Tiburón, 20 % | Oso, 14 % | 17 % |
-| 8 | 117 min | Tiburón, 19 % | Oso, 10 % | 12,5 % |
+| 2 | 78 min | Hormiga, 53 % | Tiburón, 46 % | 50 % |
+| 3 | 89 min | Hormiga, 38 % | Tiburón, 32 % | 33 % |
+| 4 | 96 min | Hormiga, 27 % | Oso, 24 % | 25 % |
+| 5 | 103 min | Toro, 22 % | Oso, 17 % | 20 % |
+| 6 | 109 min | Hormiga, 19 % | Oso, 14 % | 17 % |
+| 7 | 114 min | Burbuja, 16 % | Oso, 12 % | 14 % |
+| 8 | 119 min | Hormiga, 14 % | Toro, 10 % | 12,5 % |
 
-- **Las fichas que cobran de los rivales o en cada turno** (la Hormiga y la Vaca Lechera) rinden más con pocos
-  jugadores.
-- **Las que dependen de lo que hacen los demás** (los dividendos del Toro y las subastas del Tiburón) rinden más con
-  muchos.
 - **Con 2 jugadores,** una de cada cuatro partidas acaba en bancarrota.
-- **Con 6 u 8 jugadores,** la ventaja del primero crece: con 6, el 1.º gana el 20 % y el 6.º, el 13 %.
-
-Lo siguiente es que algunas cifras dependan del número de jugadores (pregunta abierta 6).
+- **Con muchos jugadores, la ventaja del primero crece:** con 6, el 1.º gana el 19 % y el 6.º, el 14 %.
+- **Los bots valoran cada subasta a su manera** (entre el 86 y el 104 % de lo que vale para ellos), como haría una
+  persona. Si todos valoraran igual, el Tiburón, que gana los empates, se llevaría casi todas las subastas cuando hay
+  muchos jugadores, y eso no pasa entre personas.
 
 ### Pendiente
 
@@ -471,7 +489,7 @@ npm run simular -- --ajuste fichas.toro.pasiva.factor=2 --ajuste economia.sueldo
 3. **Bancarrota:** propuesta: quien quiebra queda fuera. La otra opción es que el banco lo rescate una vez.
 4. **Gestión fuera de turno:** propuesta: la tabla «Quién puede hacer qué, y cuándo» de la sección 5.
 5. **Nombres:** ¿te gustan los barrios, las calles y las fichas? Se pueden cambiar todos.
-6. **Equilibrio según el número de jugadores.** Con 2, 3, 6 u 8 jugadores, algunas fichas ganan bastante más o menos
-   de lo justo (ver la sección 10).
-   - Propuesta: que algunas cifras cambien según el número de jugadores, ajustadas con el simulador: el peaje de la
-     Hormiga, la renta de la Vaca Lechera, los dividendos del Toro, el Tiburón y el Oso.
+6. **Equilibrio según el número de jugadores.** Ya está aplicado, como se proponía: algunas cifras de la Rata, el
+   Toro, el Oso, la Vaca Lechera y la Hormiga cambian según el número de jugadores (sección 2). Si prefieres que
+   sean iguales siempre, se puede volver atrás, a cambio de que algunas fichas tengan ventaja con pocos o con muchos
+   jugadores.

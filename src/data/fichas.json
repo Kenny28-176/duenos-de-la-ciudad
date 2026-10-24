@@ -1,5 +1,5 @@
 {
-  "_info": "Las 10 fichas y sus habilidades (docs/DISENO.md, «Las habilidades de las fichas»). Las cifras son provisionales: el simulador comprueba que ninguna ficha gane más de lo que le toca. «enfriamiento» son los turnos propios que hay que esperar tras usar la activa.",
+  "_info": "Las 10 fichas y sus habilidades (docs/DISENO.md, «Las habilidades de las fichas»). Las cifras son provisionales: el simulador comprueba que ninguna ficha gane más de lo que le toca. «enfriamiento» son los turnos propios que hay que esperar tras usar la activa. «porJugadores» da, para algunas cifras, un valor por cada número de jugadores (de 2 a 8); el normal es el de 4.",
   "fichas": [
     {
       "id": "rata",
@@ -8,7 +8,18 @@
       "pasiva": {
         "id": "horas-extra",
         "nombre": "Horas extra",
-        "sueldo": 270
+        "sueldo": 270,
+        "porJugadores": {
+          "sueldo": [
+            270,
+            270,
+            270,
+            270,
+            270,
+            270,
+            255
+          ]
+        }
       },
       "activa": {
         "id": "esprint",
@@ -43,7 +54,18 @@
       "pasiva": {
         "id": "optimista",
         "nombre": "Optimista",
-        "factor": 2.2
+        "factor": 2.2,
+        "porJugadores": {
+          "factor": [
+            3.4,
+            2.7,
+            2.2,
+            2.2,
+            1.9,
+            1.8,
+            1.6
+          ]
+        }
       },
       "activa": {
         "id": "rally",
@@ -59,7 +81,18 @@
       "pasiva": {
         "id": "apuesta-bajista",
         "nombre": "Apuesta bajista",
-        "cantidad": 60
+        "cantidad": 70,
+        "porJugadores": {
+          "cantidad": [
+            60,
+            60,
+            70,
+            85,
+            115,
+            120,
+            140
+          ]
+        }
       },
       "activa": {
         "id": "hibernar",
@@ -93,7 +126,27 @@
         "id": "renta-fija",
         "nombre": "Renta fija",
         "porcentaje": 0.005,
-        "maximo": 12
+        "maximo": 12,
+        "porJugadores": {
+          "porcentaje": [
+            0.003,
+            0.004,
+            0.005,
+            0.005,
+            0.005,
+            0.005,
+            0.007
+          ],
+          "maximo": [
+            8,
+            10,
+            12,
+            12,
+            12,
+            12,
+            16
+          ]
+        }
       },
       "activa": {
         "id": "temporada-alta",
@@ -126,13 +179,44 @@
         "id": "peaje-hormiga",
         "nombre": "Peaje hormiga",
         "peaje": 4,
-        "maximoRonda": 8
+        "maximoRonda": 7,
+        "porJugadores": {
+          "peaje": [
+            2,
+            3,
+            4,
+            4,
+            4,
+            4,
+            4
+          ],
+          "maximoRonda": [
+            4,
+            6,
+            7,
+            7,
+            8,
+            8,
+            8
+          ]
+        }
       },
       "activa": {
         "id": "hormiguero",
         "nombre": "Hormiguero",
         "enfriamiento": 5,
-        "peaje": 8
+        "peaje": 8,
+        "porJugadores": {
+          "peaje": [
+            4,
+            6,
+            8,
+            8,
+            8,
+            8,
+            8
+          ]
+        }
       }
     },
     {

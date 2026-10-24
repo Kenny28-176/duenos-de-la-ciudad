@@ -1,6 +1,7 @@
 // Máquina de estados de la partida. Todo es puro: paso(ctx, estado, acción) → { state, events, error }.
 // El estado es JSON plano (se guardará en Firebase). El tablero (la laptop o tablet) es quien llama a paso(): los
 // celulares solo envían acciones. Las reglas están en docs/DISENO.md.
+import { MAX_JUGADORES, MIN_JUGADORES } from './contexto.js';
 import { cargar, cobrar, deudorActivo, resolverDeudas, transferir } from './dinero.js';
 import { dado, shuffle } from './rng.js';
 import { cerrarSubasta, iniciarSubasta, pujar, retirarse } from './subasta.js';
@@ -14,7 +15,7 @@ import { usarHabilidad } from './habilidades.js';
 export const OPCIONES = {
   meta: 10000, mercado: true, subastas: true, habilidades: true, partidaRapida: false, dadosDePrueba: false,
 };
-export const MAX_JUGADORES = 8;
+export { MAX_JUGADORES };
 
 const err = (state, codigo, mensaje) => ({ state, events: [], error: { codigo, mensaje } });
 const no = (codigo, mensaje) => ({ codigo, mensaje });
@@ -108,7 +109,7 @@ function configurar(ctx, s, a) {
 
 function empezar(ctx, s, a, ev) {
   if (s.fase !== 'sala') return no('empezada', 'La partida ya empezó.');
-  if (s.ids.length < 2) return no('pocos', 'Hacen falta al menos 2 jugadores.');
+  if (s.ids.length < MIN_JUGADORES) return no('pocos', `Hacen falta al menos ${MIN_JUGADORES} jugadores.`);
   const libres = shuffle(s, Object.keys(ctx.fichas).filter(f => !s.ids.some(id => s.jugadores[id].ficha === f)));
   for (const id of s.ids) if (!s.jugadores[id].ficha) s.jugadores[id].ficha = libres.shift();
   s.orden = shuffle(s, s.ids);

@@ -5,11 +5,13 @@ import assert from 'node:assert/strict';
 import { cargarDatos } from '../src/data/cargar.js';
 import { crearMotor } from '../src/engine/index.js';
 
-const motor = crearMotor(await cargarDatos());
+const DATOS = await cargarDatos();
+const motor = crearMotor(DATOS);
 const { ctx } = motor;
 const { eco } = ctx;
 const INICIAL = eco.dineroInicial;
-const ficha = id => ctx.fichas[id];
+// Las cifras de la ficha de un jugador en esta partida (pueden depender del número de jugadores).
+const ficha = (s, id) => motor.ficha(s, id);
 
 // Aplica acciones que tienen que salir bien. Devuelve el estado final y todos los eventos.
 function jugar(s, ...acciones) {
@@ -469,17 +471,17 @@ test('Rata — Horas extra (más sueldo) y Esprint (un tercer dado)', () => {
   ({ s } = jugar(s, { type: 'usarHabilidad', id: 'j1' }, { type: 'tirar', id: 'j1', dados: [1, 2] }));
   assert.deepEqual(s.turno.dados, [1, 2, 1]);
   assert.equal(s.jugadores.j1.casilla, 1);
-  assert.equal(s.jugadores.j1.dinero, INICIAL + ficha('rata').pasiva.sueldo);
+  assert.equal(s.jugadores.j1.dinero, INICIAL + ficha(s, 'j1').pasiva.sueldo);
   rechaza(s, { type: 'usarHabilidad', id: 'j1' }, 'una_por_turno');
   ({ s } = jugar(s, { type: 'comprar', id: 'j1' }, { type: 'terminarTurno', id: 'j1' }));
   ({ s } = turnoTranquilo(s, 'j2'));
-  assert.equal(s.jugadores.j1.hab.enfriamiento, ficha('rata').activa.enfriamiento - 1);
+  assert.equal(s.jugadores.j1.hab.enfriamiento, ficha(s, 'j1').activa.enfriamiento - 1);
   rechaza(s, { type: 'usarHabilidad', id: 'j1' }, 'enfriamiento');
 });
 
 test('Taza — Préstamo exprés (se devuelve con interés) e Interés a favor (al pasar por la Salida)', () => {
-  const { pasiva, activa } = ficha('taza');
   let s = partida({ fichas: ['taza', 'oso'], habilidades: true });
+  const { pasiva, activa } = ficha(s, 'j1');
   rechaza(s, { type: 'usarHabilidad', id: 'j1', cantidad: activa.maximo + 10 }, 'cantidad');
   ({ s } = jugar(s, { type: 'usarHabilidad', id: 'j1', cantidad: 500 }));
   const devolver = Math.round(500 * (1 + activa.interes));
@@ -500,8 +502,8 @@ test('Taza — Préstamo exprés (se devuelve con interés) e Interés a favor (
 });
 
 test('Toro — Optimista (más dividendos) y Rally (sube las acciones de un barrio)', () => {
-  const { pasiva, activa } = ficha('toro');
   let s = partida({ fichas: ['oso', 'toro'], habilidades: true });
+  const { pasiva, activa } = ficha(s, 'j2');
   for (const i of [1, 3]) s.props[i] = { dueno: 'j2', nivel: 2, hipotecada: false };
   s.jugadores.j2.acciones.talleres = 50;
   ({ s } = jugar(s, { type: 'tirar', id: 'j1', dados: [1, 2] }));
@@ -521,13 +523,13 @@ test('Oso — Hibernar (ni paga ni cobra alquileres) y Apuesta bajista (cobra cu
   assert.ok(hay(ev, { type: 'sinAlquiler', id: 'j1', motivo: 'hiberna' }));
   assert.equal(s.jugadores.j1.dinero, INICIAL);
   ({ s } = jugar(s, { type: 'terminarTurno', id: 'j1' }, { type: 'hipotecar', id: 'j2', casilla: 3 }));
-  assert.equal(s.jugadores.j1.dinero, INICIAL + ficha('oso').pasiva.cantidad);
+  assert.equal(s.jugadores.j1.dinero, INICIAL + ficha(s, 'j1').pasiva.cantidad);
 });
 
 test('Burbuja — Inflar (una calle cobra más y después se desinfla) y Valor inflado (para la meta)', () => {
-  const { pasiva, activa } = ficha('burbuja');
   const meta = 3000;
   let s = partida({ fichas: ['burbuja', 'oso'], habilidades: true, meta });
+  const { pasiva, activa } = ficha(s, 'j1');
   s.props[3].dueno = 'j1';
   const base = ctx.casillas[3].alquilerBase;
   ({ s } = jugar(s, { type: 'usarHabilidad', id: 'j1', casilla: 3 }));
@@ -544,8 +546,8 @@ test('Burbuja — Inflar (una calle cobra más y después se desinfla) y Valor i
 });
 
 test('Vaca Lechera — Temporada alta (cobra más alquiler) y Renta fija (al empezar su turno)', () => {
-  const { pasiva, activa } = ficha('vaca-lechera');
   let s = partida({ fichas: ['vaca-lechera', 'oso'], habilidades: true });
+  const { pasiva, activa } = ficha(s, 'j1');
   for (const i of [37, 39]) s.props[i].dueno = 'j1';
   const completo = ctx.casillas[39].alquilerBase * eco.alquiler.barrioCompleto;
   ({ s } = jugar(s, { type: 'usarHabilidad', id: 'j1' }));
@@ -561,7 +563,7 @@ test('Elefante Blanco — Constructora (construye más barato) y Obras eternas (
   for (const i of [1, 3]) s.props[i].dueno = 'j1';
   s.props[4].dueno = 'j2';
   ({ s } = jugar(s, { type: 'construir', id: 'j1', casilla: 1 }));
-  const descuento = ficha('elefante-blanco').pasiva.descuento;
+  const { descuento } = ficha(s, 'j1').pasiva;
   assert.equal(s.jugadores.j1.dinero, INICIAL - Math.round(ctx.casillas[1].costeCasa * (1 - descuento)));
   rechaza(s, { type: 'usarHabilidad', id: 'j1', casilla: 3 }, 'casilla');
   let ev;
@@ -573,8 +575,8 @@ test('Elefante Blanco — Constructora (construye más barato) y Obras eternas (
 });
 
 test('Hormiga — Peaje hormiga (con tope por ronda) y Hormiguero (más peaje y sin tope)', () => {
-  const { pasiva, activa } = ficha('hormiga');
   let s = partida({ fichas: ['oso', 'hormiga'], habilidades: true });
+  const { pasiva, activa } = ficha(s, 'j2');
   for (const i of [1, 3, 4]) s.props[i].dueno = 'j2';
   ({ s } = jugar(s, { type: 'tirar', id: 'j1', dados: [2, 3] })); // pasa por 1, 3 y 4 y cae en 5
   assert.equal(s.jugadores.j2.dinero, INICIAL + Math.min(3 * pasiva.peaje, pasiva.maximoRonda));
@@ -593,7 +595,7 @@ test('Tiburón — Cazador de gangas (gana los empates) y Frenesí (obliga a sub
   rechaza(s, { type: 'pujar', id: 'j1', cantidad: 50 }, 'puja_baja');
   ({ s } = jugar(s, { type: 'retirarse', id: 'j1' }));
   assert.equal(s.props[3].dueno, 'j2');
-  assert.equal(s.jugadores.j2.dinero, INICIAL - Math.round(50 * ficha('tiburon').pasiva.pago));
+  assert.equal(s.jugadores.j2.dinero, INICIAL - Math.round(50 * ficha(s, 'j2').pasiva.pago));
 
   ({ s } = jugar(s, { type: 'terminarTurno', id: 'j1' }, { type: 'usarHabilidad', id: 'j2', objetivo: 'j1' }));
   ({ s } = turnoTranquilo(s, 'j2'));
@@ -605,11 +607,11 @@ test('Tiburón — Cazador de gangas (gana los empates) y Frenesí (obliga a sub
 });
 
 test('Cisne Negro — Antifrágil (las cartas le cobran menos y le pagan más) e Imprevisto (otro pierde el turno)', () => {
-  const { pasiva } = ficha('cisne-negro');
   for (const [carta, sentido, signo] of [['f-deposito', 'cobra', 1], ['f-taller', 'paga', -1]]) {
     const { s } = jugar(cartaArriba(partida({ fichas: ['cisne-negro', 'oso'], habilidades: true }), carta),
       { type: 'tirar', id: 'j1', dados: [3, 4] }); // Fortuna
-    assert.equal(s.jugadores.j1.dinero, INICIAL + signo * Math.round(ctx.cartas[carta].efecto.cantidad * pasiva[sentido]), carta);
+    const cantidad = Math.round(ctx.cartas[carta].efecto.cantidad * ficha(s, 'j1').pasiva[sentido]);
+    assert.equal(s.jugadores.j1.dinero, INICIAL + signo * cantidad, carta);
   }
 
   let s = partida({ fichas: ['cisne-negro', 'oso', 'rata'], habilidades: true });
@@ -619,6 +621,27 @@ test('Cisne Negro — Antifrágil (las cartas le cobran menos y le pagan más) e
     { type: 'tirar', id: 'j1', dados: [4, 6] }, { type: 'terminarTurno', id: 'j1' }));
   assert.ok(hay(ev, { type: 'pierdeTurno', id: 'j2' }));
   assert.equal(s.turno.id, 'j3');
+});
+
+test('las cifras de una habilidad pueden cambiar según el número de jugadores', () => {
+  const datos = structuredClone(DATOS);
+  const { pasiva } = datos.fichas.fichas.find(f => f.id === 'hormiga');
+  const normal = pasiva.peaje;
+  pasiva.porJugadores = { peaje: [1, 2, normal, 5, 6, 7, 8] };
+  const m = crearMotor(datos);
+  const estado = n => ({ orden: Array.from({ length: n }, (_, k) => `j${k}`), jugadores: { j0: { ficha: 'hormiga' } } });
+  assert.equal(m.ficha(estado(2), 'j0').pasiva.peaje, 1);
+  assert.equal(m.ficha(estado(4), 'j0').pasiva.peaje, normal);
+  assert.equal(m.ficha(estado(8), 'j0').pasiva.peaje, 8);
+  assert.equal(m.ficha(estado(8), 'j0').pasiva.maximoRonda, pasiva.maximoRonda, 'los demás campos no cambian');
+
+  // Los errores al escribir los datos se notan al cargarlos.
+  pasiva.porJugadores = { peaje: [1, 2, normal + 1, 5, 6, 7, 8] };
+  assert.throws(() => crearMotor(datos), /no coincide/);
+  pasiva.porJugadores = { peaje: [1, 2, normal] };
+  assert.throws(() => crearMotor(datos), /necesita 7/);
+  pasiva.porJugadores = { inventado: [1, 2, 3, 4, 5, 6, 7] };
+  assert.throws(() => crearMotor(datos), /no existe/);
 });
 
 // --- El motor -----------------------------------------------------------------------------------------------

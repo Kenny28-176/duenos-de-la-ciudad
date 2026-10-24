@@ -5,6 +5,32 @@
 
 export const redondear = (x, a = 1) => Math.round(x / a) * a;
 export const TIPOS_PROPIEDAD = ['calle', 'transporte', 'servicio'];
+export const MIN_JUGADORES = 2;
+export const MAX_JUGADORES = 8;
+const JUGADORES_DE_REFERENCIA = 4; // las cifras normales de las habilidades son las de las partidas de 4
+
+// Las cifras de una habilidad en una partida de «n» jugadores. «porJugadores» da, para algunos campos, una lista con un
+// valor por cada número de jugadores (de 2 a 8); el de 4 tiene que coincidir con el campo normal.
+function cifrasPara(habilidad, n) {
+  if (!habilidad.porJugadores) return habilidad;
+  const { porJugadores, ...cifras } = habilidad;
+  for (const [campo, valores] of Object.entries(porJugadores)) cifras[campo] = valores[n - MIN_JUGADORES];
+  return cifras;
+}
+
+function comprobarPorJugadores(ficha, habilidad) {
+  for (const [campo, valores] of Object.entries(habilidad.porJugadores ?? {})) {
+    const donde = `${ficha.id}, ${habilidad.id}, ${campo}`;
+    if (!(campo in habilidad)) throw new Error(`porJugadores cambia un campo que no existe (${donde})`);
+    const largo = MAX_JUGADORES - MIN_JUGADORES + 1;
+    if (!Array.isArray(valores) || valores.length !== largo || !valores.every(v => typeof v === 'number' && v > 0)) {
+      throw new Error(`porJugadores necesita ${largo} números positivos, de ${MIN_JUGADORES} a ${MAX_JUGADORES} jugadores (${donde})`);
+    }
+    if (valores[JUGADORES_DE_REFERENCIA - MIN_JUGADORES] !== habilidad[campo]) {
+      throw new Error(`porJugadores no coincide con el valor normal en las partidas de ${JUGADORES_DE_REFERENCIA} (${donde})`);
+    }
+  }
+}
 
 export function prepararContexto({ tablero, economia, fichas, cartas }) {
   const eco = economia;
@@ -29,6 +55,11 @@ export function prepararContexto({ tablero, economia, fichas, cartas }) {
   }
   const deTipo = tipo => casillas.filter(c => c.tipo === tipo).map(c => c.i);
   const todasLasCartas = [...cartas.noticias.map(c => ({ ...c, mazo: 'noticias' })), ...cartas.fortuna.map(c => ({ ...c, mazo: 'fortuna' }))];
+  for (const f of fichas.fichas) for (const h of [f.pasiva, f.activa]) comprobarPorJugadores(f, h);
+  const fichasPorJugadores = {};
+  for (let n = MIN_JUGADORES; n <= MAX_JUGADORES; n++) {
+    fichasPorJugadores[n] = Object.fromEntries(fichas.fichas.map(f => [f.id, { ...f, pasiva: cifrasPara(f.pasiva, n), activa: cifrasPara(f.activa, n) }]));
+  }
   return {
     eco,
     casillas,
@@ -39,6 +70,7 @@ export function prepararContexto({ tablero, economia, fichas, cartas }) {
     salida: deTipo('salida')[0],
     calabozo: deTipo('calabozo')[0],
     fichas: Object.fromEntries(fichas.fichas.map(f => [f.id, f])),
+    fichasPorJugadores,
     cartas: Object.fromEntries(todasLasCartas.map(c => [c.id, c])),
     mazos: { noticias: cartas.noticias.map(c => c.id), fortuna: cartas.fortuna.map(c => c.id) },
     salvoconducto: todasLasCartas.find(c => c.efecto.tipo === 'salvoconducto')?.id,
@@ -62,15 +94,21 @@ export function distancia(ctx, desde, hasta) {
 
 // --- Habilidades de las fichas ---------------------------------------------------------------------
 
+// La ficha de un jugador con las cifras de sus habilidades para el número de jugadores de la partida.
+export function fichaEnPartida(ctx, s, id) {
+  const ficha = s.jugadores[id]?.ficha;
+  return (ctx.fichasPorJugadores[s.orden.length] ?? ctx.fichas)[ficha];
+}
+
 // La pasiva de un jugador si es «habilidad» y la sala juega con habilidades; si no, null.
 export function pasiva(ctx, s, id, habilidad) {
   if (!s.opciones.habilidades) return null;
-  const p = ctx.fichas[s.jugadores[id]?.ficha]?.pasiva;
+  const p = fichaEnPartida(ctx, s, id)?.pasiva;
   return p?.id === habilidad ? p : null;
 }
 
 export function activa(ctx, s, id) {
-  return s.opciones.habilidades ? ctx.fichas[s.jugadores[id]?.ficha]?.activa ?? null : null;
+  return s.opciones.habilidades ? fichaEnPartida(ctx, s, id)?.activa ?? null : null;
 }
 
 // --- Propiedades ----------------------------------------------------------------------------------
