@@ -8,7 +8,8 @@
     "serve": "node tools/serve.js",
     "sitio": "node tools/construir-sitio.js",
     "revisar:imagenes": "node tools/revisar-imagenes.js",
-    "optimizar:imagenes": "python tools/optimizar-imagenes.py"
+    "optimizar:imagenes": "python tools/optimizar-imagenes.py",
+    "hoja:visuales": "node tools/hoja-de-contactos.js"
   },
   "engines": {
     "node": ">=22"

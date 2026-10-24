@@ -1,11 +1,35 @@
 {
-  "_info": "Tamaño máximo (lado mayor, en px), peso máximo (KB) y formatos permitidos de las imágenes de public/visuales/. Se aplica la primera regla cuyo «prefijo» coincida con el principio de la ruta (relativa a public/visuales/). Lo usan tools/revisar-imagenes.js y tools/optimizar-imagenes.py; se explica en docs/VISUALES.md.",
+  "_info": "Medida exacta (ancho × alto, en px), peso máximo (KB) y formatos de las imágenes de public/visuales/, según las fichas técnicas de docs/VISUALES.md (sección 7). Se aplica la primera regla cuyo «prefijo» coincida con el principio de la ruta (relativa a public/visuales/). Lo usan tools/revisar-imagenes.js y tools/optimizar-imagenes.py.",
   "reglas": [
-    { "prefijo": "marca/portada.", "lado": 1600, "kb": 300, "formatos": ["webp"] },
-    { "prefijo": "marca/redes.", "lado": 1200, "kb": 300, "formatos": ["png", "jpg"] },
-    { "prefijo": "marca/icono-", "lado": 512, "kb": 150, "formatos": ["png"] },
-    { "prefijo": "tablero/centro/", "lado": 1024, "kb": 300, "formatos": ["webp"] },
-    { "prefijo": "", "lado": 512, "kb": 120, "formatos": ["webp", "svg"] }
+    { "prefijo": "marca/portada.", "formatos": ["webp"], "ancho": 1600, "alto": 900, "kb": 300 },
+    { "prefijo": "marca/redes.", "formatos": ["png", "jpg"], "ancho": 1200, "alto": 630, "kb": 300 },
+    { "prefijo": "marca/icono-", "formatos": ["png"], "ancho": 512, "alto": 512, "kb": 150 },
+    { "prefijo": "marca/emblema.", "formatos": ["webp"], "ancho": 512, "alto": 512, "kb": 120 },
+    { "prefijo": "tablero/centro/", "formatos": ["webp"], "ancho": 1024, "alto": 1024, "kb": 300 },
+    { "prefijo": "tablero/esquinas/", "formatos": ["webp"], "ancho": 512, "alto": 512, "kb": 120 },
+    { "prefijo": "tablero/edificios/", "formatos": ["webp"], "ancho": 256, "alto": 256, "kb": 60 },
+    { "prefijo": "tablero/barrios/", "formatos": ["svg"] },
+    { "prefijo": "tablero/casillas/", "formatos": ["svg"] },
+    { "prefijo": "tablero/marcadores/", "formatos": ["svg"] },
+    { "prefijo": "fichas/piezas/", "formatos": ["webp"], "ancho": 256, "alto": 256, "kb": 60 },
+    { "prefijo": "fichas/retratos/", "formatos": ["webp"], "ancho": 512, "alto": 512, "kb": 120 },
+    { "prefijo": "tarjetas/dorsos/", "formatos": ["webp"], "ancho": 384, "alto": 512, "kb": 120 },
+    { "prefijo": "tarjetas/efectos/", "formatos": ["webp"], "ancho": 512, "alto": 384, "kb": 100 },
+    { "prefijo": "tarjetas/cabeceras/", "formatos": ["webp"], "ancho": 512, "alto": 288, "kb": 100 },
+    { "prefijo": "botones/habilidades/", "formatos": ["webp"], "ancho": 256, "alto": 256, "kb": 60 },
+    { "prefijo": "botones/acciones/", "formatos": ["svg"] },
+    { "prefijo": "interfaz/iconos/", "formatos": ["svg"] },
+    { "prefijo": "interfaz/ilustraciones/", "formatos": ["webp"], "ancho": 512, "alto": 512, "kb": 120 }
   ],
-  "svgKb": 20
+  "svg": {
+    "kb": 20,
+    "apertura": {
+      "viewBox": "0 0 64 64",
+      "fill": "none",
+      "stroke": "currentColor",
+      "stroke-width": "5",
+      "stroke-linecap": "round",
+      "stroke-linejoin": "round"
+    }
+  }
 }

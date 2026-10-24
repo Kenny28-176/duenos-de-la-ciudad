@@ -80,7 +80,8 @@ Reglas de oro:
 index.html, public/      portada (es y en/) y estilos; más adelante, las pantallas del tablero y del celular
 public/visuales/         imágenes del juego (marca, tablero, fichas, tarjetas, botones, interfaz) y su CREDITOS.md
 tools/                   serve.js (servidor local), construir-sitio.js (revisa y empaqueta la web para Pages),
-                         revisar-imagenes.js y optimizar-imagenes.py (con las reglas de limites-imagenes.json)
+                         revisar-imagenes.js, optimizar-imagenes.py y hoja-de-contactos.js (con las reglas de
+                         limites-imagenes.json)
 tests/                   pruebas (node:test, sin dependencias): marcas, documentación, web e imágenes
 docs/                    DISENO.md (las reglas tal como las implementará el motor), VISUALES.md (todo lo que hay que
                          dibujar), IDEAS.md (para después)
@@ -100,8 +101,9 @@ Lo que llega en las fases 1 a 3:
 npm test                                 # todas las pruebas
 node tools/serve.js                      # servidor local en http://localhost:8080/public/
 node tools/construir-sitio.js --revisar  # comprueba que la web no depende de servidores externos
-npm run revisar:imagenes                 # comprueba formato, tamaño y créditos de public/visuales/
-python tools/optimizar-imagenes.py       # informa (con --aplicar, reduce y convierte a WebP)
+npm run revisar:imagenes                 # lista, nombre, formato, medida exacta, SVG y créditos de public/visuales/
+python tools/optimizar-imagenes.py       # informa (con --aplicar, recorta, deja la medida exacta y pasa a WebP)
+npm run hoja:visuales                    # hoja de contactos para comparar las imágenes (visuales-originales/)
 ```
 
 - **Las imágenes las genera otra herramienta en paralelo**, siguiendo `docs/VISUALES.md`, y sube solo
