@@ -83,6 +83,8 @@ public/visuales/         imágenes del juego (marca, tablero, fichas, tarjetas, 
 src/data/                los datos del juego: tablero.json, economia.json, fichas.json y cartas.json, y cargar.js
 src/engine/              el motor puro: juego.js (acciones y permisos), turno, cartas, subasta, gestion, tratos,
                          quiebra, habilidades, dinero, contexto (fórmulas y patrimonio) y rng; bots.js y simulador.js
+src/ui/                  cola.js (cola de animaciones) y tablero/: geometria.js (dónde va cada casilla y cada ficha),
+                         dibujo.js (el tablero en SVG) y demo.js (partida de demostración entre bots)
 tools/                   serve.js (servidor local), construir-sitio.js (revisa y empaqueta la web para Pages),
                          simular.js (equilibrio con bots), revisar-imagenes.js, optimizar-imagenes.py y
                          hoja-de-contactos.js (con las reglas de limites-imagenes.json)
@@ -95,7 +97,7 @@ docs/                    DISENO.md (las reglas tal como las aplica el motor), VI
 Lo que llega en las fases 2 y 3:
 
 - `src/net/`: la conexión con Firebase;
-- `src/ui/`: las pantallas;
+- el resto de `src/ui/`: las pantallas del tablero y del celular;
 - `src/i18n/`: los idiomas.
 
 ## Cómo se trabaja

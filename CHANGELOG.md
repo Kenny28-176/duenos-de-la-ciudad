@@ -65,3 +65,13 @@ Aquí se anotan los cambios de cada versión. Las versiones siguen el esquema ma
   del 25 % de victorias que les correspondería. Los resultados, también con 2, 3, 6 y 8 jugadores, están en
   `docs/DISENO.md` (sección 10).
 - Guía paso a paso para crear el proyecto de Firebase: [`docs/FIREBASE.md`](docs/FIREBASE.md).
+- Algunas cifras de las habilidades cambian según el número de jugadores (`porJugadores` en `src/data/fichas.json`),
+  para que ninguna ficha tenga ventaja con pocos o con muchos rivales.
+- Los bots valoran cada subasta a su manera, como haría una persona. Con valoraciones idénticas, el Tiburón ganaba
+  casi todas las subastas en las partidas de muchos jugadores.
+- Fase 2, primeras piezas del tablero:
+  - la cola de animaciones;
+  - la partida de demostración entre bots;
+  - la geometría de las 40 casillas;
+  - el dibujo del tablero en SVG, con la franja de color en el borde exterior y los textos sin quedar nunca boca
+    abajo.

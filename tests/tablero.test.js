@@ -5,9 +5,41 @@ import { cargarDatos } from '../src/data/cargar.js';
 import { crearMotor } from '../src/engine/index.js';
 import { crearCola } from '../src/ui/cola.js';
 import { crearDemo } from '../src/ui/tablero/demo.js';
+import { dibujarTablero, partirNombre } from '../src/ui/tablero/dibujo.js';
+import { geometriaTablero } from '../src/ui/tablero/geometria.js';
 
 const motor = crearMotor(await cargarDatos());
 const espera = ms => new Promise(listo => setTimeout(listo, ms));
+
+test('el dibujo del tablero tiene las 40 casillas, sus imágenes y las capas para lo que cambia', () => {
+  const svg = dibujarTablero(motor.ctx, geometriaTablero());
+  const casillas = [...svg.matchAll(/data-casilla="(\d+)"/g)].map(m => Number(m[1]));
+  assert.deepEqual(casillas, Array.from({ length: 40 }, (_, i) => i));
+  for (const capa of ['capa-duenos', 'capa-edificios', 'capa-marcadores', 'capa-fichas', 'plaza']) {
+    assert.ok(svg.includes(`class="${capa}"`) || svg.includes(` ${capa}"`), `falta ${capa}`);
+  }
+  // Cada barrio pinta su franja con su color, y todas las imágenes salen de los datos.
+  for (const b of Object.values(motor.ctx.barrios)) assert.ok(svg.includes(`fill: ${b.color}`), b.id);
+  for (const imagen of ['tablero/barrios/talleres.svg', 'tablero/casillas/aeropuerto.svg', 'tablero/esquinas/salida.webp']) {
+    assert.ok(svg.includes(`visuales/${imagen}`), imagen);
+  }
+  // Los textos se escapan.
+  const conRaros = dibujarTablero(motor.ctx, geometriaTablero(), { texto: { nombre: () => 'A & <B>' } });
+  assert.ok(conRaros.includes('A &amp; &lt;B&gt;') && !conRaros.includes('<B>'));
+});
+
+test('en la orientación normal ningún texto queda boca abajo; hacia fuera, cada lado mira a su borde', () => {
+  const giros = orientacion => [...dibujarTablero(motor.ctx, geometriaTablero(), { orientacion }).matchAll(/rotate\((-?\d+)\)/g)].map(m => Number(m[1]));
+  assert.ok(!giros('derechos').includes(180));
+  assert.deepEqual([...new Set(giros('hacia-fuera'))].sort((a, b) => a - b), [0, 90, 180, 270]);
+  assert.throws(() => dibujarTablero(motor.ctx, geometriaTablero(), { orientacion: 'torcida' }), /Orientación desconocida/);
+});
+
+test('los nombres largos se parten en líneas sin cortar palabras', () => {
+  assert.deepEqual(partirNombre('Calle de los Puestos', 12), ['Calle de los', 'Puestos']);
+  assert.deepEqual(partirNombre('Aeropuerto', 12), ['Aeropuerto']);
+  assert.deepEqual(partirNombre('uno dos tres cuatro cinco seis', 4, 3), ['uno', 'dos', 'tres cuatro cinco seis']);
+});
 
 test('la cola reproduce los eventos en orden, aunque lleguen mientras otros se animan', async () => {
   const registro = [];

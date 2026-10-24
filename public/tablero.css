@@ -1,0 +1,45 @@
+/* El tablero: la pantalla de la laptop, la tablet o la TV. Los colores son los de docs/VISUALES.md (sección 3.2). */
+:root {
+  --noche: #1e242b;
+  --papel: #efeae0;
+  --hueso: #f4efe6;
+  --tinta: #23262b;
+  --pizarra: #3a3f45;
+  --piedra: #9a968e;
+  --ambar: #c98b3a;
+  --azul-noticias: #34507a;
+  --verde-dinero: #3f7a66;
+  --verde-sube: #4e9a6a;
+  --rojo-baja: #b5483f;
+  --oro-viejo: #c9a44c;
+}
+
+.tablero { display: block; width: 100%; height: auto; }
+.tablero .noche { fill: var(--noche); }
+
+/* Las imágenes aparecen cuando terminan de cargar (la pantalla les pone «cargada»). Así, mientras falte alguna, no se
+   ve el icono de imagen rota del navegador. */
+.tablero image { opacity: 0; transition: opacity 0.4s; }
+.tablero image.cargada { opacity: 1; }
+.tablero .papel { fill: var(--papel); stroke: var(--noche); stroke-width: 1; }
+
+/* La franja exterior: las calles llevan el color de su barrio; el resto, el de su tipo de casilla. */
+.tablero .franja-transporte,
+.tablero .franja-fortuna { fill: var(--ambar); }
+.tablero .franja-servicio { fill: var(--verde-dinero); }
+.tablero .franja-noticias { fill: var(--azul-noticias); }
+.tablero .franja-impuesto { fill: var(--rojo-baja); }
+.tablero .franja-agencia { fill: var(--verde-sube); }
+
+.tablero text { font-family: "Inter", system-ui, sans-serif; fill: var(--tinta); text-anchor: middle; }
+.tablero .nombre { font-size: 10.5px; font-weight: 500; }
+.tablero .precio { font-size: 10px; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+/* Las esquinas: su ilustración pintada, un marco con su color de acento y el rótulo con el nombre. */
+.tablero .nombre-esquina { font-family: "Fraunces", Georgia, serif; font-size: 14px; font-weight: 600; }
+.tablero .rotulo { fill: var(--papel); opacity: 0.92; }
+.tablero .marco-esquina { fill: none; stroke-width: 4; }
+.tablero .marco-salida { stroke: var(--oro-viejo); }
+.tablero .marco-calabozo { stroke: var(--piedra); }
+.tablero .marco-bolsa { stroke: var(--verde-sube); }
+.tablero .marco-auditoria { stroke: var(--rojo-baja); }
