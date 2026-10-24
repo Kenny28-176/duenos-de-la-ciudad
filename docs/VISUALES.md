@@ -6,7 +6,8 @@
 > **El estilo, en una frase:** pintura naturalista y sobria, para un juego de jóvenes adultos y adultos. Los animales y
 > los objetos son **reales, no dibujos animados**: no se humanizan, no llevan ropa ni caras. La metáfora de cada uno se
 > cuenta con la pose y, como mucho, un objeto simbólico. Las composiciones son **minimalistas**: un protagonista,
-> mucho aire y nada de adornos.
+> mucho aire y nada de adornos. **Las únicas excepciones** son las insignias de las habilidades y los iconos: son
+> gráficos planos y minimalistas, con la misma paleta.
 >
 > **La regla de oro es la coherencia.** Las 141 imágenes tienen que parecer pintadas por la misma mano. Esta guía fija
 > cada detalle: técnica, pincelada, luz, colores, fondo, encuadre, posición y tamaño. Si algo no está escrito aquí, se
@@ -33,12 +34,15 @@
 ## 1. Cómo trabajar
 
 1. **Lee las secciones 2 a 7 completas** antes de generar nada.
-2. **Empieza por la hoja de estilo.** Genera solo cuatro imágenes:
-   - las piezas de la Rata, el Toro y la Burbuja;
-   - el retrato de la Rata.
+2. **La hoja de estilo ya está aprobada** (24 de octubre de 2026). La forman las piezas de la Rata, el Toro y la
+   Burbuja y el retrato de la Rata. Son la referencia de estilo de todas las imágenes pintadas: en la duda, manda lo
+   que se ve en ellas.
 
-   Enséñaselas a Kenny. Mientras no las apruebe, no se genera nada más. Esas cuatro son la referencia de estilo de todo
-   lo demás.
+   **Las insignias de las habilidades tienen su propia muestra.** Antes de hacer las 20, se hacen cuatro:
+   - 2 activas: `botones/habilidades/activas/esprint.webp` y `botones/habilidades/activas/rally.webp`;
+   - 2 pasivas: `botones/habilidades/pasivas/horas-extra.webp` y `botones/habilidades/pasivas/optimista.webp`.
+
+   Kenny tiene que aprobarlas antes de seguir.
 3. **Referencias:** usa como referencia solo esta guía y las imágenes ya aprobadas del proyecto. No uses obras de otros
    artistas ni imágenes de internet: copiarías algo que tiene dueño.
 4. **Arma la petición de cada imagen** con tres partes:
@@ -90,6 +94,8 @@ generan como imagen: se escriben como código (sección 7.13).
   - nada de hiperrealismo: no se pinta cada pelo ni cada reflejo.
 - **Ambiente adulto y sobrio:** serio y elegante, con un punto de ironía en las metáforas, pero sin chistes visuales.
   Realista, pero nunca desagradable: nada de babas, heridas, suciedad ni gestos amenazantes.
+- **Excepciones:** las insignias de las habilidades (secciones 7.6 y 7.7) y los iconos SVG (sección 7.13) no se pintan.
+  Son gráficos planos y minimalistas, con los colores de la paleta.
 
 ### 2.2 Pincelada y bordes
 
@@ -102,8 +108,7 @@ generan como imagen: se escriben como código (sección 7.13).
   - nítidos en la silueta del protagonista, sobre todo del lado de la luz;
   - suaves en las sombras y en los planos del fondo.
 - **Detalle según el tamaño final:**
-  - en las piezas, los edificios y las insignias (que se ven a 40–128 px), la pincelada es más limpia y las formas más
-    simples;
+  - en las piezas y los edificios (que se ven a 40–128 px), la pincelada es más limpia y las formas más simples;
   - en los retratos y las escenas, la pincelada se nota más.
 
 ### 2.3 Luz y sombras
@@ -134,7 +139,7 @@ generan como imagen: se escriben como código (sección 7.13).
 | Retratos e ilustraciones de interfaz | Baja, a la altura del protagonista: lo engrandece, como en un retrato de naturaleza |
 | Esquinas, efectos, cabeceras, portada, redes | Frontal, con la cámara a la altura de los ojos de una persona y 10° hacia abajo; sin puntos de fuga exagerados |
 | Centro del tablero | Aérea inclinada: la cámara mira hacia abajo 45°, con las calles alineadas con los bordes del lienzo |
-| Insignias | De frente, sin perspectiva, como un objeto fotografiado desde arriba |
+| Insignias | Planas, de frente, sin perspectiva |
 | Iconos SVG | Planos, de frente |
 
 ### 2.6 Profundidad en las escenas
@@ -160,7 +165,8 @@ generan como imagen: se escriben como código (sección 7.13).
   - personajes humanizados (de pie como personas, con ropa, guantes o accesorios humanos);
   - caras en los objetos, ojos grandes, mejillas sonrosadas o expresiones humanas;
   - estilo infantil, «kawaii», «chibi» o de mascota;
-  - contornos negros gruesos, colores planos de vector o colores saturados o fosforescentes.
+  - contornos negros gruesos o colores saturados o fosforescentes;
+  - en las imágenes pintadas, colores planos de vector (lo plano es solo para las insignias y los iconos).
 - **Texto de cualquier tipo:** letras, números, letreros, inscripciones o cifras en relojes, pizarras y pantallas. Si
   la herramienta pinta letras, se regenera.
 - **Firmas, logotipos y marcas de agua.**
@@ -206,7 +212,7 @@ dentro de cada color, pero **no aparecen colores nuevos ni más saturados**.
 | Madera oscura | `#5E4433` | Mesas, suelos de tablas, cuero |
 | Madera clara | `#B08A62` | Maquetas, cajas, mangos |
 | Ladrillo | `#9E5A43` | Ladrillo y tejas |
-| Latón | `#A88A4A` | Marcos de las insignias, la llave de la ciudad, campanas |
+| Latón | `#A88A4A` | La llave de la ciudad, campanas, lupas y herrajes |
 | Oro viejo | `#C9A44C` | Monedas y medallas |
 | Verde sube | `#4E9A6A` | Luces y gráficas que suben |
 | Rojo baja | `#B5483F` | Luces y gráficas que bajan, lacre, sellos |
@@ -225,8 +231,14 @@ dentro de cada color, pero **no aparecen colores nuevos ni más saturados**.
 
 ### 3.3 Los colores de las fichas
 
-Cada ficha tiene un color propio. Es su identidad en el juego: en la interfaz, en el filo de su peana, en el fondo de
-su retrato y en sus insignias. No tiene por qué ser el color del animal o del objeto.
+Cada ficha tiene un color propio. Es su identidad en el juego y se usa en tres sitios:
+
+- en la interfaz, en el panel del jugador;
+- en el tablero, en el anillo que el código dibuja bajo su pieza;
+- en el fondo de su retrato.
+
+No tiene por qué ser el color del animal o del objeto. Las insignias de las habilidades no lo usan: llevan el color de
+su tipo (sección 3.4).
 
 | Ficha | Color |
 |---|---|
@@ -241,7 +253,20 @@ su retrato y en sus insignias. No tiene por qué ser el color del animal o del o
 | El Tiburón | petróleo `#3E7C80` |
 | El Cisne Negro | índigo `#3F5482` |
 
-### 3.4 Cuánto color
+### 3.4 Los colores de las insignias de las habilidades
+
+Son iguales para las 10 fichas. El tipo de habilidad se reconoce por la forma y el color, y la habilidad concreta, por
+el símbolo.
+
+| Parte | Activas (botones) | Pasivas (logos) |
+|---|---|---|
+| Forma | verde `#4E9A6A` | oro viejo `#C9A44C` |
+| Borde de la forma | `#3B664E` | `#7E6B3D` |
+| Relieve inferior | `#417757` | — (las pasivas son planas) |
+| Círculo interior | `#7EB28D` | `#D4B978` |
+| Símbolo | `#324F41` | `#5D5237` |
+
+### 3.5 Cuánto color
 
 - En cada imagen hay **como mucho 3 colores dominantes**, más los neutros (papel, hueso, piedras, maderas, noche).
 - **El color propio** (el de la ficha, el barrio o la carta) **es el único acento intenso** de la imagen. Todo lo demás
@@ -393,7 +418,7 @@ referencia de las siguientes.
 
 | Objeto | Diseño fijo |
 |---|---|
-| **Peana** | Disco de pizarra pulida visto en elipse, con la cara de arriba un poco más clara y un filo de esmalte del color de la ficha en el canto, junto a la cara de arriba |
+| **Peana** | Disco liso de pizarra pulida visto en elipse, con la cara de arriba un poco más clara y un brillo suave en el canto. Sin ningún color: el del jugador lo pone el código, con un anillo bajo la pieza |
 | **Moneda** | Moneda de oro viejo gastada, con el canto estriado y un anillo en relieve. Sin símbolos ni números. Un brillo cálido arriba a la izquierda |
 | **Llave de la ciudad** | Llave antigua de latón con pátina. La cabeza es un anillo, la caña es larga y el paletón, en lugar de dientes, forma el perfil de 4 edificios de alturas 2, 4, 3 y 5 |
 | **Casa** | Maqueta de arquitectura: casa de una planta con tejado a dos aguas. Fachada de madera clara pintada, tejado de pizarra, puerta de madera oscura y una ventana con luz de ventana |
@@ -413,7 +438,8 @@ referencia de las siguientes.
 Cada ficha dice el lienzo final exacto, la proporción con que se genera, el fondo, dónde va el motivo y qué tamaño
 tiene. Los porcentajes se miden sobre el lienzo, desde la esquina de arriba a la izquierda.
 
-La **frase de estilo** se copia al principio de **todas** las peticiones de imágenes pintadas:
+La **frase de estilo** se copia al principio de **todas** las peticiones de imágenes pintadas (todas menos las
+insignias, que tienen su propia plantilla, y los iconos SVG):
 
 ```
 Pintura naturalista de aspecto gouache, realista pero claramente pintada a mano, para un juego de mesa para adultos:
@@ -429,7 +455,7 @@ texto, letras ni números, sin logotipos, firma ni marca de agua.
 |---|---|
 | Lienzo final | 256 × 256 px, WebP. Se genera en 1:1 |
 | Fondo | Transparente |
-| Peana | La de la sección 6. La cara de arriba mide el 72 % del ancho del lienzo y el 18 % del alto, centrada a lo ancho. El canto tiene un grosor del 5 % del alto, con el filo de esmalte del color de la ficha (un 2 % de alto) arriba. El borde inferior de la peana queda al 95 % del alto |
+| Peana | La de la sección 6, lisa y sin color. La cara de arriba mide el 72 % del ancho del lienzo y el 18 % del alto, centrada a lo ancho. El canto tiene un grosor del 5 % del alto. El borde inferior de la peana queda al 95 % del alto |
 | Protagonista | El animal u objeto de su hoja (sección 5), de cuerpo entero, apoyado en la peana. Lo más alto llega al 6 % del borde de arriba. Ocupa como mucho el 80 % del ancho y deja al menos un 4 % de margen a cada lado |
 | Sombras | Sombra de contacto suave del protagonista sobre la peana, y sombra suave de la peana hacia abajo a la derecha |
 | Detalle | Simplificado: grandes masas de color y solo los detalles que se reconocen a 48 px (ojos, cuernos, aletas, la moneda) |
@@ -438,9 +464,8 @@ texto, letras ni números, sin logotipos, firma ni marca de agua.
 
 ```
 Plantilla (después de la frase de estilo): Pieza de juego de mesa: [protagonista y pose de la hoja de personaje],
-de cuerpo entero sobre una peana redonda de pizarra pulida vista en elipse, con un filo de esmalte color [color de la
-ficha] en el canto. Vista 3/4 desde arriba, girado hacia la derecha. Detalle simplificado para verse pequeño, silueta
-muy clara. Fondo transparente.
+de cuerpo entero sobre una peana redonda y lisa de pizarra pulida vista en elipse. Vista 3/4 desde arriba, girado
+hacia la derecha. Detalle simplificado para verse pequeño, silueta muy clara. Fondo transparente.
 ```
 
 ### 7.2 Retrato de ficha (`fichas/retratos/`)
@@ -448,7 +473,7 @@ muy clara. Fondo transparente.
 | Aspecto | Regla |
 |---|---|
 | Lienzo final | 512 × 512 px, WebP. Se genera en 1:1 |
-| Fondo | Pintado a sangre, sin transparencia. El código decide el marco |
+| Fondo | Pintado, sin transparencia, con un borde de papel claro (hueso) del 3 % alrededor de la pintura, como una lámina impresa. Es igual que en el retrato aprobado de la Rata |
 | Entorno | Un entorno mínimo pintado (sección 8) dominado por el color de la ficha, apagado, con la viñeta de la sección 2.4. El suelo o la línea del horizonte entre el 75 y el 80 % del alto |
 | Protagonista | El mismo animal u objeto que su pieza. De cuerpo entero o casi, ocupa entre el 55 y el 70 % del alto, con su centro entre el 45 y el 55 % del ancho y la cabeza en el tercio de arriba |
 | Elementos | Como mucho los 2 de la sección 8 |
@@ -458,7 +483,7 @@ muy clara. Fondo transparente.
 ```
 Plantilla (después de la frase de estilo): Retrato de naturaleza de [protagonista de la hoja de personaje], cámara
 baja a su altura. Escena: [descripción de la sección 8]. Entorno mínimo dominado por el color [color de la ficha],
-apagado, con viñeta suave. Formato cuadrado, pintado hasta los bordes.
+apagado, con viñeta suave. Formato cuadrado, con un borde fino de papel claro alrededor, como una lámina impresa.
 ```
 
 ### 7.3 Centro del tablero (`tablero/centro/`)
@@ -497,40 +522,49 @@ apagado, con viñeta suave. Formato cuadrado, pintado hasta los bordes.
 
 ### 7.6 Insignia de habilidad activa (`botones/habilidades/activas/`)
 
-Es un **botón esmaltado**: se ve como un objeto que se puede pulsar.
+Es el **botón** de la habilidad: un gráfico plano y minimalista, no una pintura. Las 10 activas tienen exactamente la
+misma forma, los mismos colores y el mismo tamaño; solo cambia el símbolo. Los colores están en la sección 3.4.
 
 | Aspecto | Regla |
 |---|---|
 | Lienzo final | 256 × 256 px, WebP. Se genera en 1:1 |
 | Fondo | Transparente |
-| Forma | Un hexágono con un vértice arriba y otro abajo (los lados verticales a izquierda y derecha). Mide el 94 % del alto, es regular y tiene las esquinas redondeadas con un radio del 6 %. Va centrado |
-| Material | Un marco de latón envejecido del 7 %. Dentro, esmalte vitrificado del color de la ficha, un poco abombado, con un reflejo suave arriba a la izquierda. Una sombra suave alrededor, abajo a la derecha |
-| Símbolo | En relieve de latón pulido sobre el esmalte. Ocupa el 55 % del ancho y va centrado a lo ancho, con el centro al 47 % del alto. Puede tener **un** detalle de esmalte de otro color (verde sube, rojo baja, oro viejo o hueso) que no pase del 25 % del símbolo |
+| Estilo | Colores planos. Sin degradados, brillos, texturas, pinceladas, sombras ni relieve 3D, salvo el relieve inferior de esta tabla |
+| Forma | Un hexágono regular con un vértice arriba y otro abajo (los lados verticales a izquierda y derecha) y las esquinas redondeadas (radio del 10 %). Ocupa el 90 % del alto y va centrado. Relleno verde, con un borde del 3 % en su tono de borde |
+| Relieve inferior | Una franja del 6 % en el tono de relieve a lo largo de los dos lados de abajo, para que se lea como un botón que se puede pulsar |
+| Círculo interior | Centrado, del 62 % del lienzo, en el tono de círculo interior |
+| Símbolo | Una silueta sólida de un solo color (el tono de símbolo), con los detalles calados: huecos que dejan ver el círculo de debajo. Ocupa el 44 % del ancho y va centrado en el círculo. Formas simples y rotundas, que se entiendan a 32 px, con como mucho 2 piezas separadas |
 
 ```
-Plantilla (después de la frase de estilo): Botón esmaltado de un juego de mesa, visto de frente: hexágono con un
-vértice arriba y otro abajo, marco de latón envejecido, esmalte vitrificado color [color de la ficha] un poco
-abombado con un reflejo suave. En el centro, en relieve de latón pulido: [símbolo de la sección 8]. Fondo
-transparente.
+Plantilla: Insignia plana y minimalista para un juego para adultos, vista de frente: hexágono regular con un vértice
+arriba y otro abajo y las esquinas redondeadas, de color verde plano #4E9A6A con un borde fino #3B664E y una franja
+#417757 a lo largo de los dos lados de abajo; dentro, un círculo #7EB28D y, en el centro, un símbolo en silueta
+sólida #324F41 con los detalles calados: [símbolo de la sección 8]. Colores planos, sin degradados, sin brillos, sin
+texturas, sin contornos negros, sin sombras. Sin texto, letras ni números, sin logotipos, firma ni marca de agua.
+Fondo transparente.
 ```
 
 ### 7.7 Insignia de habilidad pasiva (`botones/habilidades/pasivas/`)
 
-Es una **medalla acuñada**: se ve como un objeto que se mira, no se pulsa.
+Es el **logo** de la habilidad: igual de plano y minimalista que las activas, pero con otra forma, otro color y sin
+relieve, porque no se pulsa. Las 10 pasivas son iguales entre sí; solo cambia el símbolo.
 
 | Aspecto | Regla |
 |---|---|
 | Lienzo final | 256 × 256 px, WebP. Se genera en 1:1 |
 | Fondo | Transparente |
-| Forma | Una medalla redonda del 94 % del lienzo, centrada |
-| Material | De oro viejo acuñado, con el canto estriado (32 estrías). Por dentro del canto, un anillo de esmalte mate del color de la ficha, del 8 %. El campo central es de metal satinado, sin esmalte. Una sombra suave alrededor, abajo a la derecha |
-| Símbolo | En bajorrelieve del mismo oro viejo. Ocupa el 54 % del ancho y va centrado. Puede tener **un** detalle de esmalte (hueso, verde sube o rojo baja) que no pase del 25 % del símbolo |
-| Diferencia con las activas | La activa es un hexágono con el campo de color. La pasiva es redonda, con el campo de metal y el color solo en el anillo |
+| Estilo | El mismo que las activas |
+| Forma | Una roseta de 12 puntas redondeadas, como un sello, que ocupa el 90 % del lienzo y va centrada. Relleno oro viejo, con un borde del 3 % en su tono de borde. Sin relieve |
+| Círculo interior | Centrado, del 62 % del lienzo, en el tono de círculo interior |
+| Símbolo | Las mismas reglas que en las activas, en el tono de símbolo de las pasivas |
+| Diferencia con las activas | La activa es un hexágono verde con relieve: se pulsa. La pasiva es una roseta dorada plana: se mira |
 
 ```
-Plantilla (después de la frase de estilo): Medalla acuñada de un juego de mesa, vista de frente: redonda, de oro
-viejo con el canto estriado, un anillo de esmalte mate color [color de la ficha] y el campo central de metal
-satinado. En el centro, en bajorrelieve: [símbolo de la sección 8]. Fondo transparente.
+Plantilla: Insignia plana y minimalista para un juego para adultos, vista de frente: roseta de 12 puntas
+redondeadas, como un sello, de color oro viejo plano #C9A44C con un borde fino #7E6B3D; dentro, un círculo #D4B978
+y, en el centro, un símbolo en silueta sólida #5D5237 con los detalles calados: [símbolo de la sección 8]. Colores
+planos, sin degradados, sin brillos, sin texturas, sin contornos negros, sin sombras ni relieve. Sin texto, letras
+ni números, sin logotipos, firma ni marca de agua. Fondo transparente.
 ```
 
 ### 7.8 Dorso de carta (`tarjetas/dorsos/`)
@@ -570,7 +604,7 @@ Son **bodegones**: objetos reales pintados.
 | Aspecto | Regla |
 |---|---|
 | Lienzo final | 512 × 512 px, WebP. Se genera en 1:1 |
-| Fondo | Pintado a sangre, sin transparencia, con el color de fondo que indica la sección 8 y viñeta |
+| Fondo | Pintado, sin transparencia, con el color de fondo que indica la sección 8, viñeta y el mismo borde de papel claro del 3 % que los retratos |
 | Motivo | Centrado. Ocupa entre el 55 y el 70 % del alto. Como mucho 2 elementos secundarios |
 
 ### 7.12 Marca (`marca/`)
@@ -733,35 +767,35 @@ Los retratos siguen la ficha 7.2:
 
 ### 8.3 Botones · P2
 
-**Insignias de las habilidades activas** (ficha 7.6). El esmalte de cada una va en el color de su ficha.
+**Insignias de las habilidades activas** (ficha 7.6). Todas en el mismo verde; solo cambia el símbolo:
 
-| Archivo | Ficha | Símbolo en relieve de latón | Detalle de esmalte |
-|---|---|---|---|
-| `botones/habilidades/activas/esprint.webp` | Rata | Un dado inclinado, como recién lanzado, con tres líneas de velocidad grabadas a su izquierda | Los puntos del dado, en hueso |
-| `botones/habilidades/activas/prestamo-expres.webp` | Taza | Una moneda junto a un reloj de arena pequeño | La arena del reloj, en oro viejo |
-| `botones/habilidades/activas/rally.webp` | Toro | Una gráfica en zigzag que sube de abajo a la izquierda hasta arriba a la derecha y termina en punta de flecha | La punta de flecha, en verde sube |
-| `botones/habilidades/activas/hibernar.webp` | Oso | La cabeza de un oso dormido, de frente y con los ojos cerrados, bajo una luna creciente | La luna, en hueso |
-| `botones/habilidades/activas/inflar.webp` | Burbuja | Una burbuja grande y una aguja que se acerca desde la derecha | El reflejo de la burbuja, en hueso |
-| `botones/habilidades/activas/temporada-alta.webp` | Vaca Lechera | Una campana de vaca con ondas de vibración a los lados y un sol detrás | El sol, en oro viejo |
-| `botones/habilidades/activas/obras-eternas.webp` | Elefante Blanco | Una valla de obra con un cono delante | Las franjas de la valla, en rojo baja |
-| `botones/habilidades/activas/hormiguero.webp` | Hormiga | Un montículo de hormiguero con una barrera de peaje cerrada en la entrada | Las franjas de la barrera, en rojo baja |
-| `botones/habilidades/activas/frenesi.webp` | Tiburón | Una diana de dos anillos con una aleta en el centro | El anillo exterior, en rojo baja |
-| `botones/habilidades/activas/imprevisto.webp` | Cisne Negro | Un reloj de arena volcado con una grieta en zigzag y una pluma que cae a la derecha | La pluma, en hueso |
+| Archivo | Ficha | Símbolo en silueta (los detalles, calados) |
+|---|---|---|
+| `botones/habilidades/activas/esprint.webp` | Rata | Un dado en 3/4 con los puntos calados y tres líneas de velocidad a su izquierda |
+| `botones/habilidades/activas/prestamo-expres.webp` | Taza | Una moneda con el canto calado y una flecha curva que la rodea y vuelve |
+| `botones/habilidades/activas/rally.webp` | Toro | Una flecha en zigzag que sube hacia arriba a la derecha |
+| `botones/habilidades/activas/hibernar.webp` | Oso | Una luna creciente con dos estrellas pequeñas |
+| `botones/habilidades/activas/inflar.webp` | Burbuja | Un círculo con un reflejo calado y la punta de una aguja que lo apunta desde abajo a la derecha |
+| `botones/habilidades/activas/temporada-alta.webp` | Vaca Lechera | Una campana de vaca con dos ondas a cada lado |
+| `botones/habilidades/activas/obras-eternas.webp` | Elefante Blanco | Un cono de obra con dos franjas caladas |
+| `botones/habilidades/activas/hormiguero.webp` | Hormiga | Una barrera de peaje: un poste con un brazo horizontal con franjas caladas |
+| `botones/habilidades/activas/frenesi.webp` | Tiburón | Una aleta de tiburón dentro del anillo de una diana |
+| `botones/habilidades/activas/imprevisto.webp` | Cisne Negro | Un rayo |
 
-**Insignias de las habilidades pasivas** (ficha 7.7). El anillo de esmalte de cada una va en el color de su ficha.
+**Insignias de las habilidades pasivas** (ficha 7.7). Todas en el mismo oro viejo; solo cambia el símbolo:
 
-| Archivo | Ficha | Símbolo en bajorrelieve | Detalle de esmalte |
-|---|---|---|---|
-| `botones/habilidades/pasivas/horas-extra.webp` | Rata | Un reloj de bolsillo con una flecha pequeña que sube a su derecha | La flecha, en verde sube |
-| `botones/habilidades/pasivas/interes-a-favor.webp` | Taza | Una taza con vapor que sube en curva | El vapor, en hueso |
-| `botones/habilidades/pasivas/optimista.webp` | Toro | La cabeza de un toro de frente, con los cuernos hacia arriba | Ninguno |
-| `botones/habilidades/pasivas/apuesta-bajista.webp` | Oso | Una zarpa sobre una flecha que baja | La flecha, en rojo baja |
-| `botones/habilidades/pasivas/valor-inflado.webp` | Burbuja | Una casa dentro de una burbuja | El brillo de la burbuja, en hueso |
-| `botones/habilidades/pasivas/renta-fija.webp` | Vaca Lechera | Un cántaro de leche del que caen tres monedas en fila | Ninguno |
-| `botones/habilidades/pasivas/constructora.webp` | Elefante Blanco | Una grúa con una etiqueta colgando (sin texto) | La etiqueta, en hueso |
-| `botones/habilidades/pasivas/peaje-hormiga.webp` | Hormiga | Tres hormigas en fila, cada una con una moneda | Ninguno |
-| `botones/habilidades/pasivas/cazador-de-gangas.webp` | Tiburón | Un martillo de subasta con una aleta detrás | Ninguno |
-| `botones/habilidades/pasivas/antifragil.webp` | Cisne Negro | Un escudo con una pluma en el centro y tres grietas alrededor que no lo tocan | La pluma, en hueso |
+| Archivo | Ficha | Símbolo en silueta (los detalles, calados) |
+|---|---|---|
+| `botones/habilidades/pasivas/horas-extra.webp` | Rata | Un reloj de bolsillo con la esfera calada y una flecha pequeña que sube |
+| `botones/habilidades/pasivas/interes-a-favor.webp` | Taza | Una taza de perfil con vapor en curva ascendente |
+| `botones/habilidades/pasivas/optimista.webp` | Toro | La cabeza de un toro de frente, con los cuernos hacia arriba y los ojos calados |
+| `botones/habilidades/pasivas/apuesta-bajista.webp` | Oso | Tres marcas de zarpazo en diagonal hacia abajo |
+| `botones/habilidades/pasivas/valor-inflado.webp` | Burbuja | Un círculo con una casa calada dentro |
+| `botones/habilidades/pasivas/renta-fija.webp` | Vaca Lechera | Tres monedas iguales apiladas, con los cantos calados |
+| `botones/habilidades/pasivas/constructora.webp` | Elefante Blanco | Una grúa torre |
+| `botones/habilidades/pasivas/peaje-hormiga.webp` | Hormiga | Una hormiga vista desde arriba |
+| `botones/habilidades/pasivas/cazador-de-gangas.webp` | Tiburón | Un martillo de subasta |
+| `botones/habilidades/pasivas/antifragil.webp` | Cisne Negro | Un escudo con una pluma calada |
 
 **Iconos de las acciones** (SVG, ficha 7.13):
 
@@ -884,11 +918,13 @@ Esto no se dibuja como imagen, pero se describe para que todo combine:
   - el tablero sobre noche y el celular sobre papel;
   - bordes finos de 1 px y esquinas poco redondeadas (6 px);
   - sombras suaves hacia abajo a la derecha;
-  - botones planos y sobrios. El único botón con relieve es el de las habilidades activas, que es la insignia esmaltada.
+  - botones planos y sobrios. El único botón con relieve es el de las habilidades activas, que es su insignia
+    hexagonal verde.
 - **El tablero:** la Salida va en la esquina de abajo a la izquierda y las fichas avanzan en el sentido de las agujas
   del reloj.
   - Cada casilla es de papel, con una franja fina del color de su barrio en el borde exterior y su icono.
   - Las calles con dueño muestran la mini pieza del dueño.
+  - Bajo cada pieza, un anillo fino del color de su ficha (sección 3.3), que identifica al jugador.
 - **Los dados:** cubos 3D de hueso con los puntos oscuros, como el dado de la sección 6.
 - **Las tarjetas:** papel con un borde fino y esquinas de 6 px. Arriba, la cabecera o el bodegón del efecto; debajo,
   el texto.
@@ -900,7 +936,7 @@ Esto no se dibuja como imagen, pero se describe para que todo combine:
 
 - [ ] Está en la carpeta y con el nombre exactos de la sección 8, en minúsculas, sin tildes ni espacios.
 - [ ] Sigue su ficha técnica de la sección 7: lienzo, fondo, posición y tamaño del motivo y ángulo.
-- [ ] Es pintura naturalista (sección 2):
+- [ ] Es pintura naturalista (sección 2), salvo las insignias y los iconos, que son planos:
   - sin contornos negros;
   - sin estilo de dibujos animados;
   - sin humanizar;

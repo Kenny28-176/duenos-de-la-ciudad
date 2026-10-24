@@ -39,3 +39,8 @@ Aquí se anotan los cambios de cada versión. Las versiones siguen el esquema ma
   - iconos de línea fina (trazo 4);
   - retratos, esquinas, cartas y escenas pintados con su ambiente;
   - la portada adopta la nueva paleta.
+- Hoja de estilo aprobada (piezas de la Rata, el Toro y la Burbuja y retrato de la Rata). La guía se ajusta a ella:
+  - peanas lisas: el color del jugador lo pone el código con un anillo bajo la pieza;
+  - retratos con un borde fino de papel;
+  - las insignias de las habilidades pasan a ser gráficos planos y minimalistas: hexágono verde con un relieve mínimo
+    para las activas y roseta dorada plana para las pasivas, con el símbolo en silueta.
