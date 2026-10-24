@@ -80,6 +80,16 @@ colores. Van del más barato, cerca de la Salida, al más caro, al final del rec
 Son 40 casillas en una vuelta. El simulador medirá cuánto se pisa cada una, y se moverán si hace falta. Para el motor,
 el tablero es un grafo de casillas, así que en el futuro podrá tener cruces (ver [IDEAS.md](IDEAS.md)).
 
+**Orientación en pantalla:** la Salida está en la esquina de abajo a la izquierda y las fichas avanzan en el sentido de
+las agujas del reloj:
+
+- suben por el lado izquierdo (lado 1);
+- cruzan por arriba (lado 2);
+- bajan por la derecha (lado 3);
+- vuelven por abajo (lado 4).
+
+La ilustración del centro del tablero sigue el mismo orden (ver [VISUALES.md](VISUALES.md)).
+
 | Lado | Casillas |
 |---|---|
 | 1 (0–9) | 0 Salida · 1 Calle del Hierro · 2 Noticias · 3 Pasaje de la Fragua · 4 Calle de los Puestos · 5 Terminal de Buses · 6 Avenida del Trueque · 7 Fortuna · 8 Plaza del Regateo · 9 Impuesto al Patrimonio |
