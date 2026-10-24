@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M22 14 H14 V22"/>
+  <path d="M42 14 H50 V22"/>
+  <path d="M22 50 H14 V42"/>
+  <path d="M42 50 H50 V42"/>
+</svg>

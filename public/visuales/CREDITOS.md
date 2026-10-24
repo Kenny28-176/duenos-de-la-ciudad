@@ -18,6 +18,8 @@ se puede usar un `*` para todos los archivos de una carpeta (por ejemplo `fichas
 | `tablero/barrios/*.svg` | Código propio | CC0 | 24 de octubre de 2026 | Pictogramas vectoriales según docs/VISUALES.md sección 7.13 |
 | `tablero/casillas/*.svg` | Código propio | CC0 | 24 de octubre de 2026 | Pictogramas vectoriales según docs/VISUALES.md sección 7.13 |
 | `tablero/marcadores/*.svg` | Código propio | CC0 | 24 de octubre de 2026 | Pictogramas vectoriales según docs/VISUALES.md sección 7.13 |
+| `botones/acciones/*.svg` | Código propio | CC0 | 24 de octubre de 2026 | Pictogramas vectoriales según docs/VISUALES.md sección 7.13 |
+| `interfaz/iconos/*.svg` | Código propio | CC0 | 24 de octubre de 2026 | Pictogramas vectoriales según docs/VISUALES.md sección 7.13 |
 
 ## Recomendaciones
 
