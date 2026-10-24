@@ -1,0 +1,21 @@
+{
+  "_info": "Parámetros de la economía (docs/DISENO.md, secciones 3 y 4). Son provisionales: el simulador (tools/simular.js) sirve para ajustarlos.",
+  "dineroInicial": 2000,
+  "sueldo": 250,
+  "precio": { "base": 60, "porCasilla": 9, "recargoUltima": 0.1, "redondeo": 10 },
+  "precioTransporte": 220,
+  "precioServicio": 160,
+  "alquiler": { "base": 0.08, "barrioCompleto": 2, "multiplicadores": [1, 5, 14, 32, 42, 52] },
+  "costeCasa": 0.4,
+  "existencias": { "casas": 36, "torres": 12 },
+  "transportes": [30, 60, 120, 240],
+  "servicios": [5, 12],
+  "hipoteca": 0.5,
+  "interesHipoteca": 0.1,
+  "ventaEdificios": 0.5,
+  "impuestoPatrimonio": 0.05,
+  "fianza": 80,
+  "subasta": { "minimo": 10, "incremento": 10 },
+  "bolsa": { "acciones": 100, "maxPorJugador": 50, "divisor": 50, "recompra": 0.9, "dividendo": 0.004, "paquete": 5 },
+  "metas": { "corta": 7000, "normal": 10000, "larga": 14000 }
+}

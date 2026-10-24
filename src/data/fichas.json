@@ -1,0 +1,172 @@
+{
+  "_info": "Las 10 fichas y sus habilidades (docs/DISENO.md, «Las habilidades de las fichas»). Las cifras son provisionales: el simulador comprueba que ninguna ficha gane más de lo que le toca. «enfriamiento» son los turnos propios que hay que esperar tras usar la activa.",
+  "fichas": [
+    {
+      "id": "rata",
+      "nombre": "La Rata",
+      "color": "#6B7078",
+      "pasiva": {
+        "id": "horas-extra",
+        "nombre": "Horas extra",
+        "sueldo": 270
+      },
+      "activa": {
+        "id": "esprint",
+        "nombre": "Esprint",
+        "enfriamiento": 5,
+        "momento": "antes-de-tirar"
+      }
+    },
+    {
+      "id": "taza",
+      "nombre": "La Taza",
+      "color": "#B8693A",
+      "pasiva": {
+        "id": "interes-a-favor",
+        "nombre": "Interés a favor",
+        "porcentaje": 0.05,
+        "maximo": 150
+      },
+      "activa": {
+        "id": "prestamo-expres",
+        "nombre": "Préstamo exprés",
+        "enfriamiento": 6,
+        "maximo": 600,
+        "interes": 0.1,
+        "turnos": 3
+      }
+    },
+    {
+      "id": "toro",
+      "nombre": "El Toro",
+      "color": "#A63D32",
+      "pasiva": {
+        "id": "optimista",
+        "nombre": "Optimista",
+        "factor": 2.2
+      },
+      "activa": {
+        "id": "rally",
+        "nombre": "Rally",
+        "enfriamiento": 5,
+        "factor": 1.3
+      }
+    },
+    {
+      "id": "oso",
+      "nombre": "El Oso",
+      "color": "#4F7A55",
+      "pasiva": {
+        "id": "apuesta-bajista",
+        "nombre": "Apuesta bajista",
+        "cantidad": 60
+      },
+      "activa": {
+        "id": "hibernar",
+        "nombre": "Hibernar",
+        "enfriamiento": 5,
+        "momento": "antes-de-tirar"
+      }
+    },
+    {
+      "id": "burbuja",
+      "nombre": "La Burbuja",
+      "color": "#6A9DB8",
+      "pasiva": {
+        "id": "valor-inflado",
+        "nombre": "Valor inflado",
+        "factor": 1.8
+      },
+      "activa": {
+        "id": "inflar",
+        "nombre": "Inflar",
+        "enfriamiento": 5,
+        "factor": 3,
+        "factorEstallido": 0.75
+      }
+    },
+    {
+      "id": "vaca-lechera",
+      "nombre": "La Vaca Lechera",
+      "color": "#C9A04A",
+      "pasiva": {
+        "id": "renta-fija",
+        "nombre": "Renta fija",
+        "porcentaje": 0.005,
+        "maximo": 12
+      },
+      "activa": {
+        "id": "temporada-alta",
+        "nombre": "Temporada alta",
+        "enfriamiento": 6,
+        "factor": 1.15
+      }
+    },
+    {
+      "id": "elefante-blanco",
+      "nombre": "El Elefante Blanco",
+      "color": "#A9707D",
+      "pasiva": {
+        "id": "constructora",
+        "nombre": "Constructora",
+        "descuento": 0.2
+      },
+      "activa": {
+        "id": "obras-eternas",
+        "nombre": "Obras eternas",
+        "enfriamiento": 6,
+        "objetivo": true
+      }
+    },
+    {
+      "id": "hormiga",
+      "nombre": "La Hormiga",
+      "color": "#8A8F3C",
+      "pasiva": {
+        "id": "peaje-hormiga",
+        "nombre": "Peaje hormiga",
+        "peaje": 4,
+        "maximoRonda": 8
+      },
+      "activa": {
+        "id": "hormiguero",
+        "nombre": "Hormiguero",
+        "enfriamiento": 5,
+        "peaje": 8
+      }
+    },
+    {
+      "id": "tiburon",
+      "nombre": "El Tiburón",
+      "color": "#3E7C80",
+      "pasiva": {
+        "id": "cazador-de-gangas",
+        "nombre": "Cazador de gangas",
+        "pago": 1
+      },
+      "activa": {
+        "id": "frenesi",
+        "nombre": "Frenesí",
+        "enfriamiento": 7,
+        "objetivo": true
+      }
+    },
+    {
+      "id": "cisne-negro",
+      "nombre": "El Cisne Negro",
+      "color": "#3F5482",
+      "pasiva": {
+        "id": "antifragil",
+        "nombre": "Antifrágil",
+        "paga": 0.25,
+        "cobra": 2
+      },
+      "activa": {
+        "id": "imprevisto",
+        "nombre": "Imprevisto",
+        "enfriamiento": 6,
+        "objetivo": true
+      }
+    }
+  ]
+}

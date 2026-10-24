@@ -1,0 +1,39 @@
+{
+  "_info": "Los mazos Noticias (la ciudad y el mercado) y Fortuna (lo que le pasa a quien roba). Textos con palabras propias. {barrio} se sustituye por el barrio elegido al azar. Las cartas con «mercado» no se usan si la sala juega sin mercado vivo.",
+  "noticias": [
+    { "id": "n-subsidio", "texto": "Subsidio municipal: todos los jugadores cobran 50 $.", "efecto": { "tipo": "todosCobran", "cantidad": 50 } },
+    { "id": "n-llega-empresa", "texto": "Una gran empresa se instala en {barrio}: el barrio vale 200 $ más.", "mercado": true, "efecto": { "tipo": "valorBarrio", "cantidad": 200 } },
+    { "id": "n-cierra-fabrica", "texto": "Cierra una fábrica en {barrio}: el barrio vale 150 $ menos.", "mercado": true, "efecto": { "tipo": "valorBarrio", "cantidad": -150 } },
+    { "id": "n-panico", "texto": "Pánico en la Bolsa: todos los barrios pierden un 10 % de su valor.", "mercado": true, "efecto": { "tipo": "valorTodos", "porcentaje": -0.1 } },
+    { "id": "n-euforia", "texto": "Euforia en los mercados: todos los barrios ganan un 10 % de valor.", "mercado": true, "efecto": { "tipo": "valorTodos", "porcentaje": 0.1 } },
+    { "id": "n-reparto", "texto": "Reparto extraordinario: cada accionista cobra 3 $ por acción.", "mercado": true, "efecto": { "tipo": "dividendoExtra", "porAccion": 3 } },
+    { "id": "n-fachadas", "texto": "Revisión de fachadas: cada dueño paga 20 $ por casa y 80 $ por torre.", "efecto": { "tipo": "reparacionesTodos", "casa": 20, "torre": 80 } },
+    { "id": "n-desvio", "texto": "Desvío por obras: retrocede 3 casillas.", "efecto": { "tipo": "retroceder", "casillas": 3 } },
+    { "id": "n-nueva-linea", "texto": "Inauguran una línea nueva: avanza hasta el Metro Central.", "efecto": { "tipo": "moverA", "casilla": 15 } },
+    { "id": "n-feria-inversores", "texto": "Feria de inversores: avanza hasta la Bolsa de Valores.", "efecto": { "tipo": "moverA", "casilla": 20 } },
+    { "id": "n-dia-de-cobro", "texto": "Día de cobro: avanza hasta la Salida.", "efecto": { "tipo": "moverA", "casilla": 0 } },
+    { "id": "n-cumbre", "texto": "Cumbre económica en el distrito: avanza hasta la Avenida del Capital.", "efecto": { "tipo": "moverA", "casilla": 31 } },
+    { "id": "n-loteria", "texto": "Lotería de la ciudad: el jugador con menos patrimonio cobra 150 $.", "efecto": { "tipo": "cobraElMasPobre", "cantidad": 150 } },
+    { "id": "n-suben-tipos", "texto": "Suben los tipos de interés: pagas 25 $ por cada propiedad hipotecada que tengas.", "efecto": { "tipo": "pagarPorHipotecada", "cantidad": 25 } },
+    { "id": "n-tasa-municipal", "texto": "Nueva tasa municipal de limpieza: todos los jugadores pagan 30 $.", "efecto": { "tipo": "todosPagan", "cantidad": 30 } },
+    { "id": "n-premio-urbanismo", "texto": "Premio al mejor proyecto urbano: cobras 100 $.", "efecto": { "tipo": "cobrar", "cantidad": 100 } }
+  ],
+  "fortuna": [
+    { "id": "f-deposito", "texto": "Te devuelven un depósito olvidado: cobras 120 $.", "efecto": { "tipo": "cobrar", "cantidad": 120 } },
+    { "id": "f-herencia", "texto": "Herencia de una tía lejana: cobras 150 $.", "efecto": { "tipo": "cobrar", "cantidad": 150 } },
+    { "id": "f-mercadillo", "texto": "Vendes cosas viejas en el mercadillo: cobras 50 $.", "efecto": { "tipo": "cobrar", "cantidad": 50 } },
+    { "id": "f-concurso", "texto": "Ganas un concurso de ideas: cobras 100 $.", "efecto": { "tipo": "cobrar", "cantidad": 100 } },
+    { "id": "f-multa", "texto": "Multa de tráfico: pagas 40 $.", "efecto": { "tipo": "pagar", "cantidad": 40 } },
+    { "id": "f-taller", "texto": "El coche pasa por el taller: pagas 80 $.", "efecto": { "tipo": "pagar", "cantidad": 80 } },
+    { "id": "f-cumpleanos", "texto": "Celebras tu cumpleaños: cada jugador te da 20 $.", "efecto": { "tipo": "cobrarDeCadaJugador", "cantidad": 20 } },
+    { "id": "f-cena", "texto": "Invitas a cenar a todos: pagas 25 $ a cada jugador.", "efecto": { "tipo": "pagarACadaJugador", "cantidad": 25 } },
+    { "id": "f-en-coche", "texto": "Te llevan en coche: avanza hasta el transporte más cercano.", "efecto": { "tipo": "avanzarATipo", "casilla": "transporte" } },
+    { "id": "f-sin-conexion", "texto": "Te quedas sin conexión: avanza hasta el servicio más cercano.", "efecto": { "tipo": "avanzarATipo", "casilla": "servicio" } },
+    { "id": "f-inspeccion", "texto": "Inspección sorpresa: vas al Calabozo.", "efecto": { "tipo": "irCalabozo" } },
+    { "id": "f-salvoconducto", "texto": "Salvoconducto: sales gratis del Calabozo. Guárdalo hasta usarlo, o véndelo.", "efecto": { "tipo": "salvoconducto" } },
+    { "id": "f-soplo", "texto": "Un soplo en el mercado: compras 5 acciones de {barrio} a mitad de precio.", "mercado": true, "efecto": { "tipo": "accionesBaratas", "cantidad": 5 } },
+    { "id": "f-goteras", "texto": "Goteras en tus edificios: pagas 25 $ por casa y 100 $ por torre.", "efecto": { "tipo": "reparaciones", "casa": 25, "torre": 100 } },
+    { "id": "f-paseo", "texto": "Paseo por el mirador: avanza hasta la Calle de las Estrellas.", "efecto": { "tipo": "moverA", "casilla": 39 } },
+    { "id": "f-llaves", "texto": "Te olvidas las llaves: retrocede 2 casillas.", "efecto": { "tipo": "retroceder", "casillas": 2 } }
+  ]
+}

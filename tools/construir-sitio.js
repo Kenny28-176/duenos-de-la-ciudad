@@ -27,7 +27,8 @@ function archivos(dir, extensiones) {
 }
 
 const externa = ref => /^(https?:)?\/\//i.test(ref);
-const ignorable = ref => !ref || ref.startsWith('#') || /^(data|mailto|tel|javascript|blob):/i.test(ref);
+// «node:…» son módulos de Node que solo se cargan fuera del navegador (por ejemplo, en src/data/cargar.js).
+const ignorable = ref => !ref || ref.startsWith('#') || /^(data|mailto|tel|javascript|blob|node):/i.test(ref);
 
 // Referencias de carga (no enlaces de navegación) de cada tipo de archivo.
 function referencias(archivo, texto) {

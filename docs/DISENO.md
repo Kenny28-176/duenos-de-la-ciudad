@@ -1,9 +1,10 @@
 # Diseño de Dueños de la Ciudad
 
-> **Borrador para aprobar** (23 de octubre de 2026). Describe las reglas tal como las implementará el motor.
+> **Borrador para aprobar** (actualizado el 24 de octubre de 2026). Describe las reglas tal como las aplica el motor,
+> que ya está hecho (fase 1).
 >
-> - Las cifras son provisionales: las ajustará el simulador de la fase 1.
-> - La última sección, [Preguntas abiertas](#11-preguntas-abiertas), necesita una decisión antes de programar.
+> - Las cifras están ajustadas con el simulador, pero todavía pueden cambiar (ver la sección 10).
+> - La última sección, [Preguntas abiertas](#11-preguntas-abiertas), necesita una decisión.
 
 ## 1. La idea
 
@@ -121,20 +122,21 @@ están en [VISUALES.md](VISUALES.md).
 
 Cada ficha tiene una habilidad **pasiva**, que funciona siempre, y una **activa**, que el jugador usa cuando quiere.
 Después de usar la activa hay que esperar su **enfriamiento**: un número de turnos propios. Cada habilidad hace
-referencia a la metáfora de su ficha. Las cifras son provisionales.
+referencia a la metáfora de su ficha. Las cifras salen del simulador (ver la sección 10) y están en
+`src/data/fichas.json`.
 
 | Ficha | Pasiva | Activa (enfriamiento) |
 |---|---|---|
-| 🐀 La Rata | **Horas extra:** cobra 300 $ de sueldo en la Salida, en vez de 250 $. | **Esprint** (4): antes de tirar, suma un tercer dado a su tirada. Los dobles solo cuentan con los dos dados normales. |
-| ☕ La Taza | **Interés a favor:** al pasar por la Salida, el banco le paga el 2 % de su dinero en efectivo (máximo 60 $). | **Préstamo exprés** (6, contado desde que lo devuelve): pide hasta 600 $ al banco, y tres turnos después se le cobran 660 $ solos. Mientras lo debe, la deuda se resta de su patrimonio. |
-| 🐂 El Toro | **Optimista:** cobra un 25 % más de dividendos. | **Rally** (5): elige un barrio y sus acciones suben un 20 % hasta su próximo turno. En ese rato cualquiera puede vender caro, él también. |
-| 🐻 El Oso | **Apuesta bajista:** cobra 20 $ del banco cada vez que otro jugador hipoteca una calle o vende edificios. | **Hibernar** (6): antes de tirar. Ese turno no paga alquileres, pero sus calles tampoco cobran hasta su próximo turno. |
-| 🫧 La Burbuja | **Valor inflado:** sus calles cuentan un 10 % más en su patrimonio. Solo vale para la meta: al vender o hipotecar valen lo normal. | **Inflar** (5): elige una calle suya, que cobra el doble hasta su próximo turno. Luego estalla y durante la ronda siguiente esa calle cobra la mitad. |
-| 🐄 La Vaca Lechera | **Renta fija:** al empezar cada turno cobra el 1 % del valor de sus calles y edificios (máximo 30 $). | **Temporada alta** (5): durante una ronda, todos los alquileres que cobra suben un 25 %. |
-| 🐘 El Elefante Blanco | **Constructora:** construye casas y torres un 15 % más barato. | **Obras eternas** (6): pone en obras una calle de otro jugador, que no cobra alquiler hasta el final del siguiente turno de su dueño. |
-| 🐜 La Hormiga | **Peaje hormiga:** cada vez que otro jugador pasa por una calle suya sin caer en ella, le paga 5 $ (máximo 30 $ por ronda). | **Hormiguero** (4): hasta su próximo turno, el peaje sube a 25 $ por calle, sin máximo. |
-| 🦈 El Tiburón | **Cazador de gangas:** gana los empates en las subastas y paga solo el 80 % de lo que pujó. | **Frenesí** (5): marca a un jugador. La próxima vez que ese jugador vaya a comprarle una calle al banco no podrá hacerlo: se subasta entre todos. |
-| 🦢 El Cisne Negro | **Antifrágil:** las cartas que le hacen pagar le cuestan la mitad, y las que le hacen cobrar le dan un 50 % más. | **Imprevisto** (7): elige a un jugador, que pierde su próximo turno. No tira, pero sigue cobrando y puede negociar. |
+| 🐀 La Rata | **Horas extra:** cobra 270 $ de sueldo en la Salida, en vez de 250 $. | **Esprint** (5): antes de tirar, suma un tercer dado a su tirada. Los dobles solo cuentan con los dos dados normales. No se puede usar en el Calabozo. |
+| ☕ La Taza | **Interés a favor:** al pasar por la Salida, el banco le paga el 5 % de su dinero en efectivo (máximo 150 $). | **Préstamo exprés** (6, contado desde que lo devuelve): pide al banco hasta 600 $, de 10 en 10. Tres turnos suyos después se le cobra lo pedido más un 10 % (660 $ si pidió 600 $). Mientras lo debe, la deuda se resta de su patrimonio. |
+| 🐂 El Toro | **Optimista:** cobra sus dividendos multiplicados por 2,2. | **Rally** (5): elige un barrio y sus acciones suben un 30 % hasta su próximo turno. En ese rato cualquiera puede vender caro, él también. |
+| 🐻 El Oso | **Apuesta bajista:** cobra 60 $ del banco cada vez que otro jugador hipoteca una propiedad o vende un edificio. | **Hibernar** (5): antes de tirar. Hasta su próximo turno no paga alquileres, pero sus propiedades tampoco cobran. |
+| 🫧 La Burbuja | **Valor inflado:** para la meta, sus calles cuentan un 80 % más. Solo vale para la meta: para el impuesto, al vender o al hipotecar valen lo normal. | **Inflar** (5): elige una calle suya sin hipotecar, que cobra el triple hasta su próximo turno. Luego estalla y durante la ronda siguiente esa calle cobra un 25 % menos. |
+| 🐄 La Vaca Lechera | **Renta fija:** al empezar cada turno cobra el 0,5 % del valor de sus calles y edificios (máximo 12 $). | **Temporada alta** (6): hasta su próximo turno, todos los alquileres que cobra suben un 15 %. |
+| 🐘 El Elefante Blanco | **Constructora:** construye casas y torres un 20 % más barato. | **Obras eternas** (6): pone en obras una calle de otro jugador, que no cobra alquiler hasta el final del siguiente turno de su dueño. |
+| 🐜 La Hormiga | **Peaje hormiga:** cada vez que otro jugador pasa por una calle suya sin caer en ella, le paga 4 $ (máximo 8 $ por ronda). Nunca deja a nadie en deuda: si no le alcanza, paga lo que tiene. | **Hormiguero** (5): hasta su próximo turno, el peaje sube a 8 $ por calle, sin máximo. |
+| 🦈 El Tiburón | **Cazador de gangas:** en las subastas puede igualar la puja más alta, y así gana los empates. | **Frenesí** (7): marca a un jugador. La próxima vez que caiga en una propiedad libre no podrá comprarla: se subasta entre todos. |
+| 🦢 El Cisne Negro | **Antifrágil:** las cartas que le hacen pagar al banco le cuestan la cuarta parte, y las que le hacen cobrar del banco le dan el doble. | **Imprevisto** (6): elige a un jugador, que pierde su próximo turno. No tira, pero sigue cobrando y puede negociar. |
 
 **Reglas para todas:**
 
@@ -148,10 +150,11 @@ referencia a la metáfora de su ficha. Las cifras son provisionales.
 
 **Cómo se equilibran:**
 
-- Cada habilidad vale más o menos lo mismo a lo largo de una partida: entre 250 y 400 $, del 3 al 4 % de la meta.
+- El simulador juega miles de partidas entre bots y ajusta las cifras hasta que ninguna ficha gana más de lo que le
+  toca. Con 4 jugadores, todas ganan entre el 23 y el 27 % de las partidas, cuando lo justo es el 25 %.
+- Con otro número de jugadores todavía hay fichas que se alejan bastante (ver la sección 10).
 - Las que podrían crecer sin control tienen un máximo, para que no hagan cada vez más rico al que ya va ganando.
 - Los ataques tienen los enfriamientos más largos y sirven, sobre todo, para frenar a quien está por llegar a la meta.
-- El simulador lo comprueba (ver la sección 10).
 
 ### El dinero
 
@@ -159,7 +162,8 @@ Se juega con dinero ficticio, con el símbolo **$**. Todo lo lleva el banco del 
 
 ## 3. La economía (cifras provisionales)
 
-Las cifras salen de fórmulas sencillas, para que el simulador pueda ajustarlas todas a la vez:
+Las cifras salen de fórmulas sencillas, para que el simulador pueda ajustarlas todas a la vez. Sus parámetros están en
+`src/data/economia.json`:
 
 | Concepto | Fórmula provisional | Ejemplo |
 |---|---|---|
@@ -176,7 +180,7 @@ Las cifras salen de fórmulas sencillas, para que el simulador pueda ajustarlas 
 | Transportes | 30, 60, 120 o 240 $, según el dueño tenga 1, 2, 3 o 4 | |
 | Servicios | Dados × 5 si el dueño tiene uno; dados × 12 si tiene los dos | |
 | Hipoteca | El banco paga el 50 % del precio. Levantarla cuesta eso más un 10 % | |
-| Impuesto al Patrimonio | 5 % de tu patrimonio, redondeado a 10 | |
+| Impuesto al Patrimonio | 5 % de tu patrimonio real (sin el Valor inflado de la Burbuja), redondeado a 10 | |
 | Fianza del Calabozo | 80 $ | |
 | Venta de edificios al banco | La mitad de lo que costaron | |
 
@@ -186,7 +190,11 @@ Las cifras salen de fórmulas sencillas, para que el simulador pueda ajustarlas 
 
 - cada calle, transporte o servicio cuenta por su precio (la mitad si está hipotecado);
 - cada casa o torre, por lo que costó;
-- cada acción, por su precio actual en la Bolsa.
+- cada acción, por su precio actual en la Bolsa;
+- y se resta lo que se debe del Préstamo exprés de la Taza.
+
+Para la meta, las calles de la Burbuja cuentan más (Valor inflado). Para todo lo demás, incluido el impuesto, cuenta el
+patrimonio real.
 
 El tablero muestra siempre el patrimonio de cada jugador y lo lejos que está de la meta.
 
@@ -258,17 +266,27 @@ cada jugador ve sus acciones, lo que pagó por ellas y lo que valen ahora.
 | Acción | Cuándo |
 |---|---|
 | Construir y levantar hipotecas | Solo en tu turno |
+| Comprar acciones | En tu turno, con la Bolsa abierta (ver [Dónde se compran y se venden](#dónde-se-compran-y-se-venden)) |
+| Usar tu habilidad activa | Una vez en tu turno. Algunas, solo antes de tirar |
 | Vender edificios, hipotecar y vender acciones | En tu turno, o cuando debes dinero |
+| Pujar | Durante una subasta, sea o no tu turno |
 | Proponer y aceptar tratos | En cualquier momento, salvo durante una subasta o una animación |
+
+**Mientras alguien debe dinero, la partida espera.** Quien debe solo puede reunirlo (vendiendo, hipotecando o
+negociando) o declararse en bancarrota. En cuanto lo reúne, la deuda se paga sola.
 
 ## 6. Reglas en detalle
 
 ### Subastas
 
-- Empiezan en 10 $, y cada puja sube al menos 10 $.
-- El tablero muestra una cuenta atrás de 10 segundos, que vuelve a empezar con cada puja.
-- Gana la puja más alta. Si nadie puja, la calle sigue libre.
-- Se puja desde el celular (+10, +50, +100 o una cifra). Nadie puede pujar más dinero del que tiene.
+- **Cuándo hay subasta:** cuando quien cae en una propiedad libre no la compra, cuando el Tiburón usa Frenesí y cuando
+  alguien quiebra ante el banco. Pueden pujar todos, también quien no quiso comprarla.
+- **Pujas:** empiezan en 10 $, y cada puja sube al menos 10 $. El Tiburón puede igualar la puja más alta (Cazador de
+  gangas).
+- **Cuenta atrás:** el tablero muestra una de 10 segundos, que vuelve a empezar con cada puja. La subasta se cierra
+  antes si todos menos quien va ganando se retiran.
+- **Quién gana:** la puja más alta. Si nadie puja, la propiedad sigue libre.
+- **Desde el celular** se puja +10, +50, +100 o una cifra. Nadie puede pujar más dinero del que tiene.
 
 ### Construir
 
@@ -276,9 +294,11 @@ cada jugador ve sus acciones, lo que pagó por ellas y lo que valen ahora.
 - **De forma pareja:** nadie pone la 2.ª casa en una calle hasta que todas las del barrio tengan una, y así con las
   siguientes.
 - **La torre:** se pone cuando todas las calles del barrio tienen 4 casas. Las 4 casas vuelven al banco.
-- **Si se acaban las existencias,** hay que esperar a que alguien venda. Si quedan pocas y las quieren varios, se
-  subastan.
-- **Vender edificios:** el banco paga la mitad de su coste. Se venden también de forma pareja.
+- **Si se acaban las existencias,** hay que esperar a que alguien venda.
+- **Vender edificios:** el banco paga la mitad de su coste. Se venden también de forma pareja, empezando por las calles
+  con más edificios.
+- **Vender una torre:** la calle vuelve a tener 4 casas si el banco las tiene. Si tiene menos, se queda con las que
+  haya, y el banco paga todos los niveles que pierde.
 
 ### Hipotecas
 
@@ -312,12 +332,20 @@ cada jugador ve sus acciones, lo que pagó por ellas y lo que valen ahora.
 
 ### Deudas y bancarrota
 
-- Si debes más dinero del que tienes, el celular te guía para conseguirlo: vender edificios, hipotecar, vender
-  acciones o negociar.
-- Si aun así no te alcanza, quedas en **bancarrota** y sales de la partida:
-  - **si debías a un jugador**, ese jugador recibe tu dinero, tus calles y tus acciones (los edificios se venden antes
-    al banco);
-  - **si debías al banco**, tus calles se subastan y tus acciones vuelven al banco.
+- **Si debes más dinero del que tienes,** la deuda queda pendiente y la partida espera.
+  - El celular te guía para conseguir el dinero: vender edificios, hipotecar, vender acciones o negociar.
+  - En cuanto lo reúnes, la deuda se paga sola.
+  - Si debes a varios a la vez (por ejemplo, por una carta), se paga en orden.
+- **Si no te alcanza,** te declaras en **bancarrota** y sales de la partida. Antes, el banco compra tus edificios a
+  mitad de precio:
+  - **si debías a un jugador**, ese jugador recibe:
+    - tu dinero;
+    - tus propiedades (las hipotecadas siguen hipotecadas);
+    - tus acciones, hasta el máximo de 50 por barrio (las que sobran vuelven al banco);
+    - y tus salvoconductos;
+  - **si debías al banco**, tus propiedades se subastan una a una, tus acciones vuelven al banco y tus salvoconductos,
+    al mazo de Fortuna;
+  - **si debías a varios**, todo va al primero de la lista.
 
 ### La meta y el final
 
@@ -326,7 +354,8 @@ cada jugador ve sus acciones, lo que pagó por ellas y lo que valen ahora.
 - **Gana quien vuelve a la Salida**, pasando o cayendo, con un patrimonio igual o mayor que la meta. Si al llegar ya no
   la alcanza, sigue jugando.
 - **Si todos los demás quiebran,** gana el último que queda.
-- **Con límite de tiempo** (opcional), al acabar el tiempo se termina la ronda y gana el mayor patrimonio.
+- **Con límite de tiempo** (opcional), al acabar el tiempo se termina la ronda y gana el mayor patrimonio. Si hay
+  empate, gana quien va antes en el orden de juego.
 
 ## 7. Las cartas
 
@@ -334,7 +363,8 @@ cada jugador ve sus acciones, lo que pagó por ellas y lo que valen ahora.
 - Hay 16 de **Fortuna**, que le pasan a quien la roba.
 - Se barajan al empezar. La carta robada va al fondo del mazo, salvo el salvoconducto, que se guarda hasta usarlo.
 
-Estos son los tipos de efecto. El texto de cada carta se escribirá en la fase 1, con palabras propias:
+Las 32 cartas, con sus textos propios, están en `src/data/cartas.json`. Las del mercado no se usan si la sala juega sin
+mercado vivo. Estos son los tipos de efecto:
 
 | Efecto | Ejemplo de Noticias | Ejemplo de Fortuna |
 |---|---|---|

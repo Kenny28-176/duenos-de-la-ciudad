@@ -54,6 +54,8 @@ Este modo recoge esa segunda idea, con mecánicas propias.
 - **Objetivos secretos** (un cruce con *Aldeanos vs Lobos*): cada celular recibe en secreto un objetivo o un rol que da
   puntos o poderes.
 - **Absorciones (opa hostil):** comprar a la fuerza la calle de otro jugador pagándole un múltiplo de su valor.
+- **Subasta de edificios cuando escasean:** si al banco le quedan pocas casas o torres y las quieren varios jugadores,
+  se subastan. Por ahora, quien llega antes construye y los demás esperan a que alguien venda.
 - **Jugar sin internet**, de una de estas dos formas:
   - de navegador a navegador: el tablero hace de servidor de verdad por el wifi;
   - un servidor en la laptop.
