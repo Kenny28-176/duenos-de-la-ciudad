@@ -23,6 +23,8 @@
   - Its share price rises when someone buys or builds there.
   - Shareholders earn a dividend every time someone pays rent in that neighbourhood.
   - So you can profit from someone else's neighbourhood.
+- **The tokens:** 10 characters that are economic metaphors (the Rat, the Cup, the Bull, the Bear, the Bubble…). Each
+  has a passive and an active ability.
 - **The goal:** the first player to reach the net-worth target and get back to Start wins. Games have a predictable
   end, around 60 to 90 minutes.
 

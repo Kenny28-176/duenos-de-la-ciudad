@@ -25,6 +25,8 @@
   - El precio de sus acciones sube cuando alguien compra o construye en él.
   - Quien tiene acciones cobra un dividendo cada vez que alguien paga alquiler en ese barrio.
   - Así puedes ganar dinero con el barrio de otro.
+- **Las fichas:** 10 personajes que son metáforas de la economía (la Rata, la Taza, el Toro, el Oso, la Burbuja…).
+  Cada una tiene una habilidad pasiva y otra activa.
 - **La meta:** gana quien llega primero a la meta de patrimonio (dinero, calles, edificios y acciones) y vuelve a la
   Salida. Las partidas tienen un final previsible, de unos 60 a 90 minutos.
 

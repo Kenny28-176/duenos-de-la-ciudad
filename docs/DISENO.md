@@ -35,7 +35,7 @@ Lo propio de este juego:
 | Billetes | No hay. El banco del tablero lleva todo el dinero y cada celular muestra el tuyo |
 | Títulos de propiedad | Tarjetas en el celular, con la tabla de alquileres de cada calle |
 | Mazos de cartas | Los mazos **Noticias** y **Fortuna**: la carta robada se muestra en el tablero |
-| Fichas | 10 fichas propias (ver [Las fichas](#las-fichas)) |
+| Fichas | 10 fichas propias, cada una con dos habilidades (ver [Las fichas](#las-fichas)) |
 | Casas y hoteles | **Casas** y **torres** que aparecen sobre las calles |
 | Bolsa | Nueva: la pizarra de la Bolsa en el tablero, y tus acciones en el celular |
 
@@ -49,7 +49,7 @@ colores. Van del más barato, cerca de la Salida, al más caro, al final del rec
 | # | Barrio | Icono | Color | Calles |
 |---|---|---|---|---|
 | 1 | Los Talleres | 🔧 | gris acero | Calle del Hierro · Pasaje de la Fragua |
-| 2 | La Feria | 🎪 | mostaza | Calle de los Puestos · Avenida del Trueque · Plaza del Regateo |
+| 2 | La Feria | 🎪 | fucsia | Calle de los Puestos · Avenida del Trueque · Plaza del Regateo |
 | 3 | Puerto Viejo | ⚓ | turquesa | Muelle de las Redes · Calle del Faro · Paseo de las Gaviotas |
 | 4 | Barrio Universitario | 🎓 | violeta | Calle de los Libros · Avenida del Saber · Plaza de la Tesis |
 | 5 | Centro Histórico | 🔔 | terracota | Calle del Campanario · Avenida de los Fundadores · Plaza del Reloj |
@@ -103,6 +103,45 @@ Son 10 fichas, y cada una es una metáfora de la economía:
 | 🐜 La Hormiga | El gasto hormiga: lo poco que, sumado, es mucho |
 | 🦈 El Tiburón | El inversor sin piedad |
 | 🦢 El Cisne Negro | El imprevisto que nadie vio venir |
+
+Cada jugador elige su ficha en la sala, sin repetir, viendo sus habilidades. Los colores y los dibujos de cada ficha
+están en [VISUALES.md](VISUALES.md).
+
+### Las habilidades de las fichas
+
+Cada ficha tiene una habilidad **pasiva**, que funciona siempre, y una **activa**, que el jugador usa cuando quiere.
+Después de usar la activa hay que esperar su **enfriamiento**: un número de turnos propios. Cada habilidad hace
+referencia a la metáfora de su ficha. Las cifras son provisionales.
+
+| Ficha | Pasiva | Activa (enfriamiento) |
+|---|---|---|
+| 🐀 La Rata | **Horas extra:** cobra 300 $ de sueldo en la Salida, en vez de 250 $. | **Esprint** (4): antes de tirar, suma un tercer dado a su tirada. Los dobles solo cuentan con los dos dados normales. |
+| ☕ La Taza | **Interés a favor:** al pasar por la Salida, el banco le paga el 2 % de su dinero en efectivo (máximo 60 $). | **Préstamo exprés** (6, contado desde que lo devuelve): pide hasta 600 $ al banco, y tres turnos después se le cobran 660 $ solos. Mientras lo debe, la deuda se resta de su patrimonio. |
+| 🐂 El Toro | **Optimista:** cobra un 25 % más de dividendos. | **Rally** (5): elige un barrio y sus acciones suben un 20 % hasta su próximo turno. En ese rato cualquiera puede vender caro, él también. |
+| 🐻 El Oso | **Apuesta bajista:** cobra 20 $ del banco cada vez que otro jugador hipoteca una calle o vende edificios. | **Hibernar** (6): antes de tirar. Ese turno no paga alquileres, pero sus calles tampoco cobran hasta su próximo turno. |
+| 🫧 La Burbuja | **Valor inflado:** sus calles cuentan un 10 % más en su patrimonio. Solo vale para la meta: al vender o hipotecar valen lo normal. | **Inflar** (5): elige una calle suya, que cobra el doble hasta su próximo turno. Luego estalla y durante la ronda siguiente esa calle cobra la mitad. |
+| 🐄 La Vaca Lechera | **Renta fija:** al empezar cada turno cobra el 1 % del valor de sus calles y edificios (máximo 30 $). | **Temporada alta** (5): durante una ronda, todos los alquileres que cobra suben un 25 %. |
+| 🐘 El Elefante Blanco | **Constructora:** construye casas y torres un 15 % más barato. | **Obras eternas** (6): pone en obras una calle de otro jugador, que no cobra alquiler hasta el final del siguiente turno de su dueño. |
+| 🐜 La Hormiga | **Peaje hormiga:** cada vez que otro jugador pasa por una calle suya sin caer en ella, le paga 5 $ (máximo 30 $ por ronda). | **Hormiguero** (4): hasta su próximo turno, el peaje sube a 25 $ por calle, sin máximo. |
+| 🦈 El Tiburón | **Cazador de gangas:** gana los empates en las subastas y paga solo el 80 % de lo que pujó. | **Frenesí** (5): marca a un jugador. La próxima vez que ese jugador vaya a comprarle una calle al banco no podrá hacerlo: se subasta entre todos. |
+| 🦢 El Cisne Negro | **Antifrágil:** las cartas que le hacen pagar le cuestan la mitad, y las que le hacen cobrar le dan un 50 % más. | **Imprevisto** (7): elige a un jugador, que pierde su próximo turno. No tira, pero sigue cobrando y puede negociar. |
+
+**Reglas para todas:**
+
+- Solo se puede usar **una habilidad activa por turno**. Se usa desde el celular y el tablero la anuncia con animación
+  y sonido.
+- Las que perjudican a otro jugador (Obras eternas, Frenesí e Imprevisto) **no se pueden usar dos veces seguidas contra
+  el mismo jugador**.
+- **Todo es público:** el tablero muestra la habilidad de cada ficha y cuántos turnos le faltan para poder usarla de
+  nuevo.
+- Las habilidades están **activadas por defecto**. La sala puede desactivarlas para jugar con las reglas clásicas.
+
+**Cómo se equilibran:**
+
+- Cada habilidad vale más o menos lo mismo a lo largo de una partida: entre 250 y 400 $, del 3 al 4 % de la meta.
+- Las que podrían crecer sin control tienen un máximo, para que no hagan cada vez más rico al que ya va ganando.
+- Los ataques tienen los enfriamientos más largos y sirven, sobre todo, para frenar a quien está por llegar a la meta.
+- El simulador lo comprueba (ver la sección 10).
 
 ### El dinero
 
@@ -300,8 +339,8 @@ Estos son los tipos de efecto. El texto de cada carta se escribirá en la fase 1
 
 | Pantalla | Qué muestra |
 |---|---|
-| **Tablero** | La ciudad, las fichas, los dados y la pizarra de la Bolsa. El patrimonio de cada jugador y lo que le falta para la meta. La carta robada, la subasta, los tratos y el registro de lo que ha pasado. |
-| **Celular** | Tu dinero y tu patrimonio, y el botón que toca en cada momento. Tus calles (con su tabla de alquileres) y tus acciones. Los tratos, la subasta y tus movimientos. |
+| **Tablero** | La ciudad, las fichas, los dados y la pizarra de la Bolsa. El patrimonio de cada jugador y lo que le falta para la meta. Las habilidades de cada ficha y su enfriamiento. La carta robada, la subasta, los tratos y el registro de lo que ha pasado. |
+| **Celular** | Tu dinero y tu patrimonio, y el botón que toca en cada momento. El botón de tu habilidad activa, con los turnos que le faltan. Tus calles (con su tabla de alquileres) y tus acciones. Los tratos, la subasta y tus movimientos. |
 
 **Qué información es pública:** todo, incluido el dinero de cada uno. Solo es privado lo que estás preparando, como un
 trato antes de enviarlo.
@@ -312,6 +351,7 @@ trato antes de enviarlo.
 |---|---|---|
 | Meta de patrimonio | 10.000 $ (normal) | 7.000 $ (corta) · 14.000 $ (larga) · sin meta (hasta la bancarrota) |
 | Mercado vivo | Activado | Desactivado (reglas clásicas) |
+| Habilidades de las fichas | Activadas | Desactivadas |
 | Subastas | Activadas | Desactivadas |
 | Partida rápida | No | Cada jugador empieza con 2 calles al azar |
 | Límite de tiempo | Sin límite | 45, 60 o 90 minutos |
@@ -327,6 +367,9 @@ En la fase 1, el simulador jugará miles de partidas con bots y medirá esto:
 - **Frecuencia de cada casilla y rentabilidad de cada barrio.** Así se ajustan los precios y se mueven casillas si
   hace falta.
 - **Parte del patrimonio que viene del mercado.** Objetivo: importante, pero no decisiva (entre el 20 y el 35 %).
+- **Equilibrio de las fichas.** Cada ficha jugará en todas las posiciones. Con 4 jugadores, cada una debería ganar
+  alrededor del 25 % de las partidas, 3 puntos arriba o abajo. Si una se pasa, se ajustan sus números, no el resto del
+  juego.
 - **Abusos.** Un bot «aprovechado» buscará maneras de ganar dinero sin riesgo. Si las encuentra, se cambian las
   reglas.
 - **Reglas que se deben cumplir siempre:**

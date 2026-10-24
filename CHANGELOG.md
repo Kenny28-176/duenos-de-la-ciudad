@@ -13,3 +13,7 @@ Aquí se anotan los cambios de cada versión. Las versiones siguen el esquema ma
   en GitHub Pages.
 - Borradores de las reglas ([`docs/DISENO.md`](docs/DISENO.md)) y de las ideas para después
   ([`docs/IDEAS.md`](docs/IDEAS.md)).
+- Habilidades de las 10 fichas (una pasiva y una activa cada una) en el diseño.
+- Lista de todo lo que hay que dibujar, con su estilo, tamaños y carpetas ([`docs/VISUALES.md`](docs/VISUALES.md)).
+- Carpeta `public/visuales/` con sus créditos, revisión automática de las imágenes (formato, tamaño y créditos) y un
+  optimizador que las reduce y las convierte a WebP.
