@@ -16,8 +16,9 @@ Lo que lo hace distinto es el **mercado vivo** (cada barrio cotiza en la Bolsa) 
 primero que llega a la meta y vuelve a la Salida). Todo funciona en el navegador, sin instalar nada. Es un proyecto
 **libre (MIT), gratuito y sin ánimo de lucro**, hermano de *Aldeanos vs Lobos*.
 
-**Estado:** fase 0 (base del proyecto). Las reglas están en borrador en [`docs/DISENO.md`](docs/DISENO.md) y las ideas
-para después, en [`docs/IDEAS.md`](docs/IDEAS.md).
+**Estado:** fase 1 hecha. El motor, los bots y el simulador funcionan, pero todavía no hay pantallas. Lo siguiente es la
+fase 2, el tablero animado. Las reglas están en borrador en [`docs/DISENO.md`](docs/DISENO.md) y las ideas para
+después, en [`docs/IDEAS.md`](docs/IDEAS.md).
 
 ## Reglas de contenido (importante)
 
@@ -59,7 +60,7 @@ para después, en [`docs/IDEAS.md`](docs/IDEAS.md).
 | Red | Aislada en un módulo (`src/net/`). Así se puede añadir después un modo de red local o de navegador a navegador sin tocar el motor. |
 | Stack | JS modular (módulos ES) sin paso de compilación. Pantallas con Preact + htm, copiados en `public/vendor/`. Nada se carga de servidores externos. |
 | Tablero visual | **2D**: SVG generado desde los datos, animaciones con la API del navegador y dados en CSS 3D. El dibujo va separado del motor. |
-| Idiomas | Ningún texto visible va escrito en el código: sale de los diccionarios `src/i18n/{es,en}.json`, como en *Aldeanos vs Lobos*. |
+| Idiomas | Ningún texto visible va escrito en el código: sale de los diccionarios de `src/i18n/`, como en *Aldeanos vs Lobos*. Hay una carpeta por idioma (`es/` y `en/`), con cuatro partes: `juego`, `narrador`, `errores` e `interfaz`. |
 
 Reglas de oro:
 
@@ -79,18 +80,20 @@ Reglas de oro:
 ```
 index.html, public/      portada (es y en/) y estilos; más adelante, las pantallas del tablero y del celular
 public/visuales/         imágenes del juego (marca, tablero, fichas, tarjetas, botones, interfaz) y su CREDITOS.md
+src/data/                los datos del juego: tablero.json, economia.json, fichas.json y cartas.json, y cargar.js
+src/engine/              el motor puro: juego.js (acciones y permisos), turno, cartas, subasta, gestion, tratos,
+                         quiebra, habilidades, dinero, contexto (fórmulas y patrimonio) y rng; bots.js y simulador.js
 tools/                   serve.js (servidor local), construir-sitio.js (revisa y empaqueta la web para Pages),
-                         revisar-imagenes.js, optimizar-imagenes.py y hoja-de-contactos.js (con las reglas de
-                         limites-imagenes.json)
-tests/                   pruebas (node:test, sin dependencias): marcas, documentación, web e imágenes
-docs/                    DISENO.md (las reglas tal como las implementará el motor), VISUALES.md (todo lo que hay que
-                         dibujar), IDEAS.md (para después)
+                         simular.js (equilibrio con bots), revisar-imagenes.js, optimizar-imagenes.py y
+                         hoja-de-contactos.js (con las reglas de limites-imagenes.json)
+tests/                   pruebas (node:test, sin dependencias): reglas del motor, partidas entre bots, marcas,
+                         documentación, web e imágenes
+docs/                    DISENO.md (las reglas tal como las aplica el motor), VISUALES.md (todo lo que hay que dibujar),
+                         IDEAS.md (para después)
 ```
 
-Lo que llega en las fases 1 a 3:
+Lo que llega en las fases 2 y 3:
 
-- `src/data/`: el tablero y las cartas;
-- `src/engine/`: el motor;
 - `src/net/`: la conexión con Firebase;
 - `src/ui/`: las pantallas;
 - `src/i18n/`: los idiomas.
@@ -101,6 +104,8 @@ Lo que llega en las fases 1 a 3:
 npm test                                 # todas las pruebas
 node tools/serve.js                      # servidor local en http://localhost:8080/public/
 node tools/construir-sitio.js --revisar  # comprueba que la web no depende de servidores externos
+npm run simular -- --partidas 1000       # partidas entre bots: duración, victorias por ficha y por asiento…
+                                         # (--jugadores N, --sin-habilidades, --ajuste fichas.toro.pasiva.factor=2)
 npm run revisar:imagenes                 # lista, nombre, formato, medida exacta, SVG y créditos de public/visuales/
 python tools/optimizar-imagenes.py       # informa (con --aplicar, recorta, deja la medida exacta y pasa a WebP)
 npm run hoja:visuales                    # hoja de contactos para comparar las imágenes (visuales-originales/)
@@ -110,7 +115,13 @@ npm run hoja:visuales                    # hoja de contactos para comparar las i
   `public/visuales/`. No mezcles en un mismo commit código e imágenes, y no edites imágenes ajenas. Si el código
   necesita una imagen nueva, añádela primero a `docs/VISUALES.md`.
 
+- **Puede haber otra IA trabajando a la vez** en esta carpeta. Su reparto de tareas está en `trabajoParalelo.md`, un
+  archivo local que no se sube. Si existe, léelo antes de tocar nada: dice de quién es cada archivo.
+
 - Antes de subir cambios: `npm test` en verde.
 - **Commits pequeños**, con un mensaje claro en español y con `git add` de **archivos concretos**, nunca
   `git add -A`. El dueño también edita desde otro IDE y hace sus propios commits.
+- **Commit solo de tus rutas:** `git commit -m "…" -- <rutas>`. El índice de git es compartido, y así no te llevas lo
+  que otro haya preparado.
 - Si cambia una regla, `docs/DISENO.md` se actualiza en el mismo commit que el motor.
+- Las cifras de las fichas y de la economía se cambian solo con datos del simulador (`npm run simular`).

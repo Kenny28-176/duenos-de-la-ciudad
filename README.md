@@ -8,8 +8,8 @@
 - **Cada jugador usa su celular como cartera**. Ahí tiene su dinero, sus calles y sus acciones. Desde ahí tira,
   compra, puja, construye, hipoteca, invierte y negocia.
 
-> 🚧 **En construcción.** El proyecto está en la fase 0 y todavía no se puede jugar. Las reglas están en borrador en
-> [`docs/DISENO.md`](docs/DISENO.md).
+> 🚧 **En construcción.** El motor del juego ya funciona (fase 1), pero todavía no hay pantallas, así que aún no se
+> puede jugar. Las reglas están en borrador en [`docs/DISENO.md`](docs/DISENO.md).
 
 > Proyecto **libre, gratuito y sin ánimo de lucro**, bajo licencia [MIT](LICENSE). Es hermano de
 > [Aldeanos vs Lobos](https://github.com/Kenny28-176/aldeanos-vs-lobos). No está afiliado a ningún editor de juegos
@@ -43,8 +43,8 @@
 | Fase | Qué trae | Estado |
 |---|---|---|
 | 0. Base | Repositorio, normas de contenido, pruebas y publicación | Hecha |
-| 1. Motor | Todas las reglas, bots y un simulador para equilibrar la economía | Siguiente |
-| 2. Tablero | Tablero animado con una partida de bots | Pendiente |
+| 1. Motor | Todas las reglas, bots y un simulador para equilibrar la economía | Hecha |
+| 2. Tablero | Tablero animado con una partida de bots | Siguiente |
 | 3. Celulares | Primera partida real | Pendiente |
 | 4. Gestión y tratos | **v0.1**: construir, hipotecar, deudas, tratos y guardar la partida | Pendiente |
 | 5. Pulido | Reglas de la sala, estadísticas, inglés, accesibilidad, modo TV | Pendiente |
@@ -58,6 +58,7 @@ Hace falta [Node.js](https://nodejs.org/) 22 o posterior. No hay dependencias qu
 
 ```
 npm test               # pruebas
+npm run simular        # partidas entre bots, para equilibrar la economía
 node tools/serve.js    # servidor local en http://localhost:8080/public/
 ```
 

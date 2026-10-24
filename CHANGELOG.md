@@ -44,3 +44,22 @@ Aquí se anotan los cambios de cada versión. Las versiones siguen el esquema ma
   - retratos con un borde fino de papel;
   - las insignias de las habilidades pasan a ser gráficos planos y minimalistas: hexágono verde con un relieve mínimo
     para las activas y roseta dorada plana para las pasivas, con el símbolo en silueta.
+- **Fase 1, el motor del juego** (`src/engine/`). Aplica todas las reglas de `docs/DISENO.md`:
+  - turnos, dobles y Calabozo;
+  - compras, subastas y alquileres;
+  - casas, torres e hipotecas;
+  - las cartas de Noticias y Fortuna;
+  - la Bolsa y los dividendos;
+  - los tratos, las deudas y la bancarrota;
+  - la meta de patrimonio y el final por tiempo;
+  - las habilidades de las 10 fichas.
+
+  Es puro y reproducible: cada acción da un estado nuevo y una lista de eventos, y el azar tiene semilla.
+- Los datos del juego (`src/data/`): el tablero de 40 casillas, la economía, las 10 fichas y las 32 cartas, con textos
+  propios.
+- Bots y un simulador de partidas (`npm run simular`):
+  - en cada paso comprueba que el dinero cuadra y que nunca hay más edificios ni acciones de los que existen;
+  - con `--ajuste` se prueban otras cifras sin tocar los datos.
+- Pruebas de las reglas, con dados elegidos, y de 105 partidas completas entre bots, de 2 a 8 jugadores.
+- Cifras de las habilidades ajustadas con el simulador. Con 4 jugadores, cada ficha gana entre el 23 y el 27 % de las
+  partidas.

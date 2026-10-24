@@ -1,6 +1,8 @@
 node_modules/
 # Documento de trabajo local del plan: nombra marcas de terceros para explicar qué evitar. Nunca se publica.
 /PLAN.md
+# Reparto de tareas con la IA que trabaja en paralelo, con su bitácora. Cambia a menudo y es solo para este equipo.
+/trabajoParalelo.md
 # Material de referencia local (reglamentos, tableros y cartas de juegos comerciales…): tiene derechos de terceros.
 # Se consulta solo para entender mecánicas y nunca se sube al repositorio.
 /Documentos/
