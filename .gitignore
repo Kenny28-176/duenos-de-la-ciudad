@@ -1,0 +1,17 @@
+node_modules/
+# Documento de trabajo local del plan: nombra marcas de terceros para explicar qué evitar. Nunca se publica.
+/PLAN.md
+# Material de referencia local (reglamentos, tableros y cartas de juegos comerciales…): tiene derechos de terceros.
+# Se consulta solo para entender mecánicas y nunca se sube al repositorio.
+/Documentos/
+*.pdf
+# Capturas y archivos temporales de las pruebas
+/capturas/
+.env
+.env.*
+_sitio/
+firebase-debug.log
+firebase-debug.*.log
+database-debug.log
+ui-debug.log
+.firebase/

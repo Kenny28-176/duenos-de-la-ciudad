@@ -1,0 +1,31 @@
+{
+  "name": "duenos-de-la-ciudad",
+  "private": true,
+  "type": "module",
+  "description": "Juego de compraventa de propiedades para jugar en persona: la laptop o tablet es el tablero y cada celular, la cartera del jugador.",
+  "scripts": {
+    "test": "node --test \"tests/*.test.js\"",
+    "serve": "node tools/serve.js",
+    "sitio": "node tools/construir-sitio.js"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "version": "0.0.0",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kenny28-176/duenos-de-la-ciudad.git"
+  },
+  "keywords": [
+    "juego-de-mesa",
+    "board-game",
+    "compraventa-de-propiedades",
+    "bolsa",
+    "multijugador",
+    "celular",
+    "firebase",
+    "preact",
+    "espanol"
+  ]
+}
