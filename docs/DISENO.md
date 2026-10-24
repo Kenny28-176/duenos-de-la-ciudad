@@ -151,7 +151,7 @@ referencia a la metáfora de su ficha. Las cifras salen del simulador (ver la se
 **Cómo se equilibran:**
 
 - El simulador juega miles de partidas entre bots y ajusta las cifras hasta que ninguna ficha gana más de lo que le
-  toca. Con 4 jugadores, todas ganan entre el 23 y el 27 % de las partidas, cuando lo justo es el 25 %.
+  toca. Con 4 jugadores, todas quedan a menos de 3 puntos del 25 % de victorias que les correspondería.
 - Con otro número de jugadores todavía hay fichas que se alejan bastante (ver la sección 10).
 - Las que podrían crecer sin control tienen un máximo, para que no hagan cada vez más rico al que ya va ganando.
 - Los ataques tienen los enfriamientos más largos y sirven, sobre todo, para frenar a quien está por llegar a la meta.
@@ -398,32 +398,80 @@ trato antes de enviarlo.
 | Bots | Ninguno | Hasta completar 8 jugadores |
 | Voz del narrador | Activada | Desactivada |
 
-## 10. Cómo lo comprobará el simulador
+## 10. Cómo lo comprueba el simulador
 
-En la fase 1, el simulador jugará miles de partidas con bots y medirá esto:
+`npm run simular` juega miles de partidas entre bots, y cada ficha juega en todas las posiciones. En cada paso
+comprueba las reglas que se deben cumplir siempre, y se detiene si alguna se rompe:
 
-- **Duración media** según el número de jugadores. Objetivo: de 60 a 90 minutos.
-- **Ventaja del primer jugador.** Objetivo: menos de 5 puntos porcentuales.
-- **Frecuencia de cada casilla y rentabilidad de cada barrio.** Así se ajustan los precios y se mueven casillas si
-  hace falta.
-- **Parte del patrimonio que viene del mercado.** Objetivo: importante, pero no decisiva (entre el 20 y el 35 %).
-- **Equilibrio de las fichas.** Cada ficha jugará en todas las posiciones. Con 4 jugadores, cada una debería ganar
-  alrededor del 25 % de las partidas, 3 puntos arriba o abajo. Si una se pasa, se ajustan sus números, no el resto del
-  juego.
-- **Abusos.** Un bot «aprovechado» buscará maneras de ganar dinero sin riesgo. Si las encuentra, se cambian las
+- todo el dinero queda anotado: el de cada jugador cuadra con la suma de sus movimientos;
+- nadie tiene dinero negativo; quien no puede pagar queda con una deuda pendiente;
+- nunca hay más edificios ni acciones de los que existen;
+- ninguna calle hipotecada tiene edificios, y quien quiebra no conserva nada.
+
+Las cifras solo se cambian con sus datos. Si una ficha se pasa, se ajustan sus números, no el resto del juego.
+
+### Resultados con 4 jugadores
+
+Son 6.000 partidas con las cifras actuales:
+
+| Qué se mide | Objetivo | Resultado |
+|---|---|---|
+| Duración | De 60 a 90 minutos | 193 turnos: unos 97 minutos, si cada turno dura 30 segundos |
+| Ventaja del primer jugador | Menos de 5 puntos | El 1.º gana el 27,1 % de las partidas y el 4.º, el 22,2 % |
+| Parte del patrimonio del ganador que está en acciones | Entre el 20 y el 35 % | El 25 % |
+| Equilibrio de las fichas | El 25 %, 3 puntos arriba o abajo | Del 22,8 % (el Oso) al 27,6 % (la Hormiga) |
+| Cómo terminan | Casi siempre, por la meta | El 99,4 %, por la meta |
+
+En cada partida hay unas 9 subastas y 3 tratos, y una bancarrota cada dos partidas. Ninguna casilla se pisa mucho más
+que otra: todas, entre el 2 y el 3,4 % de las veces.
+
+### Con otro número de jugadores
+
+| Jugadores | Duración | La ficha que más gana | La que menos gana | Lo justo |
+|---|---|---|---|---|
+| 2 | 78 min | Hormiga, 60 % | Toro, 42 % | 50 % |
+| 3 | 89 min | Vaca Lechera, 39 % | Toro, 28 % | 33 % |
+| 4 | 97 min | Hormiga, 28 % | Oso, 23 % | 25 % |
+| 6 | 109 min | Tiburón, 20 % | Oso, 14 % | 17 % |
+| 8 | 117 min | Tiburón, 19 % | Oso, 10 % | 12,5 % |
+
+- **Las fichas que cobran de los rivales o en cada turno** (la Hormiga y la Vaca Lechera) rinden más con pocos
+  jugadores.
+- **Las que dependen de lo que hacen los demás** (los dividendos del Toro y las subastas del Tiburón) rinden más con
+  muchos.
+- **Con 2 jugadores,** una de cada cuatro partidas acaba en bancarrota.
+- **Con 6 u 8 jugadores,** la ventaja del primero crece: con 6, el 1.º gana el 20 % y el 6.º, el 13 %.
+
+Lo siguiente es que algunas cifras dependan del número de jugadores (pregunta abierta 6).
+
+### Pendiente
+
+- **Abusos:** un bot «aprovechado» buscará maneras de ganar dinero sin riesgo. Si las encuentra, se cambian las
   reglas.
-- **Reglas que se deben cumplir siempre:**
-  - todo el dinero queda anotado;
-  - nunca hay más edificios que existencias;
-  - cada calle tiene un solo dueño;
-  - nadie tiene dinero negativo fuera de una deuda.
+- **Rentabilidad de cada barrio:** para ajustar precios y mover casillas si hace falta.
+
+### Cómo se usa
+
+```
+npm run simular -- --partidas 1000 --jugadores 6
+npm run simular -- --sin-habilidades --meta 7000
+npm run simular -- --ajuste fichas.toro.pasiva.factor=2 --ajuste economia.sueldo=260
+```
+
+`--ajuste` prueba otras cifras sin tocar `src/data/`.
 
 ## 11. Preguntas abiertas
 
 1. **Absorciones (opa hostil):** ¿se puede comprar a la fuerza la calle de otro jugador, pagándole un múltiplo de su
    valor? Propuesta: no en la v0.1. Se probaría después como opción.
-2. **Meta por defecto de 10.000 $**, que es 5 veces el dinero inicial: ¿te parece bien para unos 75 minutos? El
-   simulador la ajustará.
+2. **Meta por defecto de 10.000 $**, que es 5 veces el dinero inicial.
+   - Con 4 jugadores y turnos de 30 segundos, la partida dura unos 97 minutos. Con la meta de 9.000 $ dura unos 91, y
+     con la de 8.000 $, unos 86: bajar la meta acorta poco la partida.
+   - Propuesta: dejar 10.000 $ y decidir después de la primera partida real, midiendo cuánto dura de verdad un turno.
 3. **Bancarrota:** propuesta: quien quiebra queda fuera. La otra opción es que el banco lo rescate una vez.
 4. **Gestión fuera de turno:** propuesta: la tabla «Quién puede hacer qué, y cuándo» de la sección 5.
 5. **Nombres:** ¿te gustan los barrios, las calles y las fichas? Se pueden cambiar todos.
+6. **Equilibrio según el número de jugadores.** Con 2, 3, 6 u 8 jugadores, algunas fichas ganan bastante más o menos
+   de lo justo (ver la sección 10).
+   - Propuesta: que algunas cifras cambien según el número de jugadores, ajustadas con el simulador: el peaje de la
+     Hormiga, la renta de la Vaca Lechera, los dividendos del Toro, el Tiburón y el Oso.

@@ -61,5 +61,6 @@ Aquí se anotan los cambios de cada versión. Las versiones siguen el esquema ma
   - en cada paso comprueba que el dinero cuadra y que nunca hay más edificios ni acciones de los que existen;
   - con `--ajuste` se prueban otras cifras sin tocar los datos.
 - Pruebas de las reglas, con dados elegidos, y de 105 partidas completas entre bots, de 2 a 8 jugadores.
-- Cifras de las habilidades ajustadas con el simulador. Con 4 jugadores, cada ficha gana entre el 23 y el 27 % de las
-  partidas.
+- Cifras de las habilidades ajustadas con el simulador. Con 4 jugadores, todas las fichas quedan a menos de 3 puntos
+  del 25 % de victorias que les correspondería. Los resultados, también con 2, 3, 6 y 8 jugadores, están en
+  `docs/DISENO.md` (sección 10).
