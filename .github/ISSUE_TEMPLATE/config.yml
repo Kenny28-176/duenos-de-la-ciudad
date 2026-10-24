@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Dudas sobre el juego o el proyecto
+    url: https://github.com/Kenny28-176/duenos-de-la-ciudad#readme
+    about: El README y el borrador de las reglas (docs/DISENO.md) resuelven la mayoría de dudas.
+  - name: Aviso de seguridad (privado)
+    url: https://github.com/Kenny28-176/duenos-de-la-ciudad/security/advisories/new
+    about: Para fallos de seguridad, no abras un issue público.
