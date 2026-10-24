@@ -33,15 +33,20 @@ para después, en [`docs/IDEAS.md`](docs/IDEAS.md).
 - **Las cifras** (precios, alquileres, sueldos y acciones) salen de las fórmulas de `docs/DISENO.md`, ajustadas con el
   simulador. Nunca se copian tablas de otros juegos.
 - **Textos con palabras propias.**
-- **Imágenes propias** o con una licencia que permita redistribuirlas. Su origen se anota en `public/img/CREDITOS.md`
-  (cuando haya imágenes) y miden 512 px como máximo. Si se generan con IA, nunca se pide el estilo ni los elementos de
-  otro juego, y se revisa que no lleven firmas, logotipos ni textos ajenos.
+- **Imágenes propias** o con una licencia que permita redistribuirlas.
+  - Van en `public/visuales/`, con su origen anotado en `public/visuales/CREDITOS.md`.
+  - Siguen la lista, el estilo, los tamaños y los formatos de [`docs/VISUALES.md`](docs/VISUALES.md): 512 px como
+    máximo, salvo las excepciones de `tools/limites-imagenes.json`.
+  - Si se generan con IA, nunca se pide el estilo ni los elementos de otro juego, y se revisa que no lleven firmas,
+    logotipos ni textos ajenos.
 - **Nada de claves privadas ni datos personales** en el repositorio. La `apiKey` web de Firebase es pública por
   diseño. Lo que protege la base de datos son las **reglas** y el **inicio de sesión anónimo**. Sin ese inicio de
   sesión, restringir la clave no protege Realtime Database.
-- **Material local que nunca se sube.** `PLAN.md` (el plan de trabajo) y la carpeta `Documentos/` (material de
-  referencia con derechos de terceros) están en `.gitignore`. Lo de `Documentos/` sirve solo para entender mecánicas:
-  nunca se copia.
+- **Material local que nunca se sube.** Estas rutas están en `.gitignore`:
+  - `PLAN.md`: el plan de trabajo;
+  - `Documentos/`: material de referencia con derechos de terceros. Sirve solo para entender mecánicas: nunca se
+    copia;
+  - `visuales-originales/`: los originales en alta resolución de las imágenes.
 
 ## Arquitectura (decidida)
 
@@ -73,9 +78,12 @@ Reglas de oro:
 
 ```
 index.html, public/      portada (es y en/) y estilos; más adelante, las pantallas del tablero y del celular
-tools/                   serve.js (servidor local), construir-sitio.js (revisa y empaqueta la web para Pages)
-tests/                   pruebas (node:test, sin dependencias): marcas, documentación y web
-docs/                    DISENO.md (las reglas tal como las implementará el motor), IDEAS.md (para después)
+public/visuales/         imágenes del juego (marca, tablero, fichas, tarjetas, botones, interfaz) y su CREDITOS.md
+tools/                   serve.js (servidor local), construir-sitio.js (revisa y empaqueta la web para Pages),
+                         revisar-imagenes.js y optimizar-imagenes.py (con las reglas de limites-imagenes.json)
+tests/                   pruebas (node:test, sin dependencias): marcas, documentación, web e imágenes
+docs/                    DISENO.md (las reglas tal como las implementará el motor), VISUALES.md (todo lo que hay que
+                         dibujar), IDEAS.md (para después)
 ```
 
 Lo que llega en las fases 1 a 3:
@@ -92,7 +100,13 @@ Lo que llega en las fases 1 a 3:
 npm test                                 # todas las pruebas
 node tools/serve.js                      # servidor local en http://localhost:8080/public/
 node tools/construir-sitio.js --revisar  # comprueba que la web no depende de servidores externos
+npm run revisar:imagenes                 # comprueba formato, tamaño y créditos de public/visuales/
+python tools/optimizar-imagenes.py       # informa (con --aplicar, reduce y convierte a WebP)
 ```
+
+- **Las imágenes las genera otra herramienta en paralelo**, siguiendo `docs/VISUALES.md`, y sube solo
+  `public/visuales/`. No mezcles en un mismo commit código e imágenes, y no edites imágenes ajenas. Si el código
+  necesita una imagen nueva, añádela primero a `docs/VISUALES.md`.
 
 - Antes de subir cambios: `npm test` en verde.
 - **Commits pequeños**, con un mensaje claro en español y con `git add` de **archivos concretos**, nunca

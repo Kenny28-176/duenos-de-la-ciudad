@@ -4,6 +4,8 @@ node_modules/
 # Material de referencia local (reglamentos, tableros y cartas de juegos comerciales…): tiene derechos de terceros.
 # Se consulta solo para entender mecánicas y nunca se sube al repositorio.
 /Documentos/
+# Originales en alta resolución de las imágenes (a la web van las versiones optimizadas de public/visuales/).
+/visuales-originales/
 *.pdf
 # Capturas y archivos temporales de las pruebas
 /capturas/

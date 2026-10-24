@@ -44,6 +44,8 @@ const PROHIBIDAS = [
   'cGFzZW8gZGVsIHByYWRv',
   'cm9uZGEgZGUgdmFsZW5jaWE=',
   'bGF2YXBpZXM=',
+  'YnJhd2wgc3RhcnM=',
+  'c3VwZXJjZWxs',
 ];
 
 // Archivos que no son texto (solo se revisa su nombre) y carpetas que no son del proyecto.

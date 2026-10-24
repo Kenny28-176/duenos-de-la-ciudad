@@ -1,0 +1,11 @@
+{
+  "_info": "Tamaño máximo (lado mayor, en px), peso máximo (KB) y formatos permitidos de las imágenes de public/visuales/. Se aplica la primera regla cuyo «prefijo» coincida con el principio de la ruta (relativa a public/visuales/). Lo usan tools/revisar-imagenes.js y tools/optimizar-imagenes.py; se explica en docs/VISUALES.md.",
+  "reglas": [
+    { "prefijo": "marca/portada.", "lado": 1600, "kb": 300, "formatos": ["webp"] },
+    { "prefijo": "marca/redes.", "lado": 1200, "kb": 300, "formatos": ["png", "jpg"] },
+    { "prefijo": "marca/icono-", "lado": 512, "kb": 150, "formatos": ["png"] },
+    { "prefijo": "tablero/centro/", "lado": 1024, "kb": 300, "formatos": ["webp"] },
+    { "prefijo": "", "lado": 512, "kb": 120, "formatos": ["webp", "svg"] }
+  ],
+  "svgKb": 20
+}

@@ -34,7 +34,7 @@ ilustraciones, fichas o cartas, ni sus textos o reglamentos.
 
 - **Bibliotecas de terceros:** cuando se añadan, irán copiadas en `public/vendor/` con su licencia y una nota de su
   origen y su versión.
-- **Imágenes:** cuando las haya, sus créditos estarán en `public/img/CREDITOS.md`.
+- **Imágenes:** sus créditos están en [`public/visuales/CREDITOS.md`](public/visuales/CREDITOS.md).
 
 ## 4. Si crees que algo infringe tus derechos
 

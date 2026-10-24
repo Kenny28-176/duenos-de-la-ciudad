@@ -6,7 +6,9 @@
   "scripts": {
     "test": "node --test \"tests/*.test.js\"",
     "serve": "node tools/serve.js",
-    "sitio": "node tools/construir-sitio.js"
+    "sitio": "node tools/construir-sitio.js",
+    "revisar:imagenes": "node tools/revisar-imagenes.js",
+    "optimizar:imagenes": "python tools/optimizar-imagenes.py"
   },
   "engines": {
     "node": ">=22"

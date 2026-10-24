@@ -11,5 +11,5 @@
 
 - [ ] Los textos están escritos con palabras propias (nada copiado de reglamentos ni de otros juegos)
 - [ ] Las cifras salen de las fórmulas del diseño, no de tablas de otros juegos
-- [ ] Las imágenes son propias o tienen una licencia que permite redistribuirlas, y están anotadas en `public/img/CREDITOS.md`
+- [ ] Las imágenes son propias o tienen una licencia que permite redistribuirlas, siguen `docs/VISUALES.md` y están anotadas en `public/visuales/CREDITOS.md`
 - [ ] No hay nombres de marcas de terceros en la interfaz, los textos ni los nombres de archivo
