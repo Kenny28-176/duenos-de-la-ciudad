@@ -1,24 +1,25 @@
-/* Estilos de las páginas estáticas (portada). Las pantallas del tablero y del celular tendrán los suyos. */
+/* Estilos de las páginas estáticas (portada), con la paleta apagada de docs/VISUALES.md (sección 3).
+   Las pantallas del tablero y del celular tendrán los suyos. */
 :root {
   color-scheme: light dark;
-  --fondo: #f4f1ea;
-  --texto: #1d2430;
-  --suave: #5b6472;
-  --acento: #0f7b6c;
+  --fondo: #efeae0;
+  --texto: #23262b;
+  --suave: #5e6268;
+  --acento: #356b58;
   --acento-texto: #ffffff;
-  --borde: #d9d3c7;
-  --tarjeta: #ffffff;
+  --borde: #d6cfc2;
+  --tarjeta: #f4efe6;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --fondo: #12161d;
-    --texto: #e8e6e1;
-    --suave: #a3abb8;
-    --acento: #3cc9b3;
-    --acento-texto: #0b1a17;
-    --borde: #2a313c;
-    --tarjeta: #1a2029;
+    --fondo: #1e242b;
+    --texto: #efeae0;
+    --suave: #a9a59d;
+    --acento: #c9a44c;
+    --acento-texto: #1e242b;
+    --borde: #3a3f45;
+    --tarjeta: #262c33;
   }
 }
 
@@ -47,19 +48,19 @@ a:focus-visible { outline: 3px solid var(--acento); outline-offset: 3px; }
   font-size: 0.9rem;
 }
 
-h1 { font-size: clamp(2.2rem, 7vw, 3.4rem); line-height: 1.1; margin: 0.6rem 0 0.4rem; }
+h1 { font-family: Georgia, "Times New Roman", serif; font-weight: 600; font-size: clamp(2.2rem, 7vw, 3.4rem); line-height: 1.1; margin: 0.6rem 0 0.4rem; }
 
 .lema { font-size: 1.2rem; color: var(--suave); margin-top: 0; }
 
 .ideas { padding: 0; list-style: none; display: grid; gap: 0.75rem; margin: 2rem 0; }
-.ideas li { background: var(--tarjeta); border: 1px solid var(--borde); border-radius: 0.75rem; padding: 0.9rem 1rem; }
+.ideas li { background: var(--tarjeta); border: 1px solid var(--borde); border-radius: 6px; padding: 0.9rem 1rem; }
 
 .botones { display: flex; flex-wrap: wrap; gap: 0.75rem; margin: 1.5rem 0; }
 
 .boton {
   display: inline-block;
   padding: 0.7rem 1.1rem;
-  border-radius: 0.6rem;
+  border-radius: 6px;
   background: var(--acento);
   color: var(--acento-texto);
   text-decoration: none;
