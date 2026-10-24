@@ -32,3 +32,10 @@ Aquí se anotan los cambios de cada versión. Las versiones siguen el esquema ma
   (`npm run hoja:visuales`) para comparar las imágenes entre sí.
 - El diseño fija la orientación del tablero en pantalla (la Salida abajo a la izquierda, avance en el sentido de las
   agujas del reloj).
+- Nueva dirección de arte, pensada para jóvenes adultos y adultos:
+  - pintura naturalista y sobria de aspecto gouache, en lugar de dibujos animados;
+  - animales y objetos reales, sin humanizar, en composiciones minimalistas y con una paleta apagada y terrosa;
+  - insignias como botones esmaltados (activas) y medallas acuñadas (pasivas);
+  - iconos de línea fina (trazo 4);
+  - retratos, esquinas, cartas y escenas pintados con su ambiente;
+  - la portada adopta la nueva paleta.

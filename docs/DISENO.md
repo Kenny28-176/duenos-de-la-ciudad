@@ -49,13 +49,13 @@ colores. Van del más barato, cerca de la Salida, al más caro, al final del rec
 | # | Barrio | Icono | Color | Calles |
 |---|---|---|---|---|
 | 1 | Los Talleres | 🔧 | gris acero | Calle del Hierro · Pasaje de la Fragua |
-| 2 | La Feria | 🎪 | fucsia | Calle de los Puestos · Avenida del Trueque · Plaza del Regateo |
+| 2 | La Feria | 🎪 | frambuesa | Calle de los Puestos · Avenida del Trueque · Plaza del Regateo |
 | 3 | Puerto Viejo | ⚓ | turquesa | Muelle de las Redes · Calle del Faro · Paseo de las Gaviotas |
 | 4 | Barrio Universitario | 🎓 | violeta | Calle de los Libros · Avenida del Saber · Plaza de la Tesis |
 | 5 | Centro Histórico | 🔔 | terracota | Calle del Campanario · Avenida de los Fundadores · Plaza del Reloj |
-| 6 | Jardines del Río | 🌳 | verde | Calle de los Sauces · Avenida de las Orquídeas · Paseo del Río |
-| 7 | Distrito Financiero | 📈 | azul eléctrico | Avenida del Capital · Calle del Dividendo · Plaza de las Finanzas |
-| 8 | Altos del Mirador | ⭐ | dorado | Avenida del Mirador · Calle de las Estrellas |
+| 6 | Jardines del Río | 🌳 | verde salvia | Calle de los Sauces · Avenida de las Orquídeas · Paseo del Río |
+| 7 | Distrito Financiero | 📈 | azul cobalto | Avenida del Capital · Calle del Dividendo · Plaza de las Finanzas |
+| 8 | Altos del Mirador | ⭐ | oro viejo | Avenida del Mirador · Calle de las Estrellas |
 
 ### Otras casillas
 

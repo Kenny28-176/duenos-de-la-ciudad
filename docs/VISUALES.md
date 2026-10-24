@@ -3,10 +3,14 @@
 > **Para quién es:** para la herramienta que genera las imágenes, que trabaja en paralelo con el código, y para Kenny,
 > que aprueba el estilo.
 >
-> **La regla de oro es la coherencia.** Las 141 imágenes tienen que parecer hechas por la misma mano. Por eso esta
-> guía fija cada detalle: tipo de dibujo, línea, colores, luz, fondo, encuadre, posición y tamaño. No se deja nada a
-> elección. Si algo no está escrito aquí, se copia de las imágenes ya aprobadas de la misma carpeta, y en la duda se
-> pregunta a Kenny antes de inventar.
+> **El estilo, en una frase:** pintura naturalista y sobria, para un juego de jóvenes adultos y adultos. Los animales y
+> los objetos son **reales, no dibujos animados**: no se humanizan, no llevan ropa ni caras. La metáfora de cada uno se
+> cuenta con la pose y, como mucho, un objeto simbólico. Las composiciones son **minimalistas**: un protagonista,
+> mucho aire y nada de adornos.
+>
+> **La regla de oro es la coherencia.** Las 141 imágenes tienen que parecer pintadas por la misma mano. Esta guía fija
+> cada detalle: técnica, pincelada, luz, colores, fondo, encuadre, posición y tamaño. Si algo no está escrito aquí, se
+> copia de las imágenes ya aprobadas de la misma carpeta, y en la duda se pregunta a Kenny antes de inventar.
 >
 > Aquí solo se tocan `public/visuales/` y su `CREDITOS.md`. El código y la documentación los lleva otra parte del
 > equipo.
@@ -29,33 +33,40 @@
 ## 1. Cómo trabajar
 
 1. **Lee las secciones 2 a 7 completas** antes de generar nada.
-2. **Empieza por la hoja de estilo.** Genera solo 3 piezas de fichas: la Rata, el Toro y la Burbuja. Enséñaselas a
-   Kenny. Mientras no las apruebe, no se genera nada más. Esas 3 piezas son la referencia de estilo de todo lo demás.
-3. **Arma la petición de cada imagen** con tres partes:
+2. **Empieza por la hoja de estilo.** Genera solo cuatro imágenes:
+   - las piezas de la Rata, el Toro y la Burbuja;
+   - el retrato de la Rata.
+
+   Enséñaselas a Kenny. Mientras no las apruebe, no se genera nada más. Esas cuatro son la referencia de estilo de todo
+   lo demás.
+3. **Referencias:** usa como referencia solo esta guía y las imágenes ya aprobadas del proyecto. No uses obras de otros
+   artistas ni imágenes de internet: copiarías algo que tiene dueño.
+4. **Arma la petición de cada imagen** con tres partes:
    - la plantilla de su tipo (sección 7);
    - la descripción de esa imagen (sección 8);
    - si aparece una ficha, su hoja de personaje (sección 5).
-4. **Adjunta referencias:** 2 o 3 imágenes ya aprobadas de la misma carpeta y, si aparece una ficha, su pieza
+5. **Adjunta referencias:** 2 o 3 imágenes ya aprobadas de la misma carpeta y, si aparece una ficha, su pieza
    aprobada.
-5. **Genera la imagen** con la proporción indicada (por ejemplo 1:1 o 4:3) y a 1024 px por el lado más largo, o
+6. **Genera la imagen** con la proporción indicada (por ejemplo 1:1 o 4:3) y a 1024 px por el lado más largo, o
    más.
-6. **Guarda el original** en `visuales-originales/`, con la misma ruta. Git ignora esa carpeta.
-7. **Copia la imagen** a `public/visuales/` con la ruta y el nombre exactos de la sección 8. Puede ir en `.png`.
-8. **Prepárala para la web:** `python tools/optimizar-imagenes.py --aplicar`.
+7. **Guarda el original** en `visuales-originales/`, con la misma ruta. Git ignora esa carpeta.
+8. **Copia la imagen** a `public/visuales/` con la ruta y el nombre exactos de la sección 8. Puede ir en `.png`.
+9. **Prepárala para la web:** `python tools/optimizar-imagenes.py --aplicar`.
    - La recorta a la proporción exacta si se pasa un poco, la deja en la medida exacta, la convierte a WebP y conserva
      la transparencia.
    - Si la proporción es muy distinta o la imagen es demasiado pequeña, no la toca y lo dice: hay que regenerarla.
-9. **Compárala con las demás:** `npm run hoja:visuales` crea `visuales-originales/hoja-de-contactos.html`. Ábrelo en el
-   navegador. Muestra cada carpeta a su tamaño real en el juego, sobre fondo claro y oscuro. Regenera la imagen si
-   desentona con sus vecinas en cualquiera de estas cosas:
-   - el grosor de la línea;
-   - la luz;
-   - los colores;
-   - el tamaño del motivo.
-10. **Anota los créditos** en [`public/visuales/CREDITOS.md`](../public/visuales/CREDITOS.md), con una fila por
+10. **Compárala con las demás:** `npm run hoja:visuales` crea `visuales-originales/hoja-de-contactos.html`. Ábrelo en el
+    navegador. Muestra cada carpeta a su tamaño real en el juego, sobre fondo claro y oscuro. Regenera la imagen si
+    desentona con sus vecinas en cualquiera de estas cosas:
+    - la pincelada;
+    - la luz;
+    - los colores;
+    - el nivel de detalle;
+    - el tamaño del motivo.
+11. **Anota los créditos** en [`public/visuales/CREDITOS.md`](../public/visuales/CREDITOS.md), con una fila por
     carpeta: herramienta y modelo, licencia CC0 y fecha.
-11. **Revisa:** `npm run revisar:imagenes` tiene que terminar en ✔. También dice cuántas imágenes faltan.
-12. **Sube solo lo visual:**
+12. **Revisa:** `npm run revisar:imagenes` tiene que terminar en ✔. También dice cuántas imágenes faltan.
+13. **Sube solo lo visual:**
     - primero `git pull`;
     - después `git add public/visuales`;
     - después un commit en español, como «Visuales: piezas de las 10 fichas», y `git push`.
@@ -69,99 +80,93 @@ generan como imagen: se escriben como código (sección 7.13).
 
 ## 2. Reglas de estilo para todas las imágenes
 
-### 2.1 Tipo de dibujo
+### 2.1 Técnica
 
-- **Estilo:** ilustración vectorial plana con sombreado de dos tonos (*cel shading*).
-  - Cada superficie lleva su color base y, en la parte que no recibe la luz, **un solo tono de sombra con el borde
-    nítido**.
-  - Las superficies curvas o brillantes llevan además **un solo brillo pequeño**.
-- **Degradados:** no hay. Solo se permiten en dos sitios:
-  - el cielo de las escenas, un degradado vertical de dos colores (sección 2.7);
-  - la cara de las insignias activas (sección 7.6).
-- **Prohibido en el acabado:**
-  - texturas, ruido, grano, trazos de pincel o acuarela;
-  - aspecto de lápiz o de boceto;
-  - render 3D, plástico brillante o fotorrealismo;
-  - pixel art, anime o manga.
-- **Acabado mate.** Los brillos solo van en ojos, monedas, cristal, metal pulido y burbujas.
-- **Nivel de detalle:** el mínimo para que se entienda. Ningún detalle más pequeño que el 1,5 % del ancho del lienzo,
-  porque se perdería.
+- **Pintura naturalista de aspecto gouache:** pintura opaca sobre papel, realista pero claramente pintada a mano. No es
+  una foto, ni un render 3D, ni una ilustración vectorial.
+- **Realismo estilizado:**
+  - la anatomía, las proporciones y los materiales son reales;
+  - el detalle está simplificado: se pintan las masas grandes y unos pocos detalles definidos (ojos, hocico, brillos);
+  - nada de hiperrealismo: no se pinta cada pelo ni cada reflejo.
+- **Ambiente adulto y sobrio:** serio y elegante, con un punto de ironía en las metáforas, pero sin chistes visuales.
+  Realista, pero nunca desagradable: nada de babas, heridas, suciedad ni gestos amenazantes.
 
-### 2.2 Línea
+### 2.2 Pincelada y bordes
 
-- **Color:** todos los contornos van en tinta `#1D2430`. Nunca en negro puro.
-- **Trazo:** grosor uniforme a lo largo de todo el trazo, con extremos y uniones redondeados.
-- **Grosor:** se mide en porcentaje del ancho del lienzo.
-
-| Tipo de imagen | Contorno exterior (silueta) | Líneas interiores (detalles) |
-|---|---|---|
-| Piezas, retratos, edificios, insignias, ilustraciones de interfaz, emblema | 2 % (20 px si se genera a 1024) | 1 % |
-| Esquinas, efectos de cartas, dorsos | 1,5 % | 0,75 % |
-| Escenas (centro del tablero, cabeceras, portada, redes): primer plano | 1 % | 0,5 % |
-| Escenas: plano medio | 0,6 % | 0,3 % |
-| Escenas: fondo | sin línea | sin línea |
-
-- **Sin contorno:** vapor, humo, agua en movimiento, brillos, sombras proyectadas, destellos y líneas de movimiento.
+- **Pincelada visible pero fina:** pinceladas cortas que siguen la forma (la dirección del pelo, la curva de una
+  porcelana, la caída de una pluma). Sin manchas sueltas, salpicaduras, goteos ni trazos de boceto.
+- **Textura de papel** muy sutil, la misma en todas las imágenes. Nada de grano fotográfico.
+- **Sin contornos de cómic.** No hay líneas negras alrededor de las formas. La silueta se define por el contraste de
+  luz y color con el fondo.
+- **Bordes:**
+  - nítidos en la silueta del protagonista, sobre todo del lado de la luz;
+  - suaves en las sombras y en los planos del fondo.
+- **Detalle según el tamaño final:**
+  - en las piezas, los edificios y las insignias (que se ven a 40–128 px), la pincelada es más limpia y las formas más
+    simples;
+  - en los retratos y las escenas, la pincelada se nota más.
 
 ### 2.3 Luz y sombras
 
-- **Una sola luz**, arriba a la izquierda (como las 10:30 en un reloj), a 45°.
-- **Sombra propia:** en el lado derecho e inferior de cada volumen, con el tono sombra de su color (sección 3). Borde
-  nítido. Cubre entre el 30 y el 40 % de la superficie.
-- **Brillo:** arriba a la izquierda, con el tono brillo de su color. Es pequeño (hasta el 10 % de la superficie) y solo
-  va en superficies curvas.
-- **Punto de brillo:** blanco `#FFFFFF` en ojos, monedas y cristal, arriba a la izquierda. Es el único sitio donde se
-  usa el blanco puro.
-- **Sombra proyectada en el suelo:** tinta `#1D2430` al 25 % de opacidad, con el borde nítido, desplazada hacia abajo y
-  a la derecha.
+- **Una sola luz natural**, cálida, que entra desde arriba a la izquierda (como las 10:30 en un reloj), a 45°.
+- **Claroscuro moderado:** el protagonista bien iluminado y el entorno en una penumbra suave. El contraste de luz
+  separa al protagonista del fondo.
+- **Sombras frías:** se pintan mezclando el color del objeto con el color de sombra (sección 3), nunca con negro.
+- **Luces cálidas:** se pintan mezclando el color del objeto con el color de luz (sección 3), nunca con blanco puro.
+- **Sombras proyectadas:** suaves, hacia abajo a la derecha.
+- **Borde de luz:** en las imágenes con fondo transparente, una línea muy fina de luz cálida en el borde del lado en
+  sombra, para que el motivo se separe del tablero oscuro.
 
-### 2.4 Formas
+### 2.4 Composición minimalista
 
-- **Todo redondeado:** esquinas con un radio de al menos el 2 % del lienzo. Nada de puntas afiladas: los cuernos, los
-  dientes, los picos y las flechas terminan en punta redondeada.
-- **Siluetas claras y compactas:** cada personaje y cada objeto tiene que reconocerse pintado en un solo color a 48 px.
-- **Edificios:**
-  - cuerpos rectangulares con las esquinas suavizadas;
-  - ventanas como rectángulos redondeados, en filas regulares;
-  - tejados simples;
-  - las líneas verticales siempre verticales.
-- **Manos:** siempre como guante de dibujo animado de 4 dedos, en blanco cálido `#FBF9F4`. No hay manos con piel.
+- **Un solo protagonista** por imagen.
+- **Aire:** entre el 30 y el 45 % del lienzo queda como espacio libre (fondo sin elementos).
+- **Como mucho 2 elementos secundarios**, y solo los que diga la sección 8.
+- **Fondos:** un campo de color pintado, casi liso, con una viñeta suave (un 15–20 % más oscuro en los bordes). Si hay
+  entorno (una pared, un suelo, el agua), se sugiere con pocas pinceladas, sin detalles.
+- **Ni marcos, ni adornos, ni decoración.**
 
 ### 2.5 Perspectiva
 
-| Tipo de imagen | Ángulo de cámara |
+| Tipo de imagen | Cámara |
 |---|---|
-| Piezas, edificios, esquinas, objetos sueltos | 3/4 desde arriba: la cámara mira hacia abajo 25° y el motivo está girado 30° hacia la derecha |
-| Retratos e ilustraciones de interfaz | Frontal con el personaje en 3/4 hacia la derecha; la cámara a la altura del pecho |
-| Cabeceras, efectos, portada, redes | Frontal un poco elevada, como desde un segundo piso (15° hacia abajo); sin puntos de fuga exagerados |
+| Piezas, edificios, objetos sueltos | 3/4 desde arriba: la cámara mira hacia abajo 25° y el motivo está girado 30° hacia la derecha |
+| Retratos e ilustraciones de interfaz | Baja, a la altura del protagonista: lo engrandece, como en un retrato de naturaleza |
+| Esquinas, efectos, cabeceras, portada, redes | Frontal, con la cámara a la altura de los ojos de una persona y 10° hacia abajo; sin puntos de fuga exagerados |
 | Centro del tablero | Aérea inclinada: la cámara mira hacia abajo 45°, con las calles alineadas con los bordes del lienzo |
-| Insignias e iconos | Plano, de frente, sin perspectiva |
+| Insignias | De frente, sin perspectiva, como un objeto fotografiado desde arriba |
+| Iconos SVG | Planos, de frente |
 
 ### 2.6 Profundidad en las escenas
 
-En las escenas hay siempre **3 planos**:
-
-| Plano | Color | Línea |
-|---|---|---|
-| Primer plano | Colores plenos | La de primer plano (sección 2.2) |
-| Plano medio | Colores plenos | La de plano medio |
-| Fondo | Siluetas sin detalles, con su color mezclado al 40 % con el color del cielo | Sin línea |
+| Plano | Cómo se pinta |
+|---|---|
+| Primer plano | Colores plenos, el mayor contraste y los bordes más nítidos |
+| Plano medio | Colores plenos, contraste medio |
+| Fondo | Formas sin detalle, más claras y más frías: mezcladas al 40 % con el color del cielo o de la penumbra |
 
 ### 2.7 Hora del día
 
-| Momento | Cielo (degradado de arriba abajo) | Dónde se usa |
+| Momento | Cielo (de arriba abajo) | Dónde se usa |
 |---|---|---|
-| **Media tarde soleada** | cielo `#8FD3F4` → horizonte `#FCE7C8` | Esquinas, cabeceras, efectos de cartas, retratos con cielo, ilustraciones de interfaz (salvo victoria) |
-| **Atardecer** | violeta `#6C5B9E` → naranja `#F6A57A`, con ventanas encendidas en luz de ventana `#FFE08A` | Centro del tablero, portada, redes |
-| **Noche** | noche `#16202E`, con estrellas pequeñas en blanco cálido | Ilustración de victoria |
+| **Tarde clara** | cielo `#A9C7D6` → horizonte `#E9DFCB` | Esquinas, cabeceras, efectos de cartas y escenas de los retratos que están al aire libre |
+| **Atardecer** | malva `#5B5577` → ocre rosado `#D9A27E`, con ventanas encendidas en luz de ventana `#F0C987` | Centro del tablero, portada, redes, retrato de la Vaca Lechera |
+| **Noche** | noche `#1E242B`, con pocas estrellas en hueso | Ilustración de victoria |
+| **Interior en penumbra** | Sin cielo: una pared pintada en el color del fondo, con viñeta | Retratos y bodegones de interior |
 
 ### 2.8 Prohibido en todas las imágenes
 
-- **Texto de cualquier tipo:** letras, números, letreros, inscripciones o cifras en relojes, pizarras y pantallas. Los
-  textos y las cifras los pone el código en el idioma de cada jugador. Si la herramienta pinta letras, se regenera.
+- **Estilo de dibujos animados:**
+  - personajes humanizados (de pie como personas, con ropa, guantes o accesorios humanos);
+  - caras en los objetos, ojos grandes, mejillas sonrosadas o expresiones humanas;
+  - estilo infantil, «kawaii», «chibi» o de mascota;
+  - contornos negros gruesos, colores planos de vector o colores saturados o fosforescentes.
+- **Texto de cualquier tipo:** letras, números, letreros, inscripciones o cifras en relojes, pizarras y pantallas. Si
+  la herramienta pinta letras, se regenera.
 - **Firmas, logotipos y marcas de agua.**
 - **Símbolos de monedas reales, billetes y banderas de países.**
-- **Personas.** Los únicos personajes son las 10 fichas. Se permiten gaviotas y pájaros pequeños como siluetas.
+- **Personas ni partes del cuerpo humano.** Las únicas criaturas son las 10 fichas, y en las escenas, si acaso,
+  gaviotas o pájaros lejanos como siluetas.
 - **Vehículos con marca.** Los vehículos genéricos sí se permiten.
 - **Nada que recuerde al juego comercial más famoso de este género:**
   - ni un señor mayor con sombrero de copa y bigote;
@@ -170,228 +175,214 @@ En las escenas hay siempre **3 planos**:
   - ni signos de interrogación en las cartas, ni cofres del tesoro, ni locomotoras, ni bombillas, ni grifos;
   - ni una flecha roja de salida, ni un policía señalando, ni rejas con cartel, ni un coche rojo de aparcamiento;
   - ni el fondo verde menta, ni billetes de colores pastel, ni casas verdes con hoteles rojos.
-- **Nada de otras obras:** no se pide «al estilo de» ningún juego, película, estudio o artista, y no se nombran marcas
-  en las peticiones. Tampoco aparecen personajes de otras obras ni esculturas o edificios famosos reconocibles.
+- **Nada de otras obras:**
+  - no se pide «al estilo de» ningún juego, película, estudio o artista, y no se nombran marcas en las peticiones;
+  - no se copian obras concretas, personajes de otras obras, esculturas o edificios famosos reconocibles.
 
 ---
 
 ## 3. La paleta
 
-**La paleta es cerrada:** solo se usan estos colores y sus tonos de sombra y brillo.
-- **Sombra:** el color mezclado con tinta al 25 %.
-- **Brillo:** el color mezclado con blanco al 35 %.
+**Paleta apagada y terrosa.** Estos son los colores de referencia. Al pintar habrá variaciones naturales de tono
+dentro de cada color, pero **no aparecen colores nuevos ni más saturados**.
 
-Los dos tonos ya están calculados en las tablas.
+### 3.1 Colores para pintar luces y sombras
 
-### 3.1 Colores generales
+| Nombre | Color | Uso |
+|---|---|---|
+| Color de sombra | `#34414C` (pizarra azulada) | Se mezcla con el color de cada objeto para pintar sus sombras: entre un 20 % en la penumbra y un 50 % en la sombra más profunda |
+| Color de luz | `#EADFC2` (ocre claro) | Se mezcla con el color de cada objeto para pintar sus luces, hasta un 35 % |
 
-| Nombre | Base | Sombra | Brillo | Uso |
-|---|---|---|---|---|
-| Tinta | `#1D2430` | — | — | Contornos, pupilas, sombras proyectadas (con opacidad) |
-| Noche | `#16202E` | — | — | Fondo del tablero, cielo de noche, medallones oscuros |
-| Crema | `#F4F1EA` | `#BEBEBC` | `#F8F6F1` | Fondos claros, papel, calles, aros de los medallones |
-| Blanco cálido | `#FBF9F4` | `#C4C4C3` | `#FCFBF8` | Todo lo blanco: porcelana, ojos, camisas, guantes, nubes |
-| Gris piedra | `#A7ADB7` | `#858B95` | `#C6CAD0` | Cemento, metal mate, pelaje de la Rata, agujas |
-| Gris pizarra | `#5B6472` | `#4C5462` | `#949AA3` | Metal oscuro, asfalto, maletines |
-| Carbón | `#3A4150` | `#333A48` | `#7F848D` | Manchas de la Vaca |
-| Arena | `#E9D6B9` | `#B6AA97` | `#F1E4D2` | Fachadas claras, hocicos, barrigas, suelos |
-| Madera | `#9C6B3F` | `#7C593B` | `#BF9F82` | Madera, cuero, pelaje del Oso |
-| Ladrillo | `#B5563C` | `#8F4A39` | `#CF9180` | Ladrillo y tejas |
-| Techo pizarra | `#3D5A80` | `#354D6C` | `#8194AC` | Tejados de las casas |
-| Oro | `#F2C14E` | `#BD9A47` | `#F7D78C` | Monedas, llave de la ciudad, cuernos del Toro, insignias pasivas |
-| Verde dinero | `#0F7B6C` | `#13655D` | `#63A99F` | Lo positivo y el dinero; color de los servicios |
-| Verde sube | `#2BB673` | `#289262` | `#75D0A4` | Flechas y gráficas que suben |
-| Rojo baja | `#E5484D` | `#B33F46` | `#EE888B` | Flechas que bajan, pagos, alarmas, pico del Cisne Negro |
-| Ámbar | `#F2A541` | `#BD853D` | `#F7C584` | Destacados, cascos de obra, mazo Fortuna, color de los transportes |
-| Azul noticias | `#2B4C7E` | `#28426B` | `#758BAB` | Mazo Noticias |
-| Rosa | `#F28482` | `#BD6C6E` | `#F7AFAE` | Mejillas, interior de orejas, narices, flores |
-| Verde hoja | `#4C9A2A` | `#407D2C` | `#8BBD75` | Vegetación |
-| Verde bosque | `#2D6A4F` | `#295947` | `#779E8D` | Vegetación oscura |
-| Turquesa | `#18A999` | `#19887F` | `#69C7BD` | Agua |
-| Agua profunda | `#0E7C74` | `#126663` | `#62AAA5` | Agua profunda y sombras del agua |
-| Cielo | `#8FD3F4` | `#73A7C3` | `#B6E2F8` | Cielo de día, cristal, gotas de sudor |
-| Horizonte | `#FCE7C8` | — | — | Parte baja del cielo de día |
-| Atardecer alto | `#6C5B9E` | — | — | Parte alta del cielo de atardecer |
-| Atardecer bajo | `#F6A57A` | — | — | Parte baja del cielo de atardecer |
-| Luz de ventana | `#FFE08A` | — | — | Ventanas encendidas y farolas |
-| Interior de boca | `#7A2E3A` | — | — | Bocas abiertas (con la lengua en rosa) |
+### 3.2 Colores generales
 
-### 3.2 Colores propios de los personajes
+| Nombre | Color | Uso |
+|---|---|---|
+| Tinta | `#23262B` | Texto de la interfaz y trazos de los iconos SVG. En las pinturas, solo en los acentos más oscuros (pupilas, orificios) |
+| Noche | `#1E242B` | Fondo del tablero, cielo de noche |
+| Papel | `#EFEAE0` | Fondos claros, papel, páginas |
+| Hueso | `#F4EFE6` | Todo lo blanco: porcelana, plumas claras, nubes, papel de sobre |
+| Pizarra | `#3A3F45` | Peanas de las fichas, piedra oscura |
+| Piedra | `#9A968E` | Piedra, cemento, metal mate |
+| Madera oscura | `#5E4433` | Mesas, suelos de tablas, cuero |
+| Madera clara | `#B08A62` | Maquetas, cajas, mangos |
+| Ladrillo | `#9E5A43` | Ladrillo y tejas |
+| Latón | `#A88A4A` | Marcos de las insignias, la llave de la ciudad, campanas |
+| Oro viejo | `#C9A44C` | Monedas y medallas |
+| Verde sube | `#4E9A6A` | Luces y gráficas que suben |
+| Rojo baja | `#B5483F` | Luces y gráficas que bajan, lacre, sellos |
+| Ámbar | `#C98B3A` | Color de los transportes y del mazo Fortuna, luces de aviso |
+| Azul noticias | `#34507A` | Mazo Noticias |
+| Verde dinero | `#3F7A66` | Color de los servicios |
+| Agua | `#4F7F86` | Agua |
+| Agua profunda | `#2E5257` | Agua profunda y sombras del agua |
+| Vegetación | `#5F7A4A` | Plantas y pasto |
+| Vegetación oscura | `#3E5A3F` | Árboles y sombras de las plantas |
+| Cielo | `#A9C7D6` | Parte alta del cielo de tarde |
+| Horizonte | `#E9DFCB` | Parte baja del cielo de tarde |
+| Atardecer alto | `#5B5577` | Parte alta del cielo de atardecer |
+| Atardecer bajo | `#D9A27E` | Parte baja del cielo de atardecer |
+| Luz de ventana | `#F0C987` | Ventanas encendidas y farolas |
 
-| Nombre | Base | Sombra | Brillo | Uso |
-|---|---|---|---|---|
-| Marrón toro | `#7A4A33` | `#634132` | `#A9897A` | Pelaje del Toro |
-| Marfil | `#E7E3DC` | `#B5B3B1` | `#EFEDE8` | Piel del Elefante Blanco |
-| Rojo hormiga | `#8E3B2F` | `#72352F` | `#B68078` | Cuerpo de la Hormiga |
-| Azul tiburón | `#6C8CA6` | `#587289` | `#9FB4C5` | Piel del Tiburón |
-| Plumaje | `#33354F` | `#2E3147` | `#7A7C8D` | Plumas del Cisne Negro (más claro que la tinta, para que se vea el contorno) |
+### 3.3 Los colores de las fichas
 
-### 3.3 Cuánto color
+Cada ficha tiene un color propio. Es su identidad en el juego: en la interfaz, en el filo de su peana, en el fondo de
+su retrato y en sus insignias. No tiene por qué ser el color del animal o del objeto.
 
-- En cada imagen hay **como mucho 3 colores dominantes**, más los neutros (tinta, crema, blanco cálido, grises).
-- **El color propio del motivo** (el del barrio o el de la ficha) ocupa **al menos el 30 %** de la superficie con
-  color, salvo que la ficha técnica diga otra cosa.
-- **Nada de colores fosforescentes** ni de colores fuera de la paleta.
+| Ficha | Color |
+|---|---|
+| La Rata | gris grafito `#6B7078` |
+| La Taza | terracota `#B8693A` |
+| El Toro | rojo óxido `#A63D32` |
+| El Oso | verde musgo `#4F7A55` |
+| La Burbuja | azul niebla `#6A9DB8` |
+| La Vaca Lechera | ocre `#C9A04A` |
+| El Elefante Blanco | malva `#A9707D` |
+| La Hormiga | oliva `#8A8F3C` |
+| El Tiburón | petróleo `#3E7C80` |
+| El Cisne Negro | índigo `#3F5482` |
+
+### 3.4 Cuánto color
+
+- En cada imagen hay **como mucho 3 colores dominantes**, más los neutros (papel, hueso, piedras, maderas, noche).
+- **El color propio** (el de la ficha, el barrio o la carta) **es el único acento intenso** de la imagen. Todo lo demás
+  va más apagado.
 
 ---
 
 ## 4. Los barrios y las otras propiedades
 
 Cada barrio tiene un color y una forma de construir. Se respetan en todas las imágenes donde aparece: el centro del
-tablero, las cabeceras y la portada.
+tablero, las cabeceras y la portada. El color del barrio va en tejados, toldos, persianas o fachadas, nunca en el
+cielo ni en las calles.
 
-| Barrio | Base | Sombra | Brillo | Arquitectura y materiales | Elementos que siempre aparecen |
-|---|---|---|---|---|---|
-| **Los Talleres** | gris acero `#6E7B8B` | `#5A6574` | `#A1A9B4` | Naves industriales con tejado de diente de sierra, paredes de ladrillo, puertas de persiana metálica gris pizarra | Chimeneas cortas con vapor blanco, chispas ámbar de soldadura, una grúa pequeña |
-| **La Feria** | fucsia `#D9468F` | `#AA3E77` | `#E687B6` | Carpas a rayas fucsia y crema, puestos de madera con toldos | Banderines en cadena (fucsia, ámbar y turquesa), cajas de fruta |
-| **Puerto Viejo** | turquesa `#18A999` | `#19887F` | `#69C7BD` | Casas bajas de colores junto al agua, muelle de madera | Faro blanco cálido con una franja turquesa, barcas de pesca, redes, gaviotas |
-| **Barrio Universitario** | violeta `#7A4FD1` | `#6344A9` | `#A98DE1` | Edificio principal con cúpula violeta y escalinata, biblioteca con ventanales | Árboles, bicicletas aparcadas, banderolas violeta lisas (sin escudos ni letras) |
-| **Centro Histórico** | terracota `#C1502E` | `#98452F` | `#D78D77` | Casas antiguas de dos pisos con balcones de madera y tejas de ladrillo, plaza adoquinada | Campanario con reloj sin números, una fuente |
-| **Jardines del Río** | verde hoja `#4C9A2A` | `#407D2C` | `#8BBD75` | Casas pequeñas entre jardines, puentes de arco | Río turquesa, sauces, flores rosa y ámbar, bancos |
-| **Distrito Financiero** | azul eléctrico `#2563EB` | `#2353BC` | `#719AF2` | Rascacielos inventados de cristal azul eléctrico con reflejos en bandas diagonales | Pantallas con gráficas que suben (verde sube), plazas de piedra |
-| **Altos del Mirador** | dorado `#D4A017` | `#A6811D` | `#E3C168` | Casas elegantes con tejados dorados en colinas, jardines con setos | Un mirador con barandilla de madera, vista a la ciudad |
-| *Transportes* | ámbar `#F2A541` | `#BD853D` | `#F7C584` | Terminal de Buses, Metro Central, Teleférico y Aeropuerto | Vehículos genéricos sin marcas |
-| *Servicios* | verde dinero `#0F7B6C` | `#13655D` | `#63A99F` | Compañía de Agua y Red de Internet | Depósitos, tuberías, antenas |
+| Barrio | Color | Arquitectura y materiales | Elementos que siempre aparecen |
+|---|---|---|---|
+| **Los Talleres** | gris acero `#6F7780` | Naves industriales de ladrillo con tejado de diente de sierra y persianas metálicas | Chimeneas cortas con vapor claro, chispas de soldadura, una grúa pequeña |
+| **La Feria** | frambuesa `#B5577A` | Carpas de lona a rayas frambuesa y hueso, puestos de madera con toldos | Banderines de tela, cajas de fruta |
+| **Puerto Viejo** | turquesa apagado `#3E8E86` | Casas bajas junto al agua, con muelle de madera | Faro de piedra clara con una franja turquesa, barcas de pesca, redes, gaviotas |
+| **Barrio Universitario** | violeta apagado `#6E5A9E` | Edificio de piedra con cúpula violeta y escalinata, biblioteca con ventanales | Árboles, bicicletas aparcadas, banderolas lisas (sin escudos ni letras) |
+| **Centro Histórico** | terracota `#B05A3C` | Casas antiguas de dos pisos con balcones de madera y tejados de teja, plaza adoquinada | Campanario con un reloj sin números, una fuente |
+| **Jardines del Río** | verde salvia `#6A8F4E` | Casas pequeñas entre jardines, puentes de piedra en arco | Río, sauces, flores de tonos apagados, bancos |
+| **Distrito Financiero** | azul cobalto `#3C64A8` | Rascacielos inventados de cristal azul cobalto y acero, de líneas sobrias | Pantallas con luces que suben (sin cifras), plazas de piedra |
+| **Altos del Mirador** | oro viejo `#B8963A` | Casas señoriales con tejados de tono oro viejo en colinas, jardines con setos | Un mirador con barandilla de piedra y vista a la ciudad |
+| *Transportes* | ámbar `#C98B3A` | Terminal de Buses, Metro Central, Teleférico y Aeropuerto | Vehículos genéricos sin marcas |
+| *Servicios* | verde dinero `#3F7A66` | Compañía de Agua y Red de Internet | Depósitos, tuberías, antenas |
 
 ---
 
 ## 5. Las 10 fichas: hojas de personaje
 
-### 5.1 Reglas comunes de los personajes
+### 5.1 Reglas comunes
 
-- **De pie, como dibujos animados:**
-  - los animales, sobre dos patas;
-  - el Tiburón, sobre la cola;
-  - la Taza y la Burbuja son objetos con cara, sin brazos ni piernas.
-- **Proporciones:** la cabeza mide entre el 40 y el 45 % de la altura del personaje. Cuerpo compacto y extremidades
-  cortas y redondeadas. Las manos son guantes blancos de 4 dedos (sección 2.4).
-- **Misma altura:** las 10 fichas miden lo mismo en la imagen, sin importar su tamaño real. La Hormiga es tan alta
-  como el Elefante.
-- **Ojos (iguales en las 10):**
-  - dos óvalos verticales en blanco cálido, de alto el 12 % de la altura del personaje, separados medio ojo y con
-    contorno tinta;
-  - la pupila en tinta ocupa el 55 % del ojo y mira al espectador;
-  - un punto de brillo `#FFFFFF` en la pupila, arriba a la izquierda.
-- **Cejas:** un trazo corto y grueso de tinta sobre cada ojo. Son las que dan la emoción.
-- **Boca:** una línea curva simple. Solo en los retratos puede abrirse: interior en interior de boca y lengua en rosa.
-- **Mejillas:** un óvalo rosa `#F28482` al 40 % de opacidad bajo cada ojo, en los 10 personajes.
-- **Mirada:** el cuerpo girado 3/4 hacia la derecha y los ojos mirando al espectador.
-- **Accesorios:** los de su hoja, ni uno más ni uno menos, y con el mismo diseño en la pieza y en el retrato.
-- **Personalización:** cada ficha tiene un único aspecto. No hay variantes, disfraces ni cambios de ropa.
-- **El color de la ficha** se usa siempre en los mismos sitios:
-  - la peana de la pieza;
-  - el medallón del retrato;
-  - las dos insignias de sus habilidades;
-  - el accesorio que lo indique su hoja.
+- **Animales y objetos reales:**
+  - los animales se ven y se mueven como su especie: a cuatro patas los que van a cuatro patas, sin ropa y sin gestos
+    humanos;
+  - los objetos son objetos, sin cara.
+- **La metáfora** se cuenta con la pose y, en algunas fichas, con un único objeto simbólico (la moneda de la Hormiga,
+  la campana de la Vaca, la casa de la Burbuja). Ni uno más.
+- **Misma altura:** las 10 fichas miden lo mismo en la imagen, sin importar su tamaño real. La Hormiga se pinta tan
+  grande como el Elefante, como en una lámina de naturaleza.
+- **La mirada:** los animales miran en la dirección de su movimiento o hacia el espectador, nunca con expresiones
+  humanas.
+- **Un solo aspecto:** no hay variantes, disfraces ni cambios. La pieza y el retrato muestran el mismo animal u
+  objeto, con los mismos colores y marcas.
 
 ### 5.2 Las hojas
 
-**🐀 La Rata** · color de ficha naranja `#F4A261` (sombra `#BE8355`, brillo `#F8C398`) · metáfora: la «carrera de la
-rata», trabajar sin parar para pagar las cuentas.
+**La Rata** · color de ficha gris grafito `#6B7078` · metáfora: la «carrera de la rata», correr sin parar para pagar
+las cuentas.
 
-| Parte | Cómo es |
+| Aspecto | Cómo es |
 |---|---|
-| Cuerpo | Pelaje gris piedra. Barriga, hocico y palmas en arena. Orejas redondas muy grandes (cada una mide el 60 % del ancho de la cabeza) con el interior rosa. Nariz rosa. Cola larga y fina en el brillo del rosa, en forma de S. Tres bigotes finos de tinta a cada lado |
-| Ropa | Camisa de manga corta en blanco cálido, con cuello, y corbata en su naranja |
-| Accesorios | Maletín gris pizarra con cierre de oro. Una gota de sudor en cielo junto a la frente (siempre) |
-| Expresión | Decidida: cejas inclinadas hacia el centro, sonrisa apretada |
-| Pose de la pieza | Corriendo hacia la derecha: pierna derecha adelantada, cuerpo inclinado 10° hacia delante, maletín en la mano de atrás, la cola en S detrás |
+| Qué es | Una rata parda real, delgada y ágil |
+| Colores | Pelaje gris pardo `#6E6A64`, más claro en el vientre (`#A39B8F`). Orejas finas y algo translúcidas en un rosa apagado (`#C98F86`). Cola larga y desnuda en el mismo rosa, más oscuro. Bigotes finos y claros. Ojos negros con un brillo |
+| Pose de la pieza | Corriendo hacia la derecha en plena zancada, con el cuerpo estirado y bajo, y la cola en curva detrás |
+| Evitar | Aspecto sucio, dientes amenazantes, babas |
 
-**☕ La Taza** · color de ficha café `#8D5524` (sombra `#714927`, brillo `#B59171`) · metáfora: la «tasa» de interés.
+**La Taza** · color de ficha terracota `#B8693A` · metáfora: la «tasa» de interés.
 
-| Parte | Cómo es |
+| Aspecto | Cómo es |
 |---|---|
-| Cuerpo | Taza cilíndrica de porcelana blanco cálido, un poco más estrecha abajo. Una franja ancha café en el tercio de arriba. El asa a la izquierda de la imagen. Arriba se ve el café, en la sombra del café |
-| Cara | En el frente de la taza: ojos, cejas, mejillas y boca. Sin brazos ni piernas |
-| Accesorios | El vapor: dos volutas en blanco cálido al 80 %, sin contorno, que se juntan en una flecha que sube |
-| Expresión | Relajada («el interés trabaja por mí»): ojos medio cerrados, sonrisa tranquila |
-| Pose de la pieza | De pie, quieta, con el vapor en flecha hacia arriba |
+| Qué es | Una taza de café real, de cerámica esmaltada |
+| Colores | Por fuera, esmalte terracota con pequeñas variaciones de tono; por dentro y en el borde, esmalte hueso. Café oscuro (`#3B2A20`) con un brillo |
+| Detalle | Vapor suave en hueso, semitransparente, que sube en una curva ascendente (nunca dibujando una flecha) |
+| Pose de la pieza | De pie sobre la peana, con el asa a la izquierda y el vapor subiendo |
+| Evitar | Cara, platos decorados, dibujos en la taza |
 
-**🐂 El Toro** · color de ficha rojo `#E63946` (sombra `#B43441`, brillo `#EF7E87`) · metáfora: el mercado alcista.
+**El Toro** · color de ficha rojo óxido `#A63D32` · metáfora: el mercado alcista, que embiste hacia arriba.
 
-| Parte | Cómo es |
+| Aspecto | Cómo es |
 |---|---|
-| Cuerpo | Pelaje marrón toro. Hocico ancho en arena, con dos orificios de tinta. Cuernos de oro curvados hacia arriba. Un mechón en la frente. Pezuñas en gris pizarra. Cola con una borla |
-| Ropa | Un pañuelo al cuello en su rojo |
-| Accesorios | Ninguno más |
-| Expresión | Confiada: sonrisa de medio lado, cejas levantadas |
-| Pose de la pieza | Embistiendo hacia arriba: cabeza baja y adelantada, cuernos hacia delante y arriba, una pata delantera levantada y una nubecita de polvo en gris piedra detrás, sin contorno |
+| Qué es | Un toro real, musculoso y compacto |
+| Colores | Pelaje castaño muy oscuro (`#3E2C24`), con brillos rojizos en el lomo. Cuernos color hueso con las puntas oscuras. Hocico oscuro y húmedo |
+| Pose de la pieza | Embistiendo hacia la derecha: cabeza baja, cuernos hacia arriba, una pata delantera levantada y polvo ocre levantándose detrás |
+| Evitar | Sangre, banderillas, adornos de toreo |
 
-**🐻 El Oso** · color de ficha verde bosque `#2D6A4F` (sombra `#295947`, brillo `#779E8D`) · metáfora: el mercado
-bajista.
+**El Oso** · color de ficha verde musgo `#4F7A55` · metáfora: el mercado bajista, que da el zarpazo hacia abajo.
 
-| Parte | Cómo es |
+| Aspecto | Cómo es |
 |---|---|
-| Cuerpo | Pelaje madera. Hocico y barriga en arena. Nariz de tinta. Orejas pequeñas y redondas. Es más ancho que los demás, pero igual de alto |
-| Ropa | Bufanda verde bosque con dos rayas arena en cada extremo |
-| Accesorios | Ninguno más |
-| Expresión | Tranquilo y satisfecho: párpados a media altura, sonrisa pequeña |
-| Pose de la pieza | De pie, con los brazos cruzados |
+| Qué es | Un oso pardo real, robusto y pesado |
+| Colores | Pelaje pardo (`#6B4A33`) con las puntas más claras (`#9C7653`) en el lomo. Hocico algo más claro. Garras oscuras |
+| Pose de la pieza | A cuatro patas, avanzando hacia la derecha, con una zarpa delantera levantada a punto de bajar |
+| Evitar | Rugidos, dientes a la vista |
 
-**🫧 La Burbuja** · color de ficha celeste `#4CC9F0` (sombra `#40A0C0`, brillo `#8BDCF5`) · metáfora: la burbuja
-inmobiliaria.
+**La Burbuja** · color de ficha azul niebla `#6A9DB8` · metáfora: la burbuja inmobiliaria.
 
-| Parte | Cómo es |
+| Aspecto | Cómo es |
 |---|---|
-| Cuerpo | Una esfera de jabón: relleno celeste al 20 % de opacidad (se ve a través) y contorno de tinta normal. Por dentro del borde, un aro iridiscente fino de tres colores (celeste, rosa y oro) al 60 %. Un brillo grande en blanco cálido con forma de ventana curva arriba a la izquierda, y otro pequeño abajo a la derecha |
-| Dentro | Una casa (sección 6) del 40 % del diámetro, en la parte de abajo |
-| Cara | Ojos, cejas, mejillas y boca sobre la superficie, en la mitad de arriba y delante de la casa |
-| Expresión | Eufórica: sonrisa grande, cejas muy arriba |
-| Pose de la pieza | Flotando a un 4 % de altura sobre la peana, inclinada 5° hacia la derecha |
+| Qué es | Una pompa de jabón real, perfectamente redonda |
+| Colores | Transparente, con reflejos iridiscentes de tonos apagados (malva, verde y oro viejo) en el borde. Un reflejo de ventana luminosa arriba a la izquierda |
+| Detalle | Dentro, una casa diminuta y realista (la casa de la sección 6), del 40 % del diámetro, en la parte de abajo |
+| Pose de la pieza | Flotando a un 4 % de altura sobre la peana, con una sombra suave en la peana |
+| Evitar | Cara, colores de arcoíris saturados |
 
-**🐄 La Vaca Lechera** · color de ficha amarillo mantequilla `#F9C74F` (sombra `#C29E47`, brillo `#FBDB8D`) · metáfora:
-el negocio que da dinero fijo.
+**La Vaca Lechera** · color de ficha ocre `#C9A04A` · metáfora: el negocio que da dinero fijo.
 
-| Parte | Cómo es |
+| Aspecto | Cómo es |
 |---|---|
-| Cuerpo | Blanco cálido con 4 manchas grandes de carbón, de bordes redondeados. Hocico ancho en el brillo del rosa. Dos cuernos cortos en arena. Orejas con el interior rosa. Sin ubre visible |
-| Ropa | Ninguna |
-| Accesorios | Collar de cuero madera con una campana de oro |
-| Expresión | Amable y satisfecha: ojos abiertos, sonrisa |
-| Pose de la pieza | De pie, saludando con la mano derecha levantada |
+| Qué es | Una vaca lechera real, tranquila y bien alimentada |
+| Colores | Blanca (en hueso) con manchas negras de bordes naturales. Hocico rosado apagado. Cuernos cortos claros |
+| Detalle | Una campana de latón colgada de una correa de cuero |
+| Pose de la pieza | De pie, en 3/4 hacia la derecha, con la cabeza un poco girada hacia el espectador |
+| Evitar | Ubre exagerada, aspecto de dibujo de granja |
 
-**🐘 El Elefante Blanco** · color de ficha rosa `#F28482` (sombra `#BD6C6E`, brillo `#F7AFAE`) · metáfora: la obra
-carísima que no sirve para nada.
+**El Elefante Blanco** · color de ficha malva `#A9707D` · metáfora: la obra carísima que no sirve para nada.
 
-| Parte | Cómo es |
+| Aspecto | Cómo es |
 |---|---|
-| Cuerpo | Piel marfil. Orejas grandes con el interior rosa. Trompa larga levantada en S. Dos colmillos cortos en arena |
-| Ropa | Ninguna |
-| Accesorios | Casco de obra ámbar con una franja horizontal en blanco cálido |
-| Expresión | Orgulloso y algo despistado: cejas arriba, ojos mirando un poco hacia arriba, sonrisa satisfecha |
-| Pose de la pieza | De pie, sacando pecho, con la trompa levantada |
+| Qué es | Un elefante real de piel muy clara, casi blanca, majestuoso |
+| Colores | Piel blanco hueso con tonos rosados apagados en las orejas, la trompa y los pliegues. Colmillos cortos de marfil |
+| Pose de la pieza | De pie, solemne, con la trompa levantada en curva |
+| Evitar | Mantos, adornos, cascos o cualquier accesorio |
 
-**🐜 La Hormiga** · color de ficha violeta `#7B2CBF` (sombra `#642A9B`, brillo `#A976D5`) · metáfora: el gasto hormiga.
+**La Hormiga** · color de ficha oliva `#8A8F3C` · metáfora: el gasto hormiga, lo poco que sumado es mucho.
 
-| Parte | Cómo es |
+| Aspecto | Cómo es |
 |---|---|
-| Cuerpo | Tres segmentos redondeados en rojo hormiga. Dos antenas con una bolita en la punta. Seis patas: está de pie sobre las dos de atrás |
-| Ropa | Ninguna |
-| Accesorios | Una moneda de oro gigante (su diámetro es el 60 % de la altura de la Hormiga), sostenida sobre la cabeza con las cuatro patas de delante |
-| Expresión | Esforzada pero feliz: ojos cerrados en arco, sonrisa grande |
-| Pose de la pieza | De pie, levantando la moneda sobre la cabeza |
+| Qué es | Una hormiga real, pintada como en una lámina de naturaleza (a escala grande) |
+| Colores | Cuerpo castaño rojizo oscuro (`#5A2A20`) con brillos ámbar en el abdomen. Seis patas finas y dos antenas |
+| Detalle | Carga con las mandíbulas una moneda de oro viejo más grande que su cabeza, levantada por delante |
+| Pose de la pieza | Caminando hacia la derecha con la moneda |
+| Evitar | Aspecto de insecto amenazante, mandíbulas exageradas |
 
-**🦈 El Tiburón** · color de ficha azul marino `#1D4E89` (sombra `#1D4473`, brillo `#6C8CB2`) · metáfora: el inversor sin
-piedad.
+**El Tiburón** · color de ficha petróleo `#3E7C80` · metáfora: el inversor sin piedad.
 
-| Parte | Cómo es |
+| Aspecto | Cómo es |
 |---|---|
-| Cuerpo | Azul tiburón arriba y vientre en blanco cálido. Aleta dorsal grande. Las aletas de los lados hacen de brazos. Está de pie sobre la cola |
-| Ropa | Cuello de camisa en blanco cálido y corbata en su azul marino |
-| Accesorios | Gafas de sol de tinta, con un brillo blanco en cada cristal. Sonrisa con una fila de dientes triangulares en blanco cálido, de puntas redondeadas |
-| Expresión | Confiado: sonrisa de medio lado enseñando los dientes. Los ojos no se ven: los tapan las gafas |
-| Pose de la pieza | De pie sobre la cola, ajustándose la corbata con una aleta |
+| Qué es | Un tiburón real, de silueta clásica y aerodinámica |
+| Colores | Gris azulado (`#5F7480`) en el lomo y vientre hueso, con la transición suave entre los dos |
+| Pose de la pieza | Nadando hacia la derecha en diagonal ascendente, suspendido sobre la peana como una pieza de museo, con la aleta dorsal bien visible. Boca cerrada o apenas entreabierta |
+| Evitar | Sangre, fauces abiertas con muchos dientes |
 
-**🦢 El Cisne Negro** · color de ficha negro azulado `#22223B` (sombra `#212338`, brillo `#6F6F80`) · metáfora: el
-imprevisto que nadie vio venir.
+**El Cisne Negro** · color de ficha índigo `#3F5482` · metáfora: el imprevisto que nadie vio venir.
 
-| Parte | Cómo es |
+| Aspecto | Cómo es |
 |---|---|
-| Cuerpo | Plumaje, con brillos en el brillo del plumaje. Pico en rojo baja con la punta de tinta. Patas en gris pizarra |
-| Ropa | Ninguna |
-| Accesorios | Ninguno: su rasgo es la elegancia |
-| Expresión | Misterioso: párpados a media altura, media sonrisa |
-| Pose de la pieza | De pie, con el cuello en S y un ala un poco abierta |
+| Qué es | Un cisne negro real |
+| Colores | Plumaje negro con reflejos pizarra (más claro que la tinta, para que se vea la forma). Pico rojo coral apagado (`#B4504A`) con una banda clara cerca de la punta. Ojo rojo |
+| Pose de la pieza | Posado sobre la peana como sobre el agua (sin patas a la vista), con el cuello en S y un ala ligeramente arqueada |
+| Evitar | Brillos de purpurina, poses de ballet |
 
 ---
 
@@ -402,27 +393,35 @@ referencia de las siguientes.
 
 | Objeto | Diseño fijo |
 |---|---|
-| **Moneda** | Disco de oro con el canto en la sombra del oro y un anillo interior en relieve (un círculo al 70 % del diámetro, en el brillo del oro). Sin símbolos ni números. Un destello `#FFFFFF` con forma de rombo, arriba a la izquierda. De canto, es un rectángulo redondeado con muescas |
-| **Llave de la ciudad** | Llave antigua de oro. La cabeza es un anillo. La caña es larga. El paletón, en lugar de dientes, dibuja el perfil de 4 edificios de alturas 2, 4, 3 y 5 |
-| **Casa** | Una planta con tejado a dos aguas. Fachada arena, tejado techo pizarra, puerta de madera, una ventana cuadrada en luz de ventana y una chimenea pequeña |
-| **Torre** | Rascacielos genérico de cristal cielo con estructura gris pizarra, 6 filas de ventanas y una antena con una luz en rojo baja |
-| **Flecha que sube / que baja** | Flecha gruesa con la punta redondeada, en verde sube o en rojo baja, con contorno de tinta |
-| **Gráfica** | Línea en zigzag de 4 tramos con un punto en cada vértice, sobre 3 líneas horizontales de tinta al 20 % |
-| **Maletín** | Gris pizarra, con asa y cierre de oro |
-| **Lupa** | Aro y mango en gris pizarra; el cristal en cielo al 50 %, con un brillo |
-| **Sello de goma** | Mango de madera redondeado y base en rojo baja |
-| **Dado** | Cubo en blanco cálido con las esquinas muy redondeadas y puntos de tinta. Siempre en 3/4, enseñando tres caras |
-| **Carta en miniatura** | Rectángulo 3:4 con las esquinas redondeadas, en azul noticias o en ámbar, con su emblema simplificado (sección 7.8) |
-| **Arco de entrada de la ciudad** | Arco de medio punto de piedra arena, con un remate de oro en la clave |
-| **Efectos** | Las gotas de sudor van en cielo; las líneas de movimiento, en tinta al 40 % y sin contorno; los destellos son estrellas de 4 puntas en blanco cálido; el confeti son rectángulos pequeños en los colores de los barrios |
+| **Peana** | Disco de pizarra pulida visto en elipse, con la cara de arriba un poco más clara y un filo de esmalte del color de la ficha en el canto, junto a la cara de arriba |
+| **Moneda** | Moneda de oro viejo gastada, con el canto estriado y un anillo en relieve. Sin símbolos ni números. Un brillo cálido arriba a la izquierda |
+| **Llave de la ciudad** | Llave antigua de latón con pátina. La cabeza es un anillo, la caña es larga y el paletón, en lugar de dientes, forma el perfil de 4 edificios de alturas 2, 4, 3 y 5 |
+| **Casa** | Maqueta de arquitectura: casa de una planta con tejado a dos aguas. Fachada de madera clara pintada, tejado de pizarra, puerta de madera oscura y una ventana con luz de ventana |
+| **Torre** | Maqueta de arquitectura: torre de cristal azul grisáceo con estructura de acero, 6 franjas de ventanas y una antena con una luz roja apagada |
+| **Gráfica** | Línea de luz en verde sube o rojo baja, como la de una pantalla de cotizaciones, sin ejes ni cifras |
+| **Maletín** | Maletín de cuero en madera oscura, con cierre de latón |
+| **Lupa** | Aro y mango de latón, con el cristal reflejando la luz |
+| **Sello** | Sello de lacre en rojo baja, sin letras, con un relieve circular simple |
+| **Dado** | Dado de hueso con las esquinas redondeadas por el uso y los puntos oscuros. Siempre en 3/4, enseñando tres caras |
+| **Carta en miniatura** | Carta 3:4 con el dorso de su mazo (sección 7.8) simplificado |
+| **Arco de entrada de la ciudad** | Arco de medio punto de piedra clara, con una clave de latón |
 
 ---
 
 ## 7. Fichas técnicas por tipo de imagen
 
 Cada ficha dice el lienzo final exacto, la proporción con que se genera, el fondo, dónde va el motivo y qué tamaño
-tiene. Los porcentajes se miden sobre el lienzo, desde la esquina de arriba a la izquierda. La plantilla de cada tipo
-se copia tal cual al principio de la petición.
+tiene. Los porcentajes se miden sobre el lienzo, desde la esquina de arriba a la izquierda.
+
+La **frase de estilo** se copia al principio de **todas** las peticiones de imágenes pintadas:
+
+```
+Pintura naturalista de aspecto gouache, realista pero claramente pintada a mano, para un juego de mesa para adultos:
+pincelada visible y fina que sigue la forma, textura sutil de papel, paleta terrosa y apagada, sombras frías y luces
+cálidas, una sola luz natural desde arriba a la izquierda, claroscuro moderado. Composición minimalista con un solo
+protagonista y mucho espacio libre. Sin contornos negros, sin estilo de dibujos animados, sin rasgos humanos, sin
+texto, letras ni números, sin logotipos, firma ni marca de agua.
+```
 
 ### 7.1 Pieza de ficha (`fichas/piezas/`)
 
@@ -430,19 +429,18 @@ se copia tal cual al principio de la petición.
 |---|---|
 | Lienzo final | 256 × 256 px, WebP. Se genera en 1:1 |
 | Fondo | Transparente |
-| Peana | Un disco visto en elipse. La cara de arriba mide el 72 % del ancho del lienzo y el 18 % del alto, centrada a lo ancho. El borde lateral tiene un grosor del 5 % del alto, en la sombra del color de la ficha. La cara de arriba va en el color de la ficha, con un aro fino en blanco cálido (grosor del 1 %) al 85 % de su ancho. El borde inferior de la peana queda al 95 % del alto |
-| Sombras | La del personaje sobre la peana: elipse de tinta al 25 % del 50 % del ancho de la peana. La de la peana sobre el suelo: elipse de tinta al 20 %, asomando un 3 % por abajo y a la derecha |
-| Personaje | De pie en el centro de la cara de arriba de la peana. Lo más alto (orejas, cuernos, vapor, moneda) llega al 6 % del borde de arriba. Ocupa como mucho el 80 % del ancho y deja al menos un 4 % de margen a cada lado |
-| Vista | 3/4 desde arriba (sección 2.5) |
-| Línea | Contorno exterior del 2 % e interiores del 1 % (en el personaje y en la peana) |
-| Nada más | Ni suelo, ni fondo, ni otros objetos |
+| Peana | La de la sección 6. La cara de arriba mide el 72 % del ancho del lienzo y el 18 % del alto, centrada a lo ancho. El canto tiene un grosor del 5 % del alto, con el filo de esmalte del color de la ficha (un 2 % de alto) arriba. El borde inferior de la peana queda al 95 % del alto |
+| Protagonista | El animal u objeto de su hoja (sección 5), de cuerpo entero, apoyado en la peana. Lo más alto llega al 6 % del borde de arriba. Ocupa como mucho el 80 % del ancho y deja al menos un 4 % de margen a cada lado |
+| Sombras | Sombra de contacto suave del protagonista sobre la peana, y sombra suave de la peana hacia abajo a la derecha |
+| Detalle | Simplificado: grandes masas de color y solo los detalles que se reconocen a 48 px (ojos, cuernos, aletas, la moneda) |
+| Borde de luz | La línea fina de luz cálida del lado en sombra (sección 2.3) |
+| Nada más | Ni suelo, ni fondo, ni otros objetos aparte de los de su hoja |
 
 ```
-Plantilla: Pieza de juego de mesa digital, ilustración vectorial plana con sombreado de dos tonos y borde nítido,
-contorno #1D2430 grueso y uniforme con extremos redondeados, luz desde arriba a la izquierda, acabado mate. Un
-personaje de dibujos animados, cabezón, de pie sobre una peana redonda vista en elipse del color [color de la ficha],
-centrado; vista 3/4 desde arriba, girado hacia la derecha y mirando al espectador. Fondo transparente. Sin texto,
-sin letras, sin números, sin logotipos, sin firma y sin marca de agua. Personaje: [hoja de personaje de la sección 5].
+Plantilla (después de la frase de estilo): Pieza de juego de mesa: [protagonista y pose de la hoja de personaje],
+de cuerpo entero sobre una peana redonda de pizarra pulida vista en elipse, con un filo de esmalte color [color de la
+ficha] en el canto. Vista 3/4 desde arriba, girado hacia la derecha. Detalle simplificado para verse pequeño, silueta
+muy clara. Fondo transparente.
 ```
 
 ### 7.2 Retrato de ficha (`fichas/retratos/`)
@@ -450,21 +448,17 @@ sin letras, sin números, sin logotipos, sin firma y sin marca de agua. Personaj
 | Aspecto | Regla |
 |---|---|
 | Lienzo final | 512 × 512 px, WebP. Se genera en 1:1 |
-| Fondo | Transparente fuera del medallón |
-| Medallón | Círculo centrado del 94 % del lienzo, relleno del color de la ficha. Detrás del personaje, un círculo en el brillo de su color, del 60 % del diámetro, centrado a lo ancho y con el centro al 42 % del alto. Por fuera, un aro crema del 2,5 % y un contorno de tinta del 1,5 % |
-| Suelo | Si la escena lo necesita, una banda en la sombra del color de la ficha desde el 80 % del alto hasta el borde del medallón |
-| Personaje | De cuerpo entero, con los mismos colores, ropa y accesorios que su pieza. Ocupa entre el 62 y el 70 % del alto, centrado a lo ancho (con un 8 % de margen), con la cabeza en el tercio de arriba. Más expresivo que en la pieza |
-| Escena | Los objetos de su escena (sección 8) van dentro del medallón, a un 6 % del borde como mínimo. Solo puede salirse del círculo, por arriba y hasta un 4 %, la parte más alta del personaje |
-| Vista | Frontal, con el personaje en 3/4 hacia la derecha |
-| Línea | 2 % el personaje y los objetos principales; 1 % los detalles y los objetos secundarios |
+| Fondo | Pintado a sangre, sin transparencia. El código decide el marco |
+| Entorno | Un entorno mínimo pintado (sección 8) dominado por el color de la ficha, apagado, con la viñeta de la sección 2.4. El suelo o la línea del horizonte entre el 75 y el 80 % del alto |
+| Protagonista | El mismo animal u objeto que su pieza. De cuerpo entero o casi, ocupa entre el 55 y el 70 % del alto, con su centro entre el 45 y el 55 % del ancho y la cabeza en el tercio de arriba |
+| Elementos | Como mucho los 2 de la sección 8 |
+| Cámara | Baja, a la altura del protagonista |
+| Detalle | Más que en la pieza: la pincelada se nota |
 
 ```
-Plantilla: Retrato de personaje para un juego de mesa digital, ilustración vectorial plana con sombreado de dos tonos
-y borde nítido, contorno #1D2430 grueso y uniforme, luz desde arriba a la izquierda, acabado mate. Dentro de un
-medallón redondo de color [color de la ficha], con un círculo más claro detrás del personaje y un aro crema por
-fuera; fondo transparente fuera del medallón. Personaje de cuerpo entero, cabezón, en 3/4 hacia la derecha y mirando
-al espectador. Sin texto, sin letras, sin números, sin logotipos, sin firma y sin marca de agua. Personaje: [hoja de
-personaje]. Escena: [descripción de la sección 8].
+Plantilla (después de la frase de estilo): Retrato de naturaleza de [protagonista de la hoja de personaje], cámara
+baja a su altura. Escena: [descripción de la sección 8]. Entorno mínimo dominado por el color [color de la ficha],
+apagado, con viñeta suave. Formato cuadrado, pintado hasta los bordes.
 ```
 
 ### 7.3 Centro del tablero (`tablero/centro/`)
@@ -472,25 +466,24 @@ personaje]. Escena: [descripción de la sección 8].
 | Aspecto | Regla |
 |---|---|
 | Lienzo final | 1024 × 1024 px, WebP. Se genera en 1:1 |
-| Fondo | Noche `#16202E`, sin transparencia |
-| La ciudad | Ocupa un cuadrado centrado del 88 % del lienzo, con las esquinas redondeadas (radio del 8 %). Su borde se difumina hacia el noche en una franja del 6 %: es la única transición suave permitida en esta imagen |
+| Fondo | Noche `#1E242B`, sin transparencia |
+| La ciudad | Ocupa un cuadrado centrado del 88 % del lienzo, con las esquinas redondeadas (radio del 8 %). Su borde se funde con la noche en una franja del 6 % |
 | Distribución | Ver la imagen en la sección 8. Cada zona va junto al lado del tablero donde están sus calles, en el orden del recorrido: la Salida abajo a la izquierda y el avance en el sentido de las agujas del reloj |
-| Plaza central | En el centro, una plaza redonda crema, lisa y sin edificios, del 22 % del ancho. Ahí el código muestra los dados y las cartas |
+| Plaza central | En el centro, una plaza redonda de piedra clara, lisa y sin edificios, del 22 % del ancho. Ahí el código muestra los dados y las cartas |
 | Vista | Aérea inclinada (sección 2.5) |
-| Color | Atardecer (sección 2.7). Todos los colores van mezclados con noche al 20 %, para que no compitan con las fichas. Una de cada cuatro ventanas, encendida en luz de ventana |
-| Línea | 0,5 % en los edificios. Sin línea en suelos, agua y vegetación de fondo |
+| Color | Atardecer (sección 2.7). Todo un 20 % más oscuro y apagado que en las cabeceras, para que no compita con las fichas. Una de cada cuatro ventanas, encendida |
+| Detalle | Pintado con masas grandes. Los barrios se reconocen por su color y su arquitectura, no por los detalles |
 
 ### 7.4 Esquina (`tablero/esquinas/`)
 
 | Aspecto | Regla |
 |---|---|
 | Lienzo final | 512 × 512 px, WebP. Se genera en 1:1 |
-| Fondo | Crema `#F4F1EA`, sin transparencia. Detrás del motivo, un círculo centrado del 84 % del lienzo en el color de acento de la esquina al 25 % de opacidad |
-| Suelo | Una elipse plana en arena, del 80 % del ancho y el 14 % del alto, centrada a lo ancho y con el centro al 80 % del alto. El motivo se apoya en ella |
-| Motivo | Centrado. Ocupa el 70 % del ancho y va del 12 % al 82 % del alto. Margen mínimo del 6 % |
-| Vista | 3/4 desde arriba |
-| Línea | 1,5 % la silueta; 0,75 % los detalles |
-| Color de acento | Salida: oro. Calabozo: gris piedra. Bolsa de Valores: verde sube. ¡Auditoría!: rojo baja |
+| Fondo | Pintado a sangre, sin transparencia: el fondo de su escena (sección 8) con el color de acento de la esquina mezclado al 25 % y la viñeta |
+| Suelo | Entre el 75 y el 80 % del alto |
+| Motivo | Centrado. Ocupa entre el 60 y el 70 % del ancho y va del 15 al 80 % del alto |
+| Vista | Frontal (sección 2.5) |
+| Color de acento | Salida: oro viejo. Calabozo: piedra. Bolsa de Valores: verde sube. ¡Auditoría!: rojo baja |
 
 ### 7.5 Edificio (`tablero/edificios/`)
 
@@ -498,47 +491,46 @@ personaje]. Escena: [descripción de la sección 8].
 |---|---|
 | Lienzo final | 256 × 256 px, WebP. Se genera en 1:1 |
 | Fondo | Transparente |
-| Motivo | Centrado a lo ancho. La base del edificio queda al 92 % del alto, con una sombra de contacto en elipse de tinta al 20 % del 90 % de su ancho. La casa ocupa el 70 % del ancho y el 62 % del alto. La torre ocupa el 46 % del ancho y el 86 % del alto |
+| Motivo | La maqueta de la sección 6, centrada a lo ancho. La base queda al 92 % del alto, con una sombra de contacto suave. La casa ocupa el 70 % del ancho y el 62 % del alto. La torre ocupa el 46 % del ancho y el 86 % del alto |
 | Vista | 3/4 desde arriba, la misma que las piezas |
-| Línea | 2 % / 1 % |
-| Diseño | El de la casa y la torre de la sección 6, sin cambios |
+| Detalle | Simplificado, con el borde de luz de la sección 2.3 |
 
 ### 7.6 Insignia de habilidad activa (`botones/habilidades/activas/`)
+
+Es un **botón esmaltado**: se ve como un objeto que se puede pulsar.
 
 | Aspecto | Regla |
 |---|---|
 | Lienzo final | 256 × 256 px, WebP. Se genera en 1:1 |
 | Fondo | Transparente |
 | Forma | Un hexágono con un vértice arriba y otro abajo (los lados verticales a izquierda y derecha). Mide el 94 % del alto, es regular y tiene las esquinas redondeadas con un radio del 6 %. Va centrado |
-| Capas, de fuera adentro | 1. Contorno de tinta del 2 %. 2. Borde en blanco cálido del 6 %. 3. Cara con un degradado vertical: el brillo del color de la ficha arriba y su color base abajo. 4. Relieve: una franja del 5 % en la sombra de su color a lo largo del borde de abajo, para que parezca un botón que se puede pulsar. 5. Reflejo: una banda curva blanca al 25 % de opacidad en el 30 % de arriba de la cara |
-| Símbolo | En blanco cálido, con contorno de tinta del 2,5 % y sombras en gris piedra. Ocupa el 56 % del ancho y va centrado a lo ancho, con el centro al 47 % del alto. Detrás lleva una copia de su silueta desplazada un 2,5 % abajo a la derecha, en la sombra del color de la ficha. Puede tener **un** detalle de color de la paleta (oro, verde sube, rojo baja, ámbar o gris piedra) que no pase del 25 % del símbolo |
+| Material | Un marco de latón envejecido del 7 %. Dentro, esmalte vitrificado del color de la ficha, un poco abombado, con un reflejo suave arriba a la izquierda. Una sombra suave alrededor, abajo a la derecha |
+| Símbolo | En relieve de latón pulido sobre el esmalte. Ocupa el 55 % del ancho y va centrado a lo ancho, con el centro al 47 % del alto. Puede tener **un** detalle de esmalte de otro color (verde sube, rojo baja, oro viejo o hueso) que no pase del 25 % del símbolo |
 
 ```
-Plantilla: Insignia de habilidad activa para un juego de mesa digital: hexágono con un vértice arriba y otro abajo,
-esquinas redondeadas, borde blanco cálido grueso y contorno #1D2430, cara de color [color de la ficha] con un
-degradado suave más claro arriba, una franja más oscura en el borde inferior y un reflejo curvo arriba; parece un
-botón que se puede pulsar. En el centro, un símbolo grande en blanco cálido con contorno oscuro: [símbolo de la
-sección 8]. Ilustración vectorial plana, luz desde arriba a la izquierda. Fondo transparente. Sin texto, sin letras,
-sin números, sin logotipos, sin firma y sin marca de agua.
+Plantilla (después de la frase de estilo): Botón esmaltado de un juego de mesa, visto de frente: hexágono con un
+vértice arriba y otro abajo, marco de latón envejecido, esmalte vitrificado color [color de la ficha] un poco
+abombado con un reflejo suave. En el centro, en relieve de latón pulido: [símbolo de la sección 8]. Fondo
+transparente.
 ```
 
 ### 7.7 Insignia de habilidad pasiva (`botones/habilidades/pasivas/`)
+
+Es una **medalla acuñada**: se ve como un objeto que se mira, no se pulsa.
 
 | Aspecto | Regla |
 |---|---|
 | Lienzo final | 256 × 256 px, WebP. Se genera en 1:1 |
 | Fondo | Transparente |
 | Forma | Una medalla redonda del 94 % del lienzo, centrada |
-| Capas, de fuera adentro | 1. Contorno de tinta del 2 %. 2. Canto de moneda en oro, del 7 %, con 32 muescas (rectángulos redondeados) en la sombra del oro. 3. Un aro fino en el brillo del oro, del 1,5 %. 4. Cara plana (sin degradado) en la sombra del color de la ficha. 5. Un círculo interior en el color base de la ficha, del 70 % del diámetro |
-| Símbolo | En oro, con brillos en el brillo del oro y contorno de tinta del 2 %. Ocupa el 54 % del ancho y va centrado. Puede tener **un** detalle en blanco cálido, verde sube o rojo baja que no pase del 25 % del símbolo |
-| Diferencia con las activas | Sin relieve inferior y sin reflejo: la medalla se mira, no se pulsa |
+| Material | De oro viejo acuñado, con el canto estriado (32 estrías). Por dentro del canto, un anillo de esmalte mate del color de la ficha, del 8 %. El campo central es de metal satinado, sin esmalte. Una sombra suave alrededor, abajo a la derecha |
+| Símbolo | En bajorrelieve del mismo oro viejo. Ocupa el 54 % del ancho y va centrado. Puede tener **un** detalle de esmalte (hueso, verde sube o rojo baja) que no pase del 25 % del símbolo |
+| Diferencia con las activas | La activa es un hexágono con el campo de color. La pasiva es redonda, con el campo de metal y el color solo en el anillo |
 
 ```
-Plantilla: Insignia de habilidad pasiva para un juego de mesa digital: medalla redonda con el canto dorado de una
-moneda, con muescas, y contorno #1D2430; la cara, plana, de color [color de la ficha] más oscuro, con un círculo
-interior del color [color de la ficha]. En el centro, un símbolo dorado con contorno oscuro: [símbolo de la sección
-8]. Ilustración vectorial plana, luz desde arriba a la izquierda. Fondo transparente. Sin texto, sin letras, sin
-números, sin logotipos, sin firma y sin marca de agua.
+Plantilla (después de la frase de estilo): Medalla acuñada de un juego de mesa, vista de frente: redonda, de oro
+viejo con el canto estriado, un anillo de esmalte mate color [color de la ficha] y el campo central de metal
+satinado. En el centro, en bajorrelieve: [símbolo de la sección 8]. Fondo transparente.
 ```
 
 ### 7.8 Dorso de carta (`tarjetas/dorsos/`)
@@ -546,74 +538,73 @@ números, sin logotipos, sin firma y sin marca de agua.
 | Aspecto | Regla |
 |---|---|
 | Lienzo final | 384 × 512 px (3:4), WebP. Se genera en 3:4 |
-| Fondo | El color del mazo, a sangre (llega a los bordes). Sin transparencia. Las esquinas son rectas: el código las redondea |
-| Marco | Una banda crema del 5 % del ancho, a un 4 % del borde, con un contorno de tinta del 1 % por dentro y por fuera |
-| Dentro del marco | Un patrón repetido del motivo pequeño de su mazo (sección 8), en la sombra del color del mazo, en cuadrícula regular |
-| Centro | Un medallón crema redondo del 56 % del ancho, centrado, con contorno de tinta del 1,5 %. El emblema del mazo va dentro y ocupa el 70 % del medallón |
-| Simetría | El marco y el patrón son simétricos y se ven igual girados 180°. El emblema va derecho |
+| Fondo | El color del mazo, pintado a sangre como papel teñido. Sin transparencia. Las esquinas son rectas: el código las redondea |
+| Marco | Una cenefa geométrica sencilla pintada en hueso, a un 5 % del borde y con un grosor del 4 %. Es simétrica y se ve igual girada 180° |
+| Centro | Un óvalo hueso del 56 % del ancho, centrado, con el emblema del mazo (sección 8) pintado dentro, ocupando el 70 % del óvalo |
+| Nada más | Sin patrones recargados ni dorados brillantes |
 
 ### 7.9 Efecto de carta (`tarjetas/efectos/`)
+
+Son **bodegones**: objetos reales pintados.
 
 | Aspecto | Regla |
 |---|---|
 | Lienzo final | 512 × 384 px (4:3), WebP. Se genera en 4:3 |
-| Fondo | Crema `#F4F1EA`, sin transparencia. Detrás del motivo, un círculo centrado de diámetro igual al 76 % del alto, en el color de acento de la carta al 25 % de opacidad |
-| Suelo | Solo en las que lo indique la sección 8: una banda arena desde el 80 % del alto hasta abajo |
-| Motivo | Centrado. Ocupa el 64 % del alto y como mucho el 70 % del ancho |
-| Vista | Frontal un poco elevada |
-| Línea | 1,5 % / 0,75 % |
+| Fondo | Pintado a sangre, sin transparencia: una pared lisa en papel mezclado al 20 % con el color de acento de la carta (sección 8), con viñeta |
+| Superficie | Los objetos se apoyan sobre una mesa de madera oscura que ocupa el 25 % de abajo, salvo los que la sección 8 marca sin mesa |
+| Motivo | Centrado. Ocupa el 60 % del alto y como mucho el 70 % del ancho |
+| Vista | Frontal, ligeramente desde arriba |
 
 ### 7.10 Cabecera de propiedad (`tarjetas/cabeceras/`)
 
 | Aspecto | Regla |
 |---|---|
 | Lienzo final | 512 × 288 px (16:9), WebP. Se genera en 16:9 |
-| Fondo | Escena completa, sin transparencia. Cielo de media tarde (degradado) en el 40 % de arriba, con 2 nubes en blanco cálido sin contorno. El horizonte va al 55 % del alto |
-| Composición | El motivo principal (sección 8) centrado, ocupando entre el 50 y el 60 % del ancho, en plano medio. Una calle o suelo en crema y arena en el 15 % de abajo. A los lados, edificios de su barrio en plano medio. Siluetas de la ciudad en el fondo |
-| Color | El color del barrio (o el de los transportes y servicios) ocupa entre el 30 y el 40 % de la superficie con color: tejados, toldos, fachadas y banderines. Las calles y el cielo no cuentan |
-| Vista | Frontal un poco elevada, con 3 planos de profundidad (sección 2.6) |
-| Línea | La de las escenas (sección 2.2) |
+| Fondo | Escena completa, sin transparencia, con un cielo de tarde en el 40 % de arriba. El horizonte va al 55 % del alto |
+| Composición | Un edificio o lugar protagonista (sección 8) centrado, que ocupa entre el 45 y el 55 % del ancho. A los lados, como mucho dos edificios sencillos de su barrio. El fondo, en siluetas atmosféricas. Una calle o suelo en el 15 % de abajo |
+| Color | El color del barrio (o el de los transportes y servicios) es el único acento intenso: en tejados, toldos, fachadas o persianas |
+| Vista | Frontal, con 3 planos de profundidad (sección 2.6) |
 
 ### 7.11 Ilustración de interfaz (`interfaz/ilustraciones/`)
 
 | Aspecto | Regla |
 |---|---|
 | Lienzo final | 512 × 512 px, WebP. Se genera en 1:1 |
-| Fondo | Igual que los retratos: transparente fuera de un medallón del 94 %, con el círculo más claro detrás del motivo, el aro crema y el contorno de tinta. El color del medallón lo indica la sección 8 |
-| Motivo | Centrado. Ocupa el 70 % del alto del medallón |
-| Línea | 2 % / 1 % |
+| Fondo | Pintado a sangre, sin transparencia, con el color de fondo que indica la sección 8 y viñeta |
+| Motivo | Centrado. Ocupa entre el 55 y el 70 % del alto. Como mucho 2 elementos secundarios |
 
 ### 7.12 Marca (`marca/`)
 
 | Archivo | Reglas |
 |---|---|
-| Emblema | 512 × 512 px, WebP, fondo transparente. Un círculo noche del 92 % con un aro de oro del 3 %. Dentro, la llave de la ciudad (sección 6) en diagonal, con la cabeza abajo a la izquierda y el paletón arriba a la derecha, ocupando el 76 % de la diagonal. Línea del 2 % |
-| Icono de la app | 512 × 512 px, PNG, cuadrado lleno de noche. Sin círculo ni aro. La llave, centrada dentro del 60 % central del lienzo (los celulares recortan los bordes) |
+| Emblema | 512 × 512 px, WebP, fondo transparente. Un disco de pizarra del 92 % con un filo de latón. Encima, la llave de la ciudad (sección 6) en diagonal, con la cabeza abajo a la izquierda y el paletón arriba a la derecha, ocupando el 76 % de la diagonal |
+| Icono de la app | 512 × 512 px, PNG, un cuadrado lleno de noche con la llave centrada dentro del 60 % central (los celulares recortan los bordes). Más simple que el emblema: sin disco |
 | Portada | 1600 × 900 px (16:9), WebP, sin transparencia. Ver la sección 8 |
 | Redes | 1200 × 630 px, PNG o JPG, sin transparencia. Se genera en 16:9 y el optimizador recorta lo que sobra arriba y abajo. Ver la sección 8 |
 
 ### 7.13 Iconos SVG (los escribe el código, no un generador de imágenes)
 
 Los iconos de `tablero/barrios/`, `tablero/casillas/`, `tablero/marcadores/`, `botones/acciones/` e `interfaz/iconos/`
-son **SVG escritos a mano**, de **trazo**, todos con la misma construcción:
+son **SVG escritos a mano**: **pictogramas de línea fina**, sobrios y todos con la misma construcción. Son la única
+excepción a la pintura: en una interfaz para adultos, los iconos limpios son lo que mejor se lee.
 
 - **La etiqueta de apertura**, exactamente así:
 
   ```
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
   ```
 
-- **El trazo:** todos los trazos son de 5. Nunca hay otro grosor.
-- **Los rellenos:** solo con `fill="currentColor"`, y solo en detalles pequeños de hasta 10 × 10 (puntos, ojos,
-  remaches).
+- **El trazo:** todos los trazos son de 4. Nunca hay otro grosor.
+- **Los rellenos:** solo con `fill="currentColor"`, y solo en detalles pequeños de hasta 8 × 8 (puntos y remaches).
 - **Los colores:** no se escriben. Solo `currentColor` y `none`, porque el código da el color. Nada de `#…`, `rgb()`
   ni nombres de colores.
 - **El área:** todo va dentro del recuadro de 6 a 58. La forma principal cabe en un cuadrado de 48 × 48 centrado (de 8
   a 56). Las formas redondas pueden llegar a 52 × 52.
 - **El estilo:** de frente y sin perspectiva, simétrico cuando el objeto lo es, con las esquinas redondeadas (`rx` de
-  al menos 4).
+  al menos 3).
 - **La separación:** al menos 4 entre trazos paralelos, para que no se junten a 24 px.
-- **La complejidad:** como mucho 8 elementos.
+- **La complejidad:** como mucho 8 elementos. Pueden aparecer manos dibujadas con líneas (como en «tratos»), pero
+  nunca caras.
 - **Elementos permitidos:** `path`, `circle`, `ellipse`, `rect`, `line`, `polyline`, `polygon` y `g`. Prohibidos:
   `text`, `image`, `style`, `script`, degradados y filtros.
 - **El peso:** 20 KB como máximo. Lo normal es menos de 2 KB.
@@ -621,9 +612,9 @@ son **SVG escritos a mano**, de **trazo**, todos con la misma construcción:
 Ejemplo de un icono correcto, la moneda de `interfaz/iconos/`:
 
 ```
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
   <circle cx="32" cy="32" r="22"/>
-  <circle cx="32" cy="32" r="12"/>
+  <circle cx="32" cy="32" r="13"/>
 </svg>
 ```
 
@@ -644,59 +635,59 @@ sección 7.
 
 ### 8.1 Fichas · P1 las piezas, P2 los retratos
 
-Las piezas siguen la ficha 7.1. Su aspecto completo está en las hojas de la sección 5.
+Las piezas siguen la ficha 7.1. El animal u objeto y su pose están en las hojas de la sección 5:
 
-| Archivo | Pose (detalle en la sección 5) |
+| Archivo | Pose |
 |---|---|
-| `fichas/piezas/rata.webp` | Corriendo hacia la derecha con el maletín |
-| `fichas/piezas/taza.webp` | Quieta, con el vapor en flecha |
-| `fichas/piezas/toro.webp` | Embistiendo hacia arriba |
-| `fichas/piezas/oso.webp` | Brazos cruzados |
-| `fichas/piezas/burbuja.webp` | Flotando sobre la peana |
-| `fichas/piezas/vaca-lechera.webp` | Saludando |
-| `fichas/piezas/elefante-blanco.webp` | Sacando pecho, con la trompa levantada |
-| `fichas/piezas/hormiga.webp` | Levantando la moneda |
-| `fichas/piezas/tiburon.webp` | Ajustándose la corbata |
-| `fichas/piezas/cisne-negro.webp` | Cuello en S y un ala abierta |
+| `fichas/piezas/rata.webp` | Corriendo en plena zancada |
+| `fichas/piezas/taza.webp` | Quieta, con el vapor subiendo |
+| `fichas/piezas/toro.webp` | Embistiendo, con la cabeza baja y los cuernos arriba |
+| `fichas/piezas/oso.webp` | A cuatro patas, con una zarpa levantada |
+| `fichas/piezas/burbuja.webp` | Flotando sobre la peana, con la casa dentro |
+| `fichas/piezas/vaca-lechera.webp` | De pie, con la campana |
+| `fichas/piezas/elefante-blanco.webp` | De pie, con la trompa levantada |
+| `fichas/piezas/hormiga.webp` | Caminando con la moneda |
+| `fichas/piezas/tiburon.webp` | Nadando en diagonal hacia arriba |
+| `fichas/piezas/cisne-negro.webp` | Con el cuello en S y un ala arqueada |
 
 Los retratos siguen la ficha 7.2:
 
-| Archivo | Escena dentro del medallón |
+| Archivo | Escena (como mucho 2 elementos) |
 |---|---|
-| `fichas/retratos/rata.webp` | La Rata corre dentro de una rueda de ejercicio cuyo aro es una moneda gigante (vista de canto), con 3 líneas de movimiento detrás. Está cansada pero decidida |
-| `fichas/retratos/taza.webp` | La Taza, sobre un platito en blanco cálido, con una torre de 3 monedas a su derecha. Su vapor dibuja una gráfica que sube |
-| `fichas/retratos/toro.webp` | El Toro, de pie y con los brazos en jarra, sube por una gráfica en verde sube que cruza el medallón en diagonal hacia arriba a la derecha |
-| `fichas/retratos/oso.webp` | El Oso, con los brazos cruzados, delante de una gráfica en rojo baja que cae. Detrás, a la izquierda, la entrada de una cueva con un montoncito de monedas |
-| `fichas/retratos/burbuja.webp` | La Burbuja, enorme (80 % del medallón), flota sobre una silueta de la ciudad que asoma por abajo, con 3 casas dentro. Desde la derecha se acerca una aguja en gris piedra, con la punta a un 10 % de la burbuja. Ella mira la aguja preocupada pero sigue sonriendo |
-| `fichas/retratos/vaca-lechera.webp` | La Vaca, sobre pasto en verde hoja, junto a un cántaro metálico en gris piedra del que sale un chorro de monedas en lugar de leche |
-| `fichas/retratos/elefante-blanco.webp` | El Elefante, orgulloso, delante de un puente enorme en gris piedra que se corta en el aire, con una cinta de inauguración roja cortada colgando |
-| `fichas/retratos/hormiga.webp` | La Hormiga, delante, y dos hormigas iguales pero más pequeñas detrás, en fila, llevan monedas hacia un hormiguero de tierra arena con una ranura de hucha en la cima |
-| `fichas/retratos/tiburon.webp` | El Tiburón nada entre olas que son líneas de gráfica, en turquesa y agua profunda, con la aleta fuera del agua |
-| `fichas/retratos/cisne-negro.webp` | El Cisne se desliza sobre un lago en noche en el que se refleja un relámpago ámbar. Tres plumas caen y se convierten en cartas en miniatura (una de Noticias y dos de Fortuna) |
+| `fichas/retratos/rata.webp` | La Rata corre sobre el canto de una moneda gigante de oro viejo puesta de pie, como en una rueda. Detrás, una pared de tablas en penumbra, con el gris grafito de la ficha |
+| `fichas/retratos/taza.webp` | Bodegón de interior: la Taza sobre su plato en una mesa de madera oscura, junto a una pila ordenada de monedas. El vapor sube en curva. Pared en terracota apagado |
+| `fichas/retratos/toro.webp` | El Toro embiste en un terreno abierto, levantando polvo dorado. Detrás, un cielo en rojo óxido apagado, con un haz de luz que sube en diagonal |
+| `fichas/retratos/oso.webp` | El Oso, sentado a la entrada de su cueva en penumbra, con un pequeño montón de monedas a sus pies. El musgo de la roca, en verde musgo |
+| `fichas/retratos/burbuja.webp` | La Burbuja flota sobre la silueta de una ciudad en azul niebla, con la casa dentro. Una aguja de coser se acerca desde la derecha |
+| `fichas/retratos/vaca-lechera.webp` | Al atardecer, la Vaca está en un prado de luz ocre, junto a un cubo metálico lleno de monedas en lugar de leche |
+| `fichas/retratos/elefante-blanco.webp` | El Elefante, frente a un puente monumental de piedra sin terminar que se corta en el aire. Cielo malva apagado |
+| `fichas/retratos/hormiga.webp` | En primer plano, la Hormiga carga su moneda. Detrás, desenfocada, una fila de hormigas lleva monedas. Suelo de tierra con hierba oliva |
+| `fichas/retratos/tiburon.webp` | El Tiburón, en aguas profundas color petróleo, con rayos de luz que bajan desde la superficie y monedas hundidas en el fondo |
+| `fichas/retratos/cisne-negro.webp` | El Cisne, en un lago oscuro en calma bajo un cielo índigo. En el agua se refleja un relámpago lejano |
 
 ### 8.2 Tablero · P1
 
 **Centro (ficha 7.3):**
 
-| Archivo | Qué dibujar |
+| Archivo | Qué pintar |
 |---|---|
-| `tablero/centro/ciudad.webp` | La ciudad vista desde el aire, con cada zona junto a su lado del tablero. **Abajo a la izquierda,** el arco de entrada de la ciudad (la Salida). **Lado izquierdo, de abajo arriba:** Los Talleres, la Terminal de Buses y La Feria. **Arriba a la izquierda:** una comisaría pequeña (el Calabozo). **Lado de arriba, de izquierda a derecha:** Puerto Viejo junto a un trozo de mar, la Compañía de Agua, la estación del Metro Central y el Barrio Universitario. **Arriba a la derecha:** el edificio de la Bolsa de Valores. **Lado derecho, de arriba abajo:** el Centro Histórico, una línea de Teleférico, la torre de la Red de Internet y los Jardines del Río, con un río que viene del mar. **Abajo a la derecha:** la oficina de auditoría con una lupa en el tejado. **Lado de abajo, de derecha a izquierda:** el Distrito Financiero, el Aeropuerto con una pista y un avión, y los Altos del Mirador en una colina. **En el centro,** la plaza redonda lisa. Cada barrio, con su arquitectura de la sección 4 |
+| `tablero/centro/ciudad.webp` | La ciudad vista desde el aire, con cada zona junto a su lado del tablero. **Abajo a la izquierda,** el arco de entrada de la ciudad (la Salida). **Lado izquierdo, de abajo arriba:** Los Talleres, la Terminal de Buses y La Feria. **Arriba a la izquierda:** una comisaría pequeña (el Calabozo). **Lado de arriba, de izquierda a derecha:** Puerto Viejo junto a un trozo de mar, la Compañía de Agua, la estación del Metro Central y el Barrio Universitario. **Arriba a la derecha:** el edificio de la Bolsa de Valores. **Lado derecho, de arriba abajo:** el Centro Histórico, una línea de Teleférico, la torre de la Red de Internet y los Jardines del Río, con un río que viene del mar. **Abajo a la derecha:** la oficina de auditoría. **Lado de abajo, de derecha a izquierda:** el Distrito Financiero, el Aeropuerto con una pista y los Altos del Mirador en una colina. **En el centro,** la plaza redonda lisa. Cada barrio, con su arquitectura de la sección 4 |
 
 **Esquinas (ficha 7.4):**
 
-| Archivo | Qué dibujar |
+| Archivo | Qué pintar |
 |---|---|
-| `tablero/esquinas/salida.webp` | **Día de pago** (acento oro). El arco de entrada de la ciudad (sección 6). Bajo el arco, un sobre de sueldo abierto en blanco cálido del que suben 5 monedas en abanico. Un camino crema sale del arco hacia el espectador |
-| `tablero/esquinas/calabozo.webp` | **Calabozo** (acento gris piedra). Una comisaría pequeña y moderna en gris piedra. A la izquierda, la puerta de una celda con barrotes verticales gris pizarra, sin carteles. A la derecha, un banco de madera para quien solo pasa, con un reloj de pared sin números encima |
-| `tablero/esquinas/bolsa-de-valores.webp` | **Bolsa de Valores** (acento verde sube). Una fachada con 4 columnas modernas en blanco cálido, escalinata y frontón sin inscripciones. Sobre la puerta, una pizarra luminosa en noche con 2 flechas que suben y 1 que baja, y gráficas sin números. A los lados de la escalinata, un toro (a la izquierda) y un oso (a la derecha) pequeños y estilizados, en oro, como adornos. No deben imitar ninguna escultura real |
-| `tablero/esquinas/auditoria.webp` | **¡Auditoría!** (acento rojo baja). Una lupa gigante (sección 6) inclinada sobre un libro de cuentas abierto (páginas crema con líneas grises, sin números), un sello de goma al lado y una luz giratoria ámbar sobre el libro, con 3 rayos. Sin personas ni policías |
+| `tablero/esquinas/salida.webp` | **Día de pago** (acento oro viejo). El arco de entrada de la ciudad con luz cálida de mañana que pasa a través. En el suelo, bajo el arco, un sobre de sueldo de papel kraft abierto del que asoman monedas |
+| `tablero/esquinas/calabozo.webp` | **Calabozo** (acento piedra). La puerta de hierro de una celda, entreabierta, en un muro de piedra, con una luz fría que entra por una ventana alta. A un lado, un banco de madera. Sin carteles |
+| `tablero/esquinas/bolsa-de-valores.webp` | **Bolsa de Valores** (acento verde sube). La escalinata y las columnas de un edificio clásico de piedra en penumbra. Sobre la puerta, una pantalla oscura con dos líneas de luz que suben (verde sube) y una que baja (rojo baja), sin cifras |
+| `tablero/esquinas/auditoria.webp` | **¡Auditoría!** (acento rojo baja). Bodegón: un libro de cuentas abierto bajo la luz de una lámpara, con una lupa de latón encima y un sello de lacre rojo al lado. Las páginas con líneas, sin números |
 
 **Edificios (ficha 7.5):**
 
-| Archivo | Qué dibujar |
+| Archivo | Qué pintar |
 |---|---|
-| `tablero/edificios/casa.webp` | La casa de la sección 6 |
-| `tablero/edificios/torre.webp` | La torre de la sección 6 |
+| `tablero/edificios/casa.webp` | La maqueta de la casa de la sección 6 |
+| `tablero/edificios/torre.webp` | La maqueta de la torre de la sección 6 |
 
 **Iconos de los barrios** (SVG, ficha 7.13):
 
@@ -705,11 +696,11 @@ Los retratos siguen la ficha 7.2:
 | `tablero/barrios/talleres.svg` | Una llave inglesa en diagonal cruzada con medio engranaje |
 | `tablero/barrios/feria.svg` | Una carpa de feria: un triángulo con el borde inferior ondulado y un banderín en la punta |
 | `tablero/barrios/puerto-viejo.svg` | Un ancla |
-| `tablero/barrios/universitario.svg` | Un birrete de frente, con su borla |
+| `tablero/barrios/universitario.svg` | Un edificio con cúpula y columnas |
 | `tablero/barrios/centro-historico.svg` | Un campanario: una torre con una campana dentro y tejado a dos aguas |
 | `tablero/barrios/jardines-del-rio.svg` | Un árbol de copa redonda con dos ondas de agua debajo |
-| `tablero/barrios/distrito-financiero.svg` | Tres barras que suben, con una flecha encima |
-| `tablero/barrios/altos-del-mirador.svg` | Una colina con una estrella de 5 puntas encima |
+| `tablero/barrios/distrito-financiero.svg` | Tres rascacielos de alturas distintas |
+| `tablero/barrios/altos-del-mirador.svg` | Una colina con una casa en la cima |
 
 **Iconos de las otras casillas** (SVG):
 
@@ -721,10 +712,10 @@ Los retratos siguen la ficha 7.2:
 | `tablero/casillas/aeropuerto.svg` | Un avión de perfil, despegando hacia arriba a la derecha |
 | `tablero/casillas/compania-de-agua.svg` | Una gota con dos ondas debajo |
 | `tablero/casillas/red-de-internet.svg` | Una antena con tres arcos de señal |
-| `tablero/casillas/noticias.svg` | Un periódico doblado, con tres líneas de texto simuladas |
+| `tablero/casillas/noticias.svg` | Un periódico doblado, con tres líneas que simulan texto |
 | `tablero/casillas/fortuna.svg` | Una noria: un círculo con radios y 6 cabinas pequeñas |
 | `tablero/casillas/impuesto-al-patrimonio.svg` | Una balanza con un maletín en un plato y una moneda en el otro |
-| `tablero/casillas/agencia-de-bolsa.svg` | Un maletín con una flecha en zigzag que sube |
+| `tablero/casillas/agencia-de-bolsa.svg` | Un maletín con una línea en zigzag que sube |
 
 **Marcadores** (SVG):
 
@@ -732,45 +723,45 @@ Los retratos siguen la ficha 7.2:
 |---|---|---|
 | `tablero/marcadores/hipotecada.svg` | Un candado cerrado | La calle está hipotecada |
 | `tablero/marcadores/en-obras.svg` | Un cono de obra delante de una valla | Obras eternas del Elefante Blanco |
-| `tablero/marcadores/inflada.svg` | Una burbuja con un destello | La calle está inflada por la Burbuja |
+| `tablero/marcadores/inflada.svg` | Una burbuja con un reflejo | La calle está inflada por la Burbuja |
 | `tablero/marcadores/estallada.svg` | Una burbuja rota, con cuatro salpicaduras | La burbuja estalló |
 | `tablero/marcadores/retenido.svg` | La puerta de una celda con barrotes | El jugador está retenido en el Calabozo |
-| `tablero/marcadores/hibernando.svg` | Una luna creciente con tres curvitas de sueño (sin letras) | El Oso hiberna |
+| `tablero/marcadores/hibernando.svg` | Una luna creciente con tres estrellas pequeñas | El Oso hiberna |
 | `tablero/marcadores/marcado.svg` | Una aleta de tiburón dentro de una diana | Frenesí del Tiburón |
 | `tablero/marcadores/pierde-turno.svg` | Un reloj de arena con una raya en diagonal | Imprevisto del Cisne Negro |
 | `tablero/marcadores/en-racha-final.svg` | La llave de la ciudad | El jugador alcanzó la meta y vuelve a la Salida |
 
 ### 8.3 Botones · P2
 
-**Insignias de las habilidades activas** (ficha 7.6). El fondo de cada una va en el color de su ficha.
+**Insignias de las habilidades activas** (ficha 7.6). El esmalte de cada una va en el color de su ficha.
 
-| Archivo | Ficha | Símbolo (en blanco cálido) | Detalle de color |
+| Archivo | Ficha | Símbolo en relieve de latón | Detalle de esmalte |
 |---|---|---|---|
-| `botones/habilidades/activas/esprint.webp` | Rata | Un dado (sección 6) inclinado, como recién lanzado, con 3 líneas de movimiento a su izquierda | Ninguno (los puntos van en tinta) |
-| `botones/habilidades/activas/prestamo-expres.webp` | Taza | Un guante que entrega hacia la derecha una moneda grande, con un reloj de arena pequeño arriba a la derecha | La moneda, en oro |
+| `botones/habilidades/activas/esprint.webp` | Rata | Un dado inclinado, como recién lanzado, con tres líneas de velocidad grabadas a su izquierda | Los puntos del dado, en hueso |
+| `botones/habilidades/activas/prestamo-expres.webp` | Taza | Una moneda junto a un reloj de arena pequeño | La arena del reloj, en oro viejo |
 | `botones/habilidades/activas/rally.webp` | Toro | Una gráfica en zigzag que sube de abajo a la izquierda hasta arriba a la derecha y termina en punta de flecha | La punta de flecha, en verde sube |
-| `botones/habilidades/activas/hibernar.webp` | Oso | La cabeza de un oso de frente, dormido (ojos como arcos cerrados), con una luna creciente arriba a la derecha | La luna, en oro |
-| `botones/habilidades/activas/inflar.webp` | Burbuja | Una burbuja grande con brillo, y una aguja que se acerca desde la derecha | La aguja, en gris piedra |
-| `botones/habilidades/activas/temporada-alta.webp` | Vaca Lechera | Una campana de vaca con 3 ondas de vibración a cada lado y un sol detrás | El sol, en oro |
-| `botones/habilidades/activas/obras-eternas.webp` | Elefante Blanco | Una valla de obra con un cono delante | Las franjas de la valla, en ámbar |
+| `botones/habilidades/activas/hibernar.webp` | Oso | La cabeza de un oso dormido, de frente y con los ojos cerrados, bajo una luna creciente | La luna, en hueso |
+| `botones/habilidades/activas/inflar.webp` | Burbuja | Una burbuja grande y una aguja que se acerca desde la derecha | El reflejo de la burbuja, en hueso |
+| `botones/habilidades/activas/temporada-alta.webp` | Vaca Lechera | Una campana de vaca con ondas de vibración a los lados y un sol detrás | El sol, en oro viejo |
+| `botones/habilidades/activas/obras-eternas.webp` | Elefante Blanco | Una valla de obra con un cono delante | Las franjas de la valla, en rojo baja |
 | `botones/habilidades/activas/hormiguero.webp` | Hormiga | Un montículo de hormiguero con una barrera de peaje cerrada en la entrada | Las franjas de la barrera, en rojo baja |
-| `botones/habilidades/activas/frenesi.webp` | Tiburón | Una diana de 2 anillos con una aleta en el centro | El anillo exterior, en rojo baja |
-| `botones/habilidades/activas/imprevisto.webp` | Cisne Negro | Un reloj de arena volcado con una grieta en zigzag y una pluma que cae a la derecha | La arena, en oro |
+| `botones/habilidades/activas/frenesi.webp` | Tiburón | Una diana de dos anillos con una aleta en el centro | El anillo exterior, en rojo baja |
+| `botones/habilidades/activas/imprevisto.webp` | Cisne Negro | Un reloj de arena volcado con una grieta en zigzag y una pluma que cae a la derecha | La pluma, en hueso |
 
-**Insignias de las habilidades pasivas** (ficha 7.7). La medalla va en el color de su ficha.
+**Insignias de las habilidades pasivas** (ficha 7.7). El anillo de esmalte de cada una va en el color de su ficha.
 
-| Archivo | Ficha | Símbolo (en oro) | Detalle de color |
+| Archivo | Ficha | Símbolo en bajorrelieve | Detalle de esmalte |
 |---|---|---|---|
-| `botones/habilidades/pasivas/horas-extra.webp` | Rata | Un despertador con una flecha pequeña que sube a su derecha | La flecha, en verde sube |
-| `botones/habilidades/pasivas/interes-a-favor.webp` | Taza | Una taza con vapor que forma una flecha curva hacia arriba | El vapor, en blanco cálido |
-| `botones/habilidades/pasivas/optimista.webp` | Toro | La cabeza de un toro de frente, con los cuernos hacia arriba y una flecha pequeña que sube sobre la frente | La flecha, en verde sube |
-| `botones/habilidades/pasivas/apuesta-bajista.webp` | Oso | Una garra sobre una flecha que baja | La flecha, en rojo baja |
-| `botones/habilidades/pasivas/valor-inflado.webp` | Burbuja | Una casa dentro de una burbuja | El aro de la burbuja, en blanco cálido |
-| `botones/habilidades/pasivas/renta-fija.webp` | Vaca Lechera | Un cántaro de leche del que caen 3 monedas en fila | Ninguno |
-| `botones/habilidades/pasivas/constructora.webp` | Elefante Blanco | Una grúa con una etiqueta colgando (sin texto) | La etiqueta, en blanco cálido |
+| `botones/habilidades/pasivas/horas-extra.webp` | Rata | Un reloj de bolsillo con una flecha pequeña que sube a su derecha | La flecha, en verde sube |
+| `botones/habilidades/pasivas/interes-a-favor.webp` | Taza | Una taza con vapor que sube en curva | El vapor, en hueso |
+| `botones/habilidades/pasivas/optimista.webp` | Toro | La cabeza de un toro de frente, con los cuernos hacia arriba | Ninguno |
+| `botones/habilidades/pasivas/apuesta-bajista.webp` | Oso | Una zarpa sobre una flecha que baja | La flecha, en rojo baja |
+| `botones/habilidades/pasivas/valor-inflado.webp` | Burbuja | Una casa dentro de una burbuja | El brillo de la burbuja, en hueso |
+| `botones/habilidades/pasivas/renta-fija.webp` | Vaca Lechera | Un cántaro de leche del que caen tres monedas en fila | Ninguno |
+| `botones/habilidades/pasivas/constructora.webp` | Elefante Blanco | Una grúa con una etiqueta colgando (sin texto) | La etiqueta, en hueso |
 | `botones/habilidades/pasivas/peaje-hormiga.webp` | Hormiga | Tres hormigas en fila, cada una con una moneda | Ninguno |
-| `botones/habilidades/pasivas/cazador-de-gangas.webp` | Tiburón | Un martillo de subasta con una aleta detrás | La aleta, en blanco cálido |
-| `botones/habilidades/pasivas/antifragil.webp` | Cisne Negro | Un escudo con una pluma en el centro y 3 grietas alrededor que no lo tocan | La pluma, en blanco cálido |
+| `botones/habilidades/pasivas/cazador-de-gangas.webp` | Tiburón | Un martillo de subasta con una aleta detrás | Ninguno |
+| `botones/habilidades/pasivas/antifragil.webp` | Cisne Negro | Un escudo con una pluma en el centro y tres grietas alrededor que no lo tocan | La pluma, en hueso |
 
 **Iconos de las acciones** (SVG, ficha 7.13):
 
@@ -778,10 +769,10 @@ Los retratos siguen la ficha 7.2:
 |---|---|
 | `botones/acciones/tirar-dados.svg` | Dos dados de frente, uno un poco más alto, con sus puntos rellenos |
 | `botones/acciones/agitar-celular.svg` | Un celular con dos líneas de vibración a cada lado |
-| `botones/acciones/comprar.svg` | Un guante que sostiene la llave de una casa |
+| `botones/acciones/comprar.svg` | La llave de una casa con una etiqueta colgando |
 | `botones/acciones/pasar.svg` | Una flecha curva que rodea un punto relleno |
 | `botones/acciones/subastar.svg` | Un martillo de subasta en diagonal sobre su base |
-| `botones/acciones/pujar.svg` | Un guante levantado con una moneda |
+| `botones/acciones/pujar.svg` | Una mano levantada con una moneda |
 | `botones/acciones/construir.svg` | Una casa con un signo más arriba a la derecha |
 | `botones/acciones/vender-edificio.svg` | Una casa con una flecha que sale hacia una moneda |
 | `botones/acciones/hipotecar.svg` | Un candado cerrado delante de una casa |
@@ -790,9 +781,9 @@ Los retratos siguen la ficha 7.2:
 | `botones/acciones/comprar-acciones.svg` | Tres barras con un signo más encima |
 | `botones/acciones/vender-acciones.svg` | Tres barras con un signo menos encima |
 | `botones/acciones/pagar-fianza.svg` | Una moneda que entra por una puerta de celda |
-| `botones/acciones/salvoconducto.svg` | Un pase rectangular con una estrella |
+| `botones/acciones/salvoconducto.svg` | Un sobre con un sello |
 | `botones/acciones/terminar-turno.svg` | Una marca de verificación dentro de un círculo |
-| `botones/acciones/bancarrota.svg` | Un bolsillo vuelto del revés, vacío |
+| `botones/acciones/bancarrota.svg` | Una cartera abierta y vacía |
 | `botones/acciones/usar-habilidad.svg` | Un rayo dentro de un hexágono con un vértice arriba |
 | `botones/acciones/aceptar.svg` | Una marca de verificación |
 | `botones/acciones/rechazar.svg` | Una equis |
@@ -805,47 +796,47 @@ Los retratos siguen la ficha 7.2:
 
 **Dorsos (ficha 7.8):**
 
-| Archivo | Color del mazo | Motivo del patrón | Emblema del centro |
-|---|---|---|---|
-| `tarjetas/dorsos/noticias.webp` | Azul noticias | Rombos pequeños (4 % del ancho) | Un periódico doblado en blanco cálido, con líneas grises en lugar de texto, delante de la silueta de 3 edificios en tinta |
-| `tarjetas/dorsos/fortuna.webp` | Ámbar | Destellos de 4 puntas | Una noria de oro cuyas 6 cabinas son monedas |
-
-**Efectos de las cartas (ficha 7.9):**
-
-| Archivo | Acento | Suelo | Qué dibujar |
-|---|---|---|---|
-| `tarjetas/efectos/cobrar.webp` | Verde sube | No | Un guante abierto hacia arriba que recibe 6 monedas que caen |
-| `tarjetas/efectos/pagar.webp` | Rojo baja | No | Una billetera de madera abierta de la que se escapan 4 monedas volando hacia arriba a la derecha |
-| `tarjetas/efectos/avanzar.webp` | Ámbar | Sí | Una señal de tráfico redonda con una flecha hacia delante y, a su lado, un coche pequeño genérico en marcha con líneas de movimiento |
-| `tarjetas/efectos/retroceder.webp` | Ámbar | Sí | Una valla de obra con una señal de desvío y una flecha curva hacia atrás |
-| `tarjetas/efectos/viaje.webp` | Ámbar | No | Tres boletos abiertos en abanico: uno con un autobús, otro con un metro y otro con un teleférico (dibujos, sin texto) |
-| `tarjetas/efectos/calabozo.webp` | Gris piedra | Sí | La puerta de una celda que se cierra, con una lupa de auditor delante. Sin policías |
-| `tarjetas/efectos/salvoconducto.webp` | Oro | No | Un pase dorado con una cinta en rojo baja y un sello redondo |
-| `tarjetas/efectos/bolsa-sube.webp` | Verde sube | No | Una pizarra de cotizaciones en noche con 3 flechas que suben y confeti |
-| `tarjetas/efectos/bolsa-baja.webp` | Rojo baja | No | Una pizarra de cotizaciones en noche con 3 flechas que bajan y papeles volando |
-| `tarjetas/efectos/llega-empresa.webp` | Azul eléctrico | Sí | Una grúa que coloca un edificio de oficinas de cristal, con un camión de mudanza genérico y cajas |
-| `tarjetas/efectos/reparaciones.webp` | Ámbar | Sí | Un andamio sobre la fachada de una casa, con un casco de obra y herramientas |
-| `tarjetas/efectos/cumpleanos.webp` | Rosa | No | Un pastel con 3 velas encendidas y 2 sobres cerrados con monedas asomando |
-| `tarjetas/efectos/subsidio.webp` | Verde dinero | Sí | El edificio del ayuntamiento, con columnas y un gran lazo de regalo en rojo baja delante |
-
-**Cabeceras (ficha 7.10).** Cada barrio, con su arquitectura y sus elementos de la sección 4:
-
-| Archivo | Color dominante | Motivo principal |
+| Archivo | Color del mazo | Emblema del centro |
 |---|---|---|
-| `tarjetas/cabeceras/talleres.webp` | Gris acero | Una nave industrial con tejado de diente de sierra y la persiana subida, chispas de soldadura dentro y una grúa pequeña al lado |
-| `tarjetas/cabeceras/feria.webp` | Fucsia | La carpa principal de la feria con banderines y dos puestos de fruta delante |
-| `tarjetas/cabeceras/puerto-viejo.webp` | Turquesa | El faro al final del muelle, con dos barcas de pesca y gaviotas |
-| `tarjetas/cabeceras/universitario.webp` | Violeta | El edificio con cúpula y escalinata, con árboles y bicicletas delante |
-| `tarjetas/cabeceras/centro-historico.webp` | Terracota | La plaza con la fuente y el campanario detrás, entre casas con balcones |
-| `tarjetas/cabeceras/jardines-del-rio.webp` | Verde hoja | Un puente de arco sobre el río, con sauces y flores en las orillas |
-| `tarjetas/cabeceras/distrito-financiero.webp` | Azul eléctrico | Tres rascacielos de cristal, el del centro con una pantalla con una gráfica que sube |
-| `tarjetas/cabeceras/altos-del-mirador.webp` | Dorado | El mirador con barandilla en primer plano, casas elegantes de tejados dorados en la colina y la ciudad abajo |
-| `tarjetas/cabeceras/terminal-de-buses.webp` | Ámbar | Andenes cubiertos con dos autobuses genéricos de color ámbar y maletas apiladas |
-| `tarjetas/cabeceras/metro-central.webp` | Ámbar | La boca de una estación de metro con un tren que llega al andén elevado |
+| `tarjetas/dorsos/noticias.webp` | Azul noticias | Un periódico doblado, pintado, con columnas de texto sugeridas con líneas grises (ilegibles) |
+| `tarjetas/dorsos/fortuna.webp` | Ámbar | Una noria pequeña de hierro, con monedas de oro viejo como cabinas |
+
+**Efectos de las cartas** (bodegones, ficha 7.9):
+
+| Archivo | Acento | Mesa | Qué pintar |
+|---|---|---|---|
+| `tarjetas/efectos/cobrar.webp` | Verde sube | Sí | Monedas que caen sobre un cuenco de latón, con algunas ya dentro |
+| `tarjetas/efectos/pagar.webp` | Rojo baja | Sí | Una cartera de cuero abierta y casi vacía, con dos monedas que se escapan rodando |
+| `tarjetas/efectos/avanzar.webp` | Ámbar | No | Una señal de tráfico redonda con una flecha hacia delante, junto a una carretera que se pierde en la distancia |
+| `tarjetas/efectos/retroceder.webp` | Ámbar | No | Una valla de obra con una señal de desvío y una flecha curva hacia atrás |
+| `tarjetas/efectos/viaje.webp` | Ámbar | Sí | Tres billetes de transporte de cartón, sin texto, en abanico, con el dibujo de un autobús, un metro y un teleférico |
+| `tarjetas/efectos/calabozo.webp` | Piedra | Sí | Una llave de hierro grande junto a un candado cerrado |
+| `tarjetas/efectos/salvoconducto.webp` | Oro viejo | Sí | Un sobre de papel grueso cerrado con un sello de lacre rojo |
+| `tarjetas/efectos/bolsa-sube.webp` | Verde sube | No | Una pantalla oscura con líneas de luz verdes que suben (sin cifras) y unos papeles al aire |
+| `tarjetas/efectos/bolsa-baja.webp` | Rojo baja | No | Una pantalla oscura con líneas de luz rojas que bajan (sin cifras) y papeles cayendo |
+| `tarjetas/efectos/llega-empresa.webp` | Azul cobalto | No | Una grúa que levanta un bloque de oficinas de cristal sobre un solar |
+| `tarjetas/efectos/reparaciones.webp` | Ámbar | Sí | Un casco de obra, un martillo y una llave inglesa sobre unos planos enrollados |
+| `tarjetas/efectos/cumpleanos.webp` | Malva | Sí | Un pastel sencillo con tres velas encendidas y un sobre cerrado al lado |
+| `tarjetas/efectos/subsidio.webp` | Verde dinero | No | La fachada de un ayuntamiento de piedra con un gran lazo rojo delante de la puerta |
+
+**Cabeceras (ficha 7.10).** Cada barrio, con su arquitectura de la sección 4 y sin personas:
+
+| Archivo | Color dominante | Protagonista |
+|---|---|---|
+| `tarjetas/cabeceras/talleres.webp` | Gris acero | Una nave industrial con tejado de diente de sierra y la persiana subida, con chispas de soldadura dentro |
+| `tarjetas/cabeceras/feria.webp` | Frambuesa | La carpa principal de la feria, con banderines y un puesto de fruta delante |
+| `tarjetas/cabeceras/puerto-viejo.webp` | Turquesa apagado | El faro al final del muelle, con dos barcas de pesca |
+| `tarjetas/cabeceras/universitario.webp` | Violeta apagado | El edificio con cúpula y escalinata, entre árboles |
+| `tarjetas/cabeceras/centro-historico.webp` | Terracota | La plaza con la fuente y el campanario detrás |
+| `tarjetas/cabeceras/jardines-del-rio.webp` | Verde salvia | Un puente de piedra en arco sobre el río, con sauces |
+| `tarjetas/cabeceras/distrito-financiero.webp` | Azul cobalto | Tres rascacielos de cristal; el del centro, con una pantalla con luces que suben |
+| `tarjetas/cabeceras/altos-del-mirador.webp` | Oro viejo | El mirador con barandilla de piedra en primer plano y casas señoriales en la colina |
+| `tarjetas/cabeceras/terminal-de-buses.webp` | Ámbar | Andenes cubiertos con dos autobuses genéricos de color ámbar |
+| `tarjetas/cabeceras/metro-central.webp` | Ámbar | La entrada de una estación de metro, con un tren en un andén elevado |
 | `tarjetas/cabeceras/teleferico.webp` | Ámbar | Dos cabinas ámbar colgadas de un cable sobre tejados y colinas |
 | `tarjetas/cabeceras/aeropuerto.webp` | Ámbar | Una terminal de cristal con un avión genérico despegando al fondo |
-| `tarjetas/cabeceras/compania-de-agua.webp` | Verde dinero | Un depósito de agua redondo con tuberías y una fuente delante |
-| `tarjetas/cabeceras/red-de-internet.webp` | Verde dinero | Una torre de antenas con cables y luces de señal, sobre un edificio técnico |
+| `tarjetas/cabeceras/compania-de-agua.webp` | Verde dinero | Un depósito de agua redondo con tuberías, junto a un estanque |
+| `tarjetas/cabeceras/red-de-internet.webp` | Verde dinero | Una torre de antenas con luces de señal, sobre un edificio técnico |
 
 ### 8.5 Interfaz · P2
 
@@ -856,29 +847,29 @@ Los retratos siguen la ficha 7.2:
 | `interfaz/iconos/moneda.svg` | La moneda del ejemplo de la sección 7.13 |
 | `interfaz/iconos/patrimonio.svg` | Un maletín con asa |
 | `interfaz/iconos/meta.svg` | La llave de la ciudad, en diagonal, con el paletón de edificios |
-| `interfaz/iconos/acciones.svg` | Un certificado enrollado con una gráfica que sube |
+| `interfaz/iconos/acciones.svg` | Un certificado enrollado con una línea en zigzag que sube |
 | `interfaz/iconos/sube.svg` | Un triángulo con un vértice arriba |
 | `interfaz/iconos/baja.svg` | Un triángulo con un vértice abajo |
 
 **Ilustraciones (ficha 7.11):**
 
-| Archivo | Color del medallón | Qué dibujar |
+| Archivo | Color de fondo | Qué pintar |
 |---|---|---|
-| `interfaz/ilustraciones/victoria.webp` | Noche | La llave de la ciudad, grande y en diagonal, entre fuegos artificiales en oro, verde sube y fucsia, con confeti |
-| `interfaz/ilustraciones/bancarrota.webp` | Gris piedra | Una maleta de madera abierta y vacía, con una polilla gris que sale volando |
-| `interfaz/ilustraciones/mirando-el-tablero.webp` | Cielo | Unos prismáticos en gris pizarra apuntando a una tablet de marco tinta que muestra la ciudad en miniatura. El celular la enseña mientras el tablero anima |
-| `interfaz/ilustraciones/sala-de-espera.webp` | Ámbar | El arco de entrada de la ciudad y, delante, las 10 piezas de las fichas (con su peana) en una fila curva, esperando |
+| `interfaz/ilustraciones/victoria.webp` | Noche | La llave de la ciudad, de latón, sobre un cojín de terciopelo oscuro, con fuegos artificiales lejanos en oro viejo |
+| `interfaz/ilustraciones/bancarrota.webp` | Piedra | Una maleta de cuero abierta y vacía, con una polilla que sale volando |
+| `interfaz/ilustraciones/mirando-el-tablero.webp` | Azul niebla | Unos prismáticos de latón sobre una mesa, apuntando a una tablet que muestra la ciudad en miniatura. El celular la enseña mientras el tablero anima |
+| `interfaz/ilustraciones/sala-de-espera.webp` | Ocre | El arco de entrada de la ciudad y, delante, las 10 piezas (con su peana) en una fila curva, esperando |
 
 ### 8.6 Marca · P3
 
 Ficha técnica 7.12:
 
-| Archivo | Qué dibujar |
+| Archivo | Qué pintar |
 |---|---|
-| `marca/emblema.webp` | La llave de la ciudad en el círculo noche con el aro de oro |
+| `marca/emblema.webp` | La llave de la ciudad sobre el disco de pizarra con filo de latón |
 | `marca/icono-512.png` | La llave de la ciudad sobre noche, dentro del 60 % central |
-| `marca/portada.webp` | La ciudad al atardecer desde el mirador. El horizonte, al 58 % del alto. En el plano medio, el perfil con los barrios reconocibles: los rascacielos azul eléctrico, el campanario terracota, el faro, las carpas fucsia y la cúpula violeta. En primer plano, la terraza del mirador (barandilla de madera) en el 25 % de abajo, con las 10 fichas de pie y sin peana: en una fila suave, girados en 3/4 hacia la ciudad (se les ve la cara de perfil), ocupando el 60 % central del ancho y con el 18 % del alto cada uno. El 35 % de arriba es cielo sin elementos, para el título que pone la web |
-| `marca/redes.png` | La misma escena en horizontal: la ciudad y las fichas en la mitad derecha, y la mitad izquierda con cielo de atardecer libre para el título |
+| `marca/portada.webp` | Interior al atardecer: las 10 piezas (con su peana) colocadas en fila sobre una mesa de madera oscura, junto a un gran ventanal. Al otro lado del cristal, la ciudad con sus barrios reconocibles: los rascacielos cobalto, el campanario terracota, el faro y las carpas frambuesa. La mesa y las piezas en el 35 % de abajo y el 35 % de arriba sin elementos (cielo y pared), para el título que pone la web |
+| `marca/redes.png` | La misma escena en horizontal, con las piezas y la ventana en la mitad derecha y la mitad izquierda en penumbra lisa, libre para el título |
 
 ---
 
@@ -886,22 +877,21 @@ Ficha técnica 7.12:
 
 Esto no se dibuja como imagen, pero se describe para que todo combine:
 
-- **Tipografías:** «Baloo 2» para los títulos y las cifras grandes, y «Nunito» para el texto. Las dos son libres
-  (licencia OFL) y van copiadas en el repositorio.
+- **Tipografías:** «Fraunces» (con serifa, sobria) para los títulos, e «Inter» para el texto y las cifras (con números
+  de ancho fijo, para que el dinero no baile). Las dos son libres (licencia OFL) y van copiadas en el repositorio.
 - **Interfaz:**
-  - la misma paleta;
-  - el tablero sobre noche y el celular sobre crema;
-  - bordes de tinta de 2 px y esquinas redondeadas de 12 px;
-  - sombras de 4 px hacia abajo a la derecha, en tinta al 25 %;
-  - los botones con un borde inferior más oscuro de 4 px, como el relieve de las insignias activas.
+  - la misma paleta apagada;
+  - el tablero sobre noche y el celular sobre papel;
+  - bordes finos de 1 px y esquinas poco redondeadas (6 px);
+  - sombras suaves hacia abajo a la derecha;
+  - botones planos y sobrios. El único botón con relieve es el de las habilidades activas, que es la insignia esmaltada.
 - **El tablero:** la Salida va en la esquina de abajo a la izquierda y las fichas avanzan en el sentido de las agujas
   del reloj.
-  - Cada casilla es crema, con una franja del color de su barrio en el borde exterior y su icono.
+  - Cada casilla es de papel, con una franja fina del color de su barrio en el borde exterior y su icono.
   - Las calles con dueño muestran la mini pieza del dueño.
-- **Los dados:** cubos 3D en blanco cálido con las esquinas muy redondeadas y puntos de tinta, como el dado de la
-  sección 6.
-- **Las tarjetas:** marco crema con contorno de tinta y esquinas de 12 px. Arriba, la cabecera o la ilustración del
-  efecto; debajo, el texto.
+- **Los dados:** cubos 3D de hueso con los puntos oscuros, como el dado de la sección 6.
+- **Las tarjetas:** papel con un borde fino y esquinas de 6 px. Arriba, la cabecera o el bodegón del efecto; debajo,
+  el texto.
 - **Botones de habilidad:** la insignia y, encima, el anillo de recarga y el estado desactivado (en gris).
 
 ---
@@ -909,8 +899,14 @@ Esto no se dibuja como imagen, pero se describe para que todo combine:
 ## 10. Antes de subir cada imagen
 
 - [ ] Está en la carpeta y con el nombre exactos de la sección 8, en minúsculas, sin tildes ni espacios.
-- [ ] Sigue su ficha técnica de la sección 7: lienzo, fondo, posición y tamaño del motivo, ángulo y grosor de línea.
-- [ ] Solo usa colores de la sección 3, con la luz arriba a la izquierda y las sombras de borde nítido.
+- [ ] Sigue su ficha técnica de la sección 7: lienzo, fondo, posición y tamaño del motivo y ángulo.
+- [ ] Es pintura naturalista (sección 2):
+  - sin contornos negros;
+  - sin estilo de dibujos animados;
+  - sin humanizar;
+  - con la luz arriba a la izquierda, las sombras frías y las luces cálidas.
+- [ ] La composición es mínima: un protagonista, espacio libre y como mucho 2 elementos secundarios.
+- [ ] Solo usa colores de la sección 3, y el único acento intenso es el color propio.
 - [ ] Si aparece una ficha, coincide con su hoja de personaje y con su pieza aprobada.
 - [ ] Los objetos repetidos coinciden con la sección 6.
 - [ ] No tiene texto, letras, números, firmas, logotipos ni marcas de agua, y no recuerda a ningún juego comercial ni

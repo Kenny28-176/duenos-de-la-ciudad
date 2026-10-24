@@ -29,7 +29,7 @@ function webp(ancho, alto, bytes = 30) {
   b.writeUIntLE(alto - 1, 27, 3);
   return b;
 }
-const APERTURA = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">';
+const APERTURA = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">';
 const SVG_BIEN = `${APERTURA}<circle cx="32" cy="32" r="22"/><circle cx="32" cy="32" r="3" fill="currentColor"/></svg>`;
 const CREDITOS = '| Archivos | Autoría |\n|---|---|\n| `fichas/piezas/*.webp`, `botones/acciones/*.svg` | IA |\n| `marca/portada.webp` | IA |\n';
 const ESPERADOS = ['botones/acciones/comprar.svg', 'fichas/piezas/oso.png', 'fichas/piezas/rata.webp', 'fichas/piezas/toro.webp', 'marca/portada.webp'];
@@ -74,7 +74,7 @@ test('los iconos SVG siguen la construcción común', () => {
   assert.match(texto, /no permitidos: <text>/);
   assert.match(texto, /colores fijos/);
   assert.match(texto, /colores no permitidos \(#000, red\)/);
-  assert.match(texto, /grosor distinto de 5 \(2, 3\)/);
+  assert.match(texto, /grosor distinto de 4 \(2, 3\)/);
   assert.match(texto, /estilos en línea/);
   assert.match(revisarSvg(`${APERTURA}<image href="x.png"/></svg>`).join('\n'), /enlaza a otros archivos/);
 });
