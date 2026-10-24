@@ -1,0 +1,98 @@
+{
+  "generado": "2026-10-24",
+  "librerias": {
+    "preact": {
+      "nombre": "htm / Preact",
+      "version": "htm 3.1.1 / Preact 10",
+      "licencia": "Apache-2.0 (htm) y MIT (Preact)",
+      "archivos": [
+        {
+          "destino": "preact/standalone.module.js",
+          "sha256": "72284e8e9079c87817145df1110f74e8a2aa040b2fc384922e18dfcb46fc1fd7",
+          "bytes": 13194,
+          "origen": "https://unpkg.com/htm@3.1.1/preact/standalone.module.js"
+        },
+        {
+          "destino": "preact/LICENSE-htm",
+          "sha256": "740725f7252e750af735d0028cc534970772f513331e9f68150fede8fb3ce00f",
+          "bytes": 11341,
+          "origen": "https://unpkg.com/htm@3.1.1/LICENSE"
+        },
+        {
+          "destino": "preact/LICENSE-preact",
+          "sha256": "1fe6958409c8c257a70c587a18b6f7f412b179b456630790d30b2ec9a8e4b7d4",
+          "bytes": 1087,
+          "origen": "https://unpkg.com/preact@10/LICENSE"
+        }
+      ]
+    },
+    "qrcode": {
+      "nombre": "qrcode-generator",
+      "version": "1.4.4",
+      "licencia": "MIT",
+      "archivos": [
+        {
+          "destino": "qrcode/qrcode.js",
+          "sha256": "18ae399f81182bc9de916e9c77b195df20cc58d6f2d55a62b085a299f1bf1780",
+          "bytes": 56694,
+          "origen": "https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"
+        },
+        {
+          "destino": "qrcode/LICENSE",
+          "sha256": "3a850fa5f08101db6f40676c2786e10bd2cd5fff7b12ffdf1e0c434d4e49d90c",
+          "bytes": 1071,
+          "origen": "https://raw.githubusercontent.com/kazuhikoarase/qrcode-generator/master/LICENSE"
+        }
+      ]
+    },
+    "fuentes": {
+      "nombre": "Fraunces e Inter",
+      "version": "Fraunces 600..700 / Inter 400..700",
+      "licencia": "SIL OFL 1.1",
+      "archivos": [
+        {
+          "destino": "fuentes/fuentes.css",
+          "sha256": "3faf67fb19e87ff427b67dadd73453e85e1bfc66a2abb8a9bc9afce3656eb8e6",
+          "bytes": 1597,
+          "origen": "https://fonts.googleapis.com/css2?family=Fraunces:wght@600..700&family=Inter:wght@400..700&display=swap"
+        },
+        {
+          "destino": "fuentes/fraunces-latin-ext.woff2",
+          "sha256": "a21ecfbf41fbc393e24ef9b7e38532a27e8da5e0a074aa7d66802d1b5ccec2f0",
+          "bytes": 33584,
+          "origen": "https://fonts.gstatic.com/s/fraunces/v38/6NUu8FyLNQOQZAnv9bYEvDiIdE9Ea92uemAk_WBq8U_9v0c2Wa0K7iN7hzFUPJH58nib14c1qv86Rg.woff2"
+        },
+        {
+          "destino": "fuentes/fraunces-latin.woff2",
+          "sha256": "7f9d191d999336d3b9790afa72e1358e50a13b06d4f289341e92a311967a80f9",
+          "bytes": 36620,
+          "origen": "https://fonts.gstatic.com/s/fraunces/v38/6NUu8FyLNQOQZAnv9bYEvDiIdE9Ea92uemAk_WBq8U_9v0c2Wa0K7iN7hzFUPJH58nib14c7qv8.woff2"
+        },
+        {
+          "destino": "fuentes/inter-latin-ext.woff2",
+          "sha256": "34b9c504cab7a73e37b746343a449132e56cf7b5481af2cb81dc74dcff25c956",
+          "bytes": 85068,
+          "origen": "https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa25L7SUc.woff2"
+        },
+        {
+          "destino": "fuentes/inter-latin.woff2",
+          "sha256": "3100e775e8616cd2611beecfa23a4263d7037586789b43f035236a2e6fbd4c62",
+          "bytes": 48256,
+          "origen": "https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7.woff2"
+        },
+        {
+          "destino": "fuentes/OFL-Fraunces.txt",
+          "sha256": "bdf4c22802eaf804f998195871c6b8938aac2ac14b2d78a8bd66a6f1eced833b",
+          "bytes": 4391,
+          "origen": "https://raw.githubusercontent.com/google/fonts/main/ofl/fraunces/OFL.txt"
+        },
+        {
+          "destino": "fuentes/OFL-Inter.txt",
+          "sha256": "5b9321a4298cfeb6b34354164a1c3afc3db114569984c502b9b35d988fd58c57",
+          "bytes": 4377,
+          "origen": "https://raw.githubusercontent.com/google/fonts/main/ofl/inter/OFL.txt"
+        }
+      ]
+    }
+  }
+}
