@@ -31,9 +31,12 @@ ilustraciones, fichas o cartas, ni sus textos o reglamentos.
 |---|---|
 | Código fuente | [MIT](LICENSE) |
 | Textos del juego (reglas, cartas e interfaz) | MIT |
+| [htm](https://github.com/developit/htm) 3.1.1 y [Preact](https://preactjs.com) 10, para las pantallas | Apache-2.0 (htm) y MIT (Preact) |
+| [qrcode-generator](https://github.com/kazuhikoarase/qrcode-generator) 1.4.4, para el código QR de la sala | MIT |
+| Tipografías [Fraunces](https://github.com/undercasetype/Fraunces) e [Inter](https://rsms.me/inter/) | SIL Open Font License 1.1 |
 
-- **Bibliotecas de terceros:** cuando se añadan, irán copiadas en `public/vendor/` con su licencia y una nota de su
-  origen y su versión.
+- **Bibliotecas y tipografías de terceros:** van copiadas, sin cambios, en `public/vendor/`, cada una con su licencia.
+  Su origen, su versión y su huella están en [`public/vendor/LEEME.md`](public/vendor/LEEME.md) y en `vendor.json`.
 - **Imágenes:** sus créditos están en [`public/visuales/CREDITOS.md`](public/visuales/CREDITOS.md).
 
 ## 4. Si crees que algo infringe tus derechos

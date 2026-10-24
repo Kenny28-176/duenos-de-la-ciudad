@@ -8,6 +8,7 @@
     "serve": "node tools/serve.js",
     "sitio": "node tools/construir-sitio.js",
     "simular": "node tools/simular.js",
+    "vendor": "node tools/vendor.js",
     "revisar:imagenes": "node tools/revisar-imagenes.js",
     "optimizar:imagenes": "python tools/optimizar-imagenes.py",
     "hoja:visuales": "node tools/hoja-de-contactos.js"
