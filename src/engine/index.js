@@ -4,6 +4,7 @@ import {
   accionesDisponibles, alquiler, costeConstruir, fichaEnPartida, patrimonio, precioAccion, prepararContexto, valorBarrio,
 } from './contexto.js';
 import { OPCIONES, nuevaPartida, paso } from './juego.js';
+import { posibles } from './posibles.js';
 
 export function crearMotor(datos) {
   const ctx = prepararContexto(datos);
@@ -12,6 +13,8 @@ export function crearMotor(datos) {
     OPCIONES,
     nuevaPartida: opciones => nuevaPartida(ctx, opciones),
     paso: (s, accion) => paso(ctx, s, accion),
+    // Qué puede hacer un jugador ahora mismo (para los botones del celular).
+    posibles: (s, id) => posibles(ctx, s, id),
     patrimonio: (s, id) => patrimonio(ctx, s, id),
     precioAccion: (s, barrio) => precioAccion(ctx, s, barrio),
     valorBarrio: (s, barrio) => valorBarrio(ctx, s, barrio),
