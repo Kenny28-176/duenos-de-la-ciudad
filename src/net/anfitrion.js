@@ -22,6 +22,7 @@ export function crearAnfitrion({ transporte, motor, codigo, semilla = Date.now()
   let despertar = null;
   let cerrada = false;
   let publicaciones = 0;
+  let version = 0; // cuántas acciones se han aplicado (para saber si el estado ha cambiado desde que algo se programó)
   let arbolPublicado = {};
   const vistasPublicadas = new Map(); // uid → árbol de su vista
   const errores = new Map(); // uid → su último error, con un número para saber si es uno nuevo
@@ -60,6 +61,7 @@ export function crearAnfitrion({ transporte, motor, codigo, semilla = Date.now()
     const resultado = motor.paso(estado, accion);
     if (resultado.error) return { error: resultado.error };
     estado = resultado.state;
+    version++;
     return { accion, eventos: resultado.events };
   }
 
@@ -81,6 +83,9 @@ export function crearAnfitrion({ transporte, motor, codigo, semilla = Date.now()
     // El estado de la partida tal como lo tiene el tablero (que puede ir un paso por delante de lo publicado).
     estado: () => estado,
     codigo,
+    // Cuántas veces se ha publicado (el número de la última publicación) y cuántas acciones se han aplicado.
+    publicaciones: () => publicaciones,
+    version: () => version,
     // Quién es cada celular (uid → id de jugador).
     jugadores: () => new Map(jugadorDe),
 
@@ -95,6 +100,12 @@ export function crearAnfitrion({ transporte, motor, codigo, semilla = Date.now()
     accionPropia(accion) {
       cola.push({ uid: transporte.uid, accion, propia: true });
       despertarAlQueEspera();
+    },
+
+    // Una acción del tablero que solo vale si nada ha cambiado desde que se programó (la jugada de un bot, el cierre de una
+    // subasta): si mientras tanto llegó otra acción, la programada ya no tiene sentido y se descarta.
+    accionSi(versionEsperada, accion) {
+      if (version === versionEsperada) api.accionPropia(accion);
     },
 
     // Espera la siguiente acción que valga y la aplica. Devuelve { accion, eventos, uid }, o null si se cerró la sala.

@@ -5,45 +5,28 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { cargarDatos } from '../src/data/cargar.js';
 import { crearMotor } from '../src/engine/index.js';
-import { decidirBot, quienActua } from '../src/engine/bots.js';
-import { fichasParaPartida } from '../src/engine/simulador.js';
-import { crearAnfitrion } from '../src/net/anfitrion.js';
-import { crearCliente } from '../src/net/cliente.js';
 import { codificar, sinSecretos } from '../src/net/codec.js';
 import { crearBaseDeDatos } from '../src/net/memoria.js';
 import { CODIGO, codigoDeSala, limpiarCodigo } from '../src/net/protocolo.js';
+import { comprobarEspejos, conLimite, jugarPorLaRed, montarSala, paso as ayudaPaso } from './ayuda-red.js';
 
 const motor = crearMotor(await cargarDatos());
 const { ctx } = motor;
 
-// Lo que pasa si algo se cuelga: la prueba falla con un mensaje, en vez de quedarse esperando para siempre.
-async function conLimite(promesa, ms, mensaje) {
-  let reloj;
-  try {
-    return await Promise.race([promesa, new Promise((_, ko) => { reloj = setTimeout(() => ko(new Error(mensaje)), ms); })]);
-  } finally {
-    clearTimeout(reloj); // si no, el temporizador retiene el proceso hasta que se cumpla
-  }
-}
-
-async function montar({ jugadores = 4, semilla = 11, latenciaMs = 0 } = {}) {
+const memoria = (latenciaMs = 0) => {
   const base = crearBaseDeDatos({ latenciaMs });
-  const codigo = codigoDeSala(() => 0.5);
-  const anfitrion = crearAnfitrion({ transporte: base.conectar('tablero'), motor, codigo, semilla });
-  await anfitrion.abrir();
-  const fichas = fichasParaPartida(motor, semilla, jugadores);
-  const celulares = fichas.map((ficha, k) => crearCliente({ transporte: base.conectar(`celular-${k}`), motor, codigo }));
+  return { base, conectar: uid => base.conectar(uid), asentar: () => base.reposo() };
+};
+
+async function montar({ jugadores = 4, semilla = 11 } = {}) {
+  const { base, conectar } = memoria();
+  const sala = await montarSala({ motor, conectar, jugadores, semilla });
   await base.reposo();
-  return { base, codigo, anfitrion, fichas, celulares };
+  return { base, ...sala };
 }
 
 // El tablero atiende lo que llegue: un paso, se publica y se espera a que todos lo reciban.
-async function paso({ base, anfitrion }) {
-  const hecho = await conLimite(anfitrion.siguientePaso(), 3000, 'el tablero esperó una acción que nunca llegó');
-  await anfitrion.publicar();
-  await base.reposo();
-  return hecho;
-}
+const paso = sala => ayudaPaso(sala, { asentar: () => sala.base.reposo(), unidos: false });
 
 test('el código de la sala son cuatro consonantes, y lo que escribe una persona se arregla', () => {
   for (let k = 0; k < 200; k++) assert.match(codigoDeSala(), CODIGO);
@@ -127,66 +110,10 @@ test('los errores llegan al celular con sus datos, y el celular los puede traduc
   assert.equal(celulares[1].datos().miId, null, 'quien no pudo unirse no tiene jugador');
 });
 
-// Una partida entre un tablero y varios celulares que juegan con la cabeza de un bot, pero con lo que les llega por la red.
-// Si «maxPasos» no es null, se detiene a medias (para probar la latencia sin esperar a una partida entera).
-async function jugarPorLaRed({ latenciaMs, maxPasos = null, semilla = 5 }) {
-  const sala = await montar({ jugadores: 4, semilla, latenciaMs });
-  const { base, anfitrion, celulares, fichas } = sala;
-  const jugadas = new Map();
-  let mandadas = 0;
-  celulares.forEach(celular => {
-    celular.alCambiar(({ estado, vista, alDia, miId, n }) => {
-      if (!alDia || !miId || estado.fase !== 'juego' || jugadas.get(celular.uid) === n) return;
-      if (quienActua(estado) !== miId) return;
-      jugadas.set(celular.uid, n);
-      const accion = decidirBot(ctx, estado, miId);
-      // Lo que quiere hacer tiene que estar entre sus botones (menos las que se piden con varios datos).
-      if (!['usarHabilidad', 'proponerTrato'].includes(accion.type)) assert.ok(accion.type in vista.puede, `${miId} quiere «${accion.type}» y no lo tiene: ${JSON.stringify(vista.puede)}`);
-      mandadas++;
-      celular.enviar(accion);
-    });
-  });
-
-  for (const [k, c] of celulares.entries()) await c.enviar({ type: 'unirse', nombre: `Celular ${k + 1}`, ficha: fichas[k] });
-  await base.reposo();
-  for (let k = 0; k < 4; k++) await paso(sala);
-  anfitrion.accionPropia({ type: 'configurar', opciones: { meta: 4000 } });
-  anfitrion.accionPropia({ type: 'empezar' });
-  await paso(sala);
-  await paso(sala);
-
-  // El dinero de cada jugador tiene que cuadrar con los movimientos de dinero que anotó el tablero.
-  const libro = {};
-  const contar = e => {
-    if (e.type !== 'dinero') return;
-    if (e.de !== 'banco') libro[e.de] = (libro[e.de] ?? 0) - e.cantidad;
-    if (e.a !== 'banco') libro[e.a] = (libro[e.a] ?? 0) + e.cantidad;
-  };
-  for (const id of anfitrion.estado().orden) libro[id] = ctx.eco.dineroInicial; // el reparto inicial ya pasó
-
-  let pasos = 0;
-  while (anfitrion.estado().fase === 'juego' && (maxPasos === null || pasos < maxPasos)) {
-    if (++pasos > 20000) throw new Error('la partida no termina');
-    // Si nadie puede pujar, el tablero cierra la subasta (lo que hará con su cuenta atrás).
-    if (quienActua(anfitrion.estado()) === null) anfitrion.accionPropia({ type: 'cerrarSubasta' });
-    const hecho = await paso(sala);
-    hecho.eventos.forEach(contar);
-  }
-  return { ...sala, libro, pasos, mandadas };
-}
-
-// Todos los celulares ven lo mismo que el tablero (menos los secretos).
-function comprobarEspejos({ anfitrion, celulares }) {
-  const delTablero = codificar(sinSecretos(anfitrion.estado()));
-  for (const celular of celulares) {
-    const { estado, alDia } = celular.datos();
-    assert.ok(alDia, `${celular.uid} está al día`);
-    assert.deepEqual(codificar(estado), delTablero, `${celular.uid} ve lo mismo que el tablero`);
-  }
-}
-
 test('una partida entera entre un tablero y varios celulares, y todos acaban viendo lo mismo', async () => {
-  const sala = await jugarPorLaRed({ latenciaMs: 0 });
+  const { base, conectar, asentar } = { ...memoria(0) };
+  void base;
+  const sala = await jugarPorLaRed({ motor, conectar, asentar });
   const { anfitrion, celulares, libro, pasos, mandadas } = sala;
   const final = anfitrion.estado();
   assert.equal(final.fase, 'fin');
@@ -200,10 +127,11 @@ test('una partida entera entre un tablero y varios celulares, y todos acaban vie
 
 test('con latencia en la red, los celulares nunca actúan con el estado de un lado y los botones de otro', async () => {
   // Los mensajes llegan con retraso y en distinto orden según el canal: es donde se esconden las carreras.
-  const sala = await jugarPorLaRed({ latenciaMs: 2, maxPasos: 70, semilla: 8 });
+  const { base, conectar, asentar } = memoria(2);
+  const sala = await jugarPorLaRed({ motor, conectar, asentar, maxPasos: 70, semilla: 8 });
   assert.equal(sala.anfitrion.estado().fase, 'juego');
   assert.ok(sala.mandadas >= 50, `${sala.mandadas} acciones mandadas`);
-  await sala.base.reposo();
+  await base.reposo();
   comprobarEspejos(sala);
 });
 
