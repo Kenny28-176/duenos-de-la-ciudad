@@ -222,6 +222,14 @@ function delegar(id) {
   sala.orquesta.reprogramar();
 }
 
+// Saca a alguien del vestíbulo (un bot de más, o alguien que no debería estar). Su celular vuelve a pedirle el nombre.
+function quitarJugador(id) {
+  if (!sala || sala.cerrada) return;
+  const ficha = sala.anfitrion.estado().jugadores[id]?.ficha;
+  if (ficha) sala.fichasPedidas.delete(ficha);
+  sala.anfitrion.accionPropia({ type: 'salir', id });
+}
+
 function empezar(opciones) {
   if (!sala || sala.cerrada) return;
   sala.anfitrion.accionPropia({ type: 'configurar', opciones });
@@ -242,7 +250,7 @@ const acciones = {
     almacen.cambiar({ idioma: lang });
     montarTablero();
   },
-  abrirSala, cerrarSala, anadirBot, empezar, delegar,
+  abrirSala, cerrarSala, anadirBot, quitarJugador, empezar, delegar,
 };
 
 alCambiarIdioma(lang => {

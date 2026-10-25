@@ -37,6 +37,8 @@ export function Vestibulo({ sala, estado, acciones, colores }) {
           <span class="nombre">${nombreMostrado(j, f => t(`ficha.${f}`))}</span>
           ${j.bot ? html`<small class="etiqueta-bot">${t('sala.bot')}</small>` : null}
           ${j.ficha ? null : html`<small class="eligiendo">${t('sala.eligiendo')}</small>`}
+          <button type="button" class="quitar" title=${t('sala.quitar', { jugador: nombreMostrado(j, f => t(`ficha.${f}`)) })} aria-label=${t('sala.quitar', { jugador: nombreMostrado(j, f => t(`ficha.${f}`)) })}
+            onClick=${() => acciones.quitarJugador(j.id)}>×</button>
         </li>`)}
       </ul>
       <div class="opciones">

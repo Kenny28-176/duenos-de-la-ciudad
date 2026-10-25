@@ -17,7 +17,9 @@ export function pantallaActual({ codigo, datos, cerrada = false, sinRed = false 
   if (!datos || datos.sala === null || datos.vista.puede === undefined) return 'conectando';
   if (datos.sala === false) return 'sin-sala';
   if (!datos.estado) return 'conectando';
-  if (datos.miId === null) return datos.estado.fase === 'sala' ? 'nombre' : 'empezada';
+  // Quien tiene identificador pero ya no está en el estado (el tablero lo sacó de la sala) es como quien no ha entrado.
+  const estaDentro = datos.miId !== null && datos.estado.jugadores?.[datos.miId] !== undefined;
+  if (!estaDentro) return datos.estado.fase === 'sala' ? 'nombre' : 'empezada';
   return { sala: 'vestibulo', juego: 'partida', fin: 'final' }[datos.estado.fase] ?? 'conectando';
 }
 

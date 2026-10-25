@@ -112,6 +112,16 @@ test('un celular entra a la sala, elige ficha y juega con sus botones hasta cons
     assert.equal(anfitrion.estado().jugadores.j1.nombre, 'Ana');
     marca('Ana está en el vestíbulo');
 
+    // El tablero saca a Ana de la sala: su celular no se rompe, vuelve a pedirle el nombre y puede entrar de nuevo.
+    anfitrion.accionPropia({ type: 'salir', id: 'j1' });
+    await ana.esperarSelector('.campo-nombre', 10000);
+    await sinClavesSueltas(ana, 'tras ser sacada de la sala');
+    assert.equal(await ana.eval(() => document.querySelector('.fichas-elegir') === null), true);
+    await pulsarCuandoEste(ana, 'Entrar a la sala');
+    await ana.esperarSelector('.fichas-elegir', 15000);
+    assert.equal(anfitrion.estado().jugadores.j1.nombre, 'Ana', 'vuelve a ser la misma jugadora (su celular conserva el sitio j1)');
+    marca('Ana fue sacada de la sala y volvió a entrar');
+
     // Otro celular, en inglés, intenta entrar con el mismo nombre: el tablero le dice que no, traducido.
     const beto = await nav.abrir(`${base}/public/jugador.html?sala=${codigo}&depurar=1`, { ancho: 390, alto: 844, idioma: 'en' });
     await beto.esperarSelector('.campo-nombre', 30000);

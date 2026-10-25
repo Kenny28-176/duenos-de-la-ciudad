@@ -280,7 +280,8 @@ test('en partidas enteras entre bots, las cifras de los botones de todos son las
 });
 
 test('la pantalla que toca sale de lo que se sabe: conectar, pedir nombre, vestíbulo, partida y final', () => {
-  const datos = (cambios = {}) => ({ sala: true, estado: { fase: 'sala' }, vista: { puede: {} }, miId: null, ...cambios });
+  const estadoDe = fase => ({ fase, jugadores: { j1: {} } });
+  const datos = (cambios = {}) => ({ sala: true, estado: estadoDe('sala'), vista: { puede: {} }, miId: null, ...cambios });
   const pantalla = (cambios, extra = {}) => pantallaActual({ codigo: 'BCDF', datos: datos(cambios), ...extra });
   assert.equal(pantallaActual({ codigo: 'BCDF', datos: datos(), sinRed: true }), 'sin-red', 'sin manera de hablar con el tablero, nada más importa');
   assert.equal(pantallaActual({ codigo: '', datos: null }), 'codigo');
@@ -291,8 +292,11 @@ test('la pantalla que toca sale de lo que se sabe: conectar, pedir nombre, vest�
   assert.equal(pantalla({ sala: false }), 'sin-sala');
   assert.equal(pantalla({}, { cerrada: true }), 'cerrada');
   assert.equal(pantalla({ miId: null }), 'nombre');
-  assert.equal(pantalla({ estado: { fase: 'juego' } }), 'empezada', 'si la partida ya empezó, no se entra');
+  assert.equal(pantalla({ estado: estadoDe('juego') }), 'empezada', 'si la partida ya empezó, no se entra');
   assert.equal(pantalla({ miId: 'j1' }), 'vestibulo');
-  assert.equal(pantalla({ miId: 'j1', estado: { fase: 'juego' } }), 'partida');
-  assert.equal(pantalla({ miId: 'j1', estado: { fase: 'fin' } }), 'final');
+  assert.equal(pantalla({ miId: 'j1', estado: estadoDe('juego') }), 'partida');
+  assert.equal(pantalla({ miId: 'j1', estado: estadoDe('fin') }), 'final');
+  // El tablero sacó al jugador de la sala (su identificador sigue en la vista, pero ya no está en el estado): no se rompe nada.
+  assert.equal(pantalla({ miId: 'j7' }), 'nombre');
+  assert.equal(pantalla({ miId: 'j7', estado: estadoDe('juego') }), 'empezada');
 });
