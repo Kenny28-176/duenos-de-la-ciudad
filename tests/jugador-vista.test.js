@@ -208,9 +208,11 @@ test('una parte de trato sin lo que está en cero es la que acepta el motor', ()
   assert.equal(aceptado.state.jugadores.j2.acciones.feria, 5);
 });
 
-test('las pujas que se ofrecen empiezan en la mínima y no pasan del dinero', () => {
-  assert.deepEqual(opcionesDePuja(10, 1000), [10, 20, 60, 110]);
-  assert.deepEqual(opcionesDePuja(50, 65), [50, 60]);
+test('las pujas que se ofrecen son +10, +50 y +100 sobre la más alta, y no pasan del dinero', () => {
+  assert.deepEqual(opcionesDePuja(10, 1000), [10, 50, 100], 'sin pujas: 10, 50 y 100');
+  assert.deepEqual(opcionesDePuja(70, 1000), [70, 110, 160], 'con 60 de puja: +10, +50 y +100');
+  assert.deepEqual(opcionesDePuja(70, 120), [70, 110]);
+  assert.deepEqual(opcionesDePuja(50, 65), [50]);
   assert.deepEqual(opcionesDePuja(80, 70), []);
   assert.deepEqual(opcionesDePuja(100, 100, 25), [100]);
 });

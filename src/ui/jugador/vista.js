@@ -161,9 +161,11 @@ export const parteVacia = parte => Object.keys(parteDeTrato(parte)).length === 0
 
 // --- La subasta ---------------------------------------------------------------------------------------------------------
 
-// Las cantidades que se ofrecen como botones al pujar: la mínima y varios escalones por encima, sin pasarse del dinero.
+// Las cantidades que se ofrecen como botones al pujar, sin pasarse del dinero: +10, +50 y +100 sobre la puja más alta (docs/DISENO.md,
+// «Subastas»). La mínima es la primera: puja + incremento, o solo 10 si nadie ha pujado; por eso los otros dos son mínima + 4 y + 9
+// incrementos.
 export function opcionesDePuja(minima, dinero, incremento = 10) {
-  const cantidades = [0, 1, 5, 10].map(k => minima + k * incremento).filter(c => c <= dinero);
+  const cantidades = [0, 4, 9].map(k => minima + k * incremento).filter(c => c <= dinero);
   return [...new Set(cantidades)];
 }
 
