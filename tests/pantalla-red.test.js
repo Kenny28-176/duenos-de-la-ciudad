@@ -70,6 +70,25 @@ test('el tablero abre una sala, entran celulares, empieza la partida y juegan ha
     await esperarHasta(() => celulares.every(({ celular }) => celular.datos().estado?.fase === 'juego'), 15000, 'los celulares no ven la partida empezada');
     marca('los celulares ven la partida empezada');
 
+    // El interruptor «que un bot juegue por esta persona»: solo en las personas (no en el bot), y se activa y se desactiva.
+    assert.equal(await pestana.eval(() => document.querySelectorAll('.jugadores .delegar').length), 2, 'una por cada persona, ninguna para el bot');
+    const delegados = () => pestana.eval(() => [...window.duenos.sala().delegados]);
+    const interruptor = () => pestana.eval(() => document.querySelector('.jugadores .delegar').getAttribute('aria-pressed'));
+    // La pantalla se repinta unos milisegundos después: se espera a que el botón muestre lo esperado.
+    const verComo = async esperado => {
+      const fin = Date.now() + 3000;
+      while (Date.now() < fin && (await interruptor()) !== esperado) await new Promise(listo => setTimeout(listo, 30));
+      assert.equal(await interruptor(), esperado);
+    };
+    await verComo('false');
+    await pestana.eval(() => document.querySelector('.jugadores .delegar').click());
+    assert.equal((await delegados()).length, 1);
+    await verComo('true');
+    await pestana.eval(() => document.querySelector('.jugadores .delegar').click());
+    assert.deepEqual(await delegados(), [], 'se devuelve el control');
+    await verComo('false');
+    marca('interruptor del bot probado');
+
     // Se deja jugar un rato: el tablero anima, publica, y los celulares (con la cabeza de un bot) deciden con lo que les llega.
     await esperarHasta(() => celulares.every(({ celular }) => (celular.datos().estado?.turnos ?? 0) >= 6), 60000, 'la partida no avanza');
     marca('6 turnos jugados');

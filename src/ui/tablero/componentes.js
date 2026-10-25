@@ -119,7 +119,8 @@ function Final({ fin, filas, alNueva, texto }) {
 
 // --- El panel de la derecha -------------------------------------------------------------------------------------------
 
-function TarjetaJugador({ j, flotantes, velocidad }) {
+// «delegable»: se puede poner un bot a jugar por esta persona (solo en una partida con celulares). «delegado»: ya lo tiene.
+function TarjetaJugador({ j, flotantes, velocidad, delegable = false, delegado = false, alDelegar = () => {} }) {
   const cifra = useNumeroAnimado(j.dinero, 500 / velocidad);
   return html`<li class=${`jugador ${j.turno ? 'turno' : ''} ${j.quebrado ? 'quebrado' : ''}`} style=${{ '--color': j.color }}>
     <span class="ficha-mini"><${Imagen} src=${`${BASE}fichas/piezas/${j.ficha}.webp`} /></span>
@@ -136,6 +137,8 @@ function TarjetaJugador({ j, flotantes, velocidad }) {
     <span class="dinero"><b class="cifra">${dinero(cifra)}</b><span class="patrimonio">${t('panel.patrimonio')} ${dinero(j.patrimonio)}</span></span>
     ${j.avance === null ? null : html`<span class="barra" title=${t('panel.avance')}><i style=${{ width: `${Math.round(j.avance * 100)}%` }}></i></span>`}
     ${flotantes.map(f => html`<span class=${`flotante ${f.delta > 0 ? 'sube' : 'baja'}`} key=${f.clave}>${dineroConSigno(f.delta)}</span>`)}
+    ${delegable ? html`<button type="button" class=${`delegar ${delegado ? 'activo' : ''}`} aria-pressed=${delegado} onClick=${alDelegar}
+      title=${t(delegado ? 'panel.quitar_bot' : 'panel.poner_bot', { jugador: j.nombre })}>${t('sala.bot')}</button>` : null}
   </li>`;
 }
 
@@ -201,7 +204,8 @@ export function Pantalla({ almacen, motor, alMontar, acciones }) {
         <p>${enJuego ? t('tablero.ronda', { ronda: d.estado.ronda }) : ''}${enJuego && d.estado.opciones.meta ? ` · ${t('tablero.meta', { meta: d.estado.opciones.meta })}` : ''}</p>
         <span class="demo">${t(d.modo === 'demo' ? 'tablero.demo' : 'tablero.partida')}</span>
       </header>
-      <ul class="jugadores">${filas.map(j => html`<${TarjetaJugador} key=${j.id} j=${j} velocidad=${d.velocidad} flotantes=${d.flotantes.filter(f => f.id === j.id)} />`)}</ul>
+      <ul class="jugadores">${filas.map(j => html`<${TarjetaJugador} key=${j.id} j=${j} velocidad=${d.velocidad} flotantes=${d.flotantes.filter(f => f.id === j.id)}
+        delegable=${d.modo === 'partida' && d.estado.jugadores[j.id].bot !== true && !j.quebrado} delegado=${d.delegados.includes(j.id)} alDelegar=${() => acciones.delegar(j.id)} />`)}</ul>
       <${Bolsa} filas=${bolsa} />
       <${Registro} lineas=${d.registro} />
       <${Controles} d=${d} acciones=${acciones} />

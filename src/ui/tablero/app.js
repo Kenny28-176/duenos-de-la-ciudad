@@ -46,7 +46,7 @@ const estadoInicial = () => ({
   estado: null, dinero: {}, precios: {}, preciosPrevios: {}, registro: [], flotantes: [], turnoDe: null,
   dados: null, carta: null, cartaN: 0, subasta: null, aviso: null, fin: null, error: null,
   pausado: false, velocidad: numero('velocidad', 1, 1, 100), idioma, jugadores: numero('jugadores', 4, 2, 8),
-  modo: 'demo', sala: null, red: null,
+  modo: 'demo', sala: null, red: null, delegados: [],
 });
 const almacen = crearAlmacen(estadoInicial());
 
@@ -117,7 +117,7 @@ async function abrirSala() {
     if (!codigo) throw new Error('no hay códigos libres');
     const anfitrion = crearAnfitrion({ transporte, motor, codigo });
     await anfitrion.abrir();
-    sala = { transporte, anfitrion, codigo, cerrada: false, bots: 0, fichasPedidas: new Set() };
+    sala = { transporte, anfitrion, codigo, cerrada: false, bots: 0, fichasPedidas: new Set(), delegados: new Set(), orquesta: null };
     const { raiz, sinRed, otras } = direccionParaCelulares(red);
     const ruta = new URL('jugador.html', location.href).pathname;
     const url = `${raiz}${ruta}?sala=${codigo}`;
@@ -152,7 +152,8 @@ async function atenderVestibulo(esta) {
 // Pasa del vestíbulo a la partida: el primer paso (el reparto del dinero inicial) se anima como los demás y, al acabar cada
 // paso, se publica para que los celulares lo vean cuando termina la animación.
 function empezarPartida(esta, primerPaso) {
-  const orquesta = crearOrquesta({ anfitrion: esta.anfitrion, motor, velocidad: () => almacen.leer().velocidad });
+  const orquesta = crearOrquesta({ anfitrion: esta.anfitrion, motor, velocidad: () => almacen.leer().velocidad, delegados: () => esta.delegados });
+  esta.orquesta = orquesta;
   let primero = primerPaso;
   const fuente = {
     estado: () => esta.anfitrion.estado(),
@@ -206,6 +207,16 @@ function anadirBot() {
   sala.anfitrion.accionPropia({ type: 'unirse', id: `b${n}`, nombre: `Bot ${n}`, ficha, bot: true });
 }
 
+// Pone (o quita) un bot que juegue por una persona que se ausentó o a la que se le cayó el celular. Es del tablero, no del celular:
+// quien está en la mesa decide, y la partida no se queda parada esperando a alguien que no está.
+function delegar(id) {
+  if (!sala || sala.cerrada || !sala.orquesta) return;
+  if (sala.delegados.has(id)) sala.delegados.delete(id);
+  else sala.delegados.add(id);
+  almacen.cambiar({ delegados: [...sala.delegados] });
+  sala.orquesta.reprogramar();
+}
+
 function empezar(opciones) {
   if (!sala || sala.cerrada) return;
   sala.anfitrion.accionPropia({ type: 'configurar', opciones });
@@ -226,7 +237,7 @@ const acciones = {
     almacen.cambiar({ idioma: lang });
     montarTablero();
   },
-  abrirSala, cerrarSala, anadirBot, empezar,
+  abrirSala, cerrarSala, anadirBot, empezar, delegar,
 };
 
 alCambiarIdioma(lang => {

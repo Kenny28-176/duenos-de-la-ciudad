@@ -66,7 +66,9 @@ La laptop hace de tablero y de buzón, así que no hace falta Firebase ni intern
    tu nombre.
 4. Cada jugador elige su ficha. Si faltan jugadores, el tablero añade bots. Cuando estén todos, **Empezar la partida**.
 
-Si recargas la página del tablero a media partida, la sala se pierde.
+Si alguien se ausenta o se le cae el celular, pulsa **BOT** en su tarjeta del tablero: un bot juega por esa persona hasta que
+se lo quites (así la partida no se queda parada). Un celular que se recarga vuelve solo a su sitio. Si recargas la página del
+tablero a media partida, la sala se pierde.
 
 ## Desarrollo
 

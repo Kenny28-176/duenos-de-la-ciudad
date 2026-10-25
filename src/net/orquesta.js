@@ -1,6 +1,7 @@
 // El organizador de una partida en red. El anfitrión solo atiende lo que mandan los celulares; esto añade lo que hace falta
 // para que la partida no se quede parada:
-//   - los bots de la sala juegan cuando les toca (con una pausa, como si pensaran);
+//   - los bots de la sala juegan cuando les toca (con una pausa, como si pensaran), y también las personas a las que el tablero
+//     les ha puesto un bot («delegados»: alguien que se ausentó o cuyo celular se cayó);
 //   - si nadie puede pujar en una subasta, o entre personas nadie puja en 10 segundos, el tablero la cierra.
 // Tiene la misma forma que la partida de demostración (src/ui/tablero/demo.js): paso() y estado(), así el reproductor del
 // tablero anima una y otra igual.
@@ -8,9 +9,10 @@ import { decidirBot, quienActua } from '../engine/bots.js';
 
 export const SEGUNDOS_DE_SUBASTA = 10;
 
-export function crearOrquesta({ anfitrion, motor, velocidad = () => 1, pensarMs = 500 }) {
+// delegados() da el conjunto de jugadores a los que juega un bot. Si cambia mientras se espera, reprogramar() lo tiene en cuenta.
+export function crearOrquesta({ anfitrion, motor, velocidad = () => 1, pensarMs = 500, delegados = () => new Set() }) {
   const { ctx } = motor;
-  const esBot = (s, id) => s.jugadores[id]?.bot === true;
+  const esBot = (s, id) => s.jugadores[id]?.bot === true || delegados().has(id);
 
   // Quién tiene que mover ahora. Un trato pendiente para una persona no frena a los bots: ella contesta cuando quiera, y mientras
   // tanto la mesa sigue (si no, un trato sin contestar pararía la partida). Los tratos para un bot, sí: los contesta enseguida.
@@ -43,16 +45,25 @@ export function crearOrquesta({ anfitrion, motor, velocidad = () => 1, pensarMs 
     return () => clearTimeout(reloj);
   }
 
+  let cancelar = () => {};
+  const reprogramar = () => {
+    cancelar();
+    cancelar = programar();
+  };
+
   return {
     estado: () => anfitrion.estado(),
+    // Vuelve a mirar qué tiene que hacer el tablero (cuando cambian los delegados mientras se espera a una persona).
+    reprogramar,
     // La siguiente acción que se aplique, venga de un celular o del propio tablero (un bot, una subasta). Devuelve
     // { accion, eventos, uid }, o null si se cerró la sala.
     async paso() {
-      const cancelar = programar();
+      reprogramar();
       try {
         return await anfitrion.siguientePaso();
       } finally {
         cancelar();
+        cancelar = () => {};
       }
     },
   };

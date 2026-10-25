@@ -173,3 +173,38 @@ test('un trato sin contestar para una persona no para a los bots; uno para un bo
   assert.match(responde.accion.type, /^(aceptar|rechazar)Trato$/);
   assert.equal(anfitrion.estado().tratos.t10, undefined, 'el trato ya está contestado');
 });
+
+test('a una persona delegada la juega un bot, también si se delega mientras el tablero la esperaba', async () => {
+  const { anfitrion, celulares } = await salaMixta();
+  const persona = celulares[0].datos().miId;
+  const delegados = new Set();
+  const orquesta = crearOrquesta({ anfitrion, motor, velocidad: () => 1000, delegados: () => delegados });
+  const s = anfitrion.estado();
+  s.turno.id = persona; s.turno.fase = 'inicio'; s.turno.dados = null; s.turno.compra = null;
+
+  // Sin delegar, el tablero espera a que la persona juegue desde su celular.
+  const espera = orquesta.paso();
+  const antes = await Promise.race([espera.then(() => 'jugó'), new Promise(listo => setTimeout(() => listo('esperó'), 80))]);
+  assert.equal(antes, 'esperó');
+
+  // Se delega a esa persona (se ausentó): la juega un bot enseguida, con las acciones del propio tablero.
+  delegados.add(persona);
+  orquesta.reprogramar();
+  const hecho = await conLimite(espera, 2000, 'el bot no jugó por la persona delegada');
+  assert.equal(hecho.accion.id, persona);
+  assert.match(hecho.accion.type, /^(tirar|usarHabilidad)$/, 'lo que haría un bot al empezar el turno');
+  assert.equal(hecho.uid, 'tablero');
+});
+
+test('un trato para una persona delegada lo contesta el bot', async () => {
+  const { anfitrion, celulares } = await salaMixta();
+  const persona = celulares[0].datos().miId;
+  const orquesta = crearOrquesta({ anfitrion, motor, velocidad: () => 1000, delegados: () => new Set([persona]) });
+  const s = anfitrion.estado();
+  s.turno.id = 'b1'; s.turno.fase = 'inicio'; s.turno.dados = null; s.turno.compra = null;
+  s.tratos.t10 = { id: 't10', de: 'b2', para: persona, ofrece: { dinero: 500, propiedades: [], acciones: {}, salvoconductos: 0 }, pide: { dinero: 0, propiedades: [], acciones: {}, salvoconductos: 0 } };
+  s.siguienteTrato = 11;
+  const hecho = await conLimite(orquesta.paso(), 2000, 'nadie contestó el trato de la persona delegada');
+  assert.equal(hecho.accion.id, persona);
+  assert.equal(hecho.accion.type, 'aceptarTrato', 'le regalan 500 $: lo acepta');
+});

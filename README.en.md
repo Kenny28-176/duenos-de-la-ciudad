@@ -66,7 +66,9 @@ The laptop needs [Node.js](https://nodejs.org/) 22 or later.
    your name.
 4. Each player chooses a token. If players are missing, the board adds bots. When everyone is in, **Start the game**.
 
-If you reload the board page in the middle of a game, the room is lost.
+If someone steps away or their phone drops out, press **BOT** on their card on the board: a bot plays for that person until
+you take it off (so the game doesn't stall). A phone that reloads goes back to its place on its own. If you reload the board
+page in the middle of a game, the room is lost.
 
 ## Development
 

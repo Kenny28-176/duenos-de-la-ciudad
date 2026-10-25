@@ -62,6 +62,13 @@ salas/ABCD/
 puede pujar, a los 10 s si hay personas) y la aplica con `anfitrion.accionSi(version, accion)`, que la descarta si mientras
 tanto llegó otra acción.
 
+- **Un trato sin contestar para una persona no frena a los bots** (ella contesta cuando quiera); uno para un bot lo contesta
+  el bot enseguida.
+- **Delegar en un bot.** Si una persona se ausenta o se le cae el celular, el tablero (el botón BOT de su tarjeta) puede poner
+  un bot a jugar por ella: la orquesta la trata como a un bot (`delegados`) hasta que se lo quiten. Es del tablero, no del
+  celular: quien está en la mesa decide.
+- La subasta entre personas se cierra a los 10 s sin pujas (el tablero todavía no enseña la cuenta atrás).
+
 ## Jugar en casa, sin Firebase (el relé local)
 
 `node tools/serve.js` sirve la web y, en `/red`, hace de buzón (`tools/red-local.js`): guarda la base de datos en memoria y

@@ -175,5 +175,7 @@
   "jugador.dock.esperando_tablero": "Waiting for the board…",
   "jugador.dock.espera": "Wait: it's {jugador}'s turn.",
   "jugador.dock.pedir": "Ask for it",
-  "sala.otras": "If a phone can't get in, try another address: {direcciones}"
+  "sala.otras": "If a phone can't get in, try another address: {direcciones}",
+  "panel.poner_bot": "Let a bot play for {jugador} (if they step away)",
+  "panel.quitar_bot": "Give control back to {jugador}"
 }

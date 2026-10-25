@@ -175,5 +175,7 @@
   "jugador.dock.esperando_tablero": "Esperando al tablero…",
   "jugador.dock.espera": "Espera: es el turno de {jugador}.",
   "jugador.dock.pedir": "Pedir",
-  "sala.otras": "Si algún celular no puede entrar, prueba con otra dirección: {direcciones}"
+  "sala.otras": "Si algún celular no puede entrar, prueba con otra dirección: {direcciones}",
+  "panel.poner_bot": "Que un bot juegue por {jugador} (si se ausenta)",
+  "panel.quitar_bot": "Devolver el control a {jugador}"
 }
