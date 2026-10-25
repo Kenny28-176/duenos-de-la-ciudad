@@ -243,13 +243,13 @@ test('n-feria-inversores: avanza hasta la Bolsa de Valores sin pasar por la Sali
   assert.equal(sPost.jugadores.j1.dinero, dineroAntes);
 });
 
-test('n-dia-de-cobro: avanza hasta la Salida y cobra el sueldo', () => {
+test('n-nomina-adelantada: avanza hasta la Salida y cobra el sueldo', () => {
   const s = partida();
-  const e = ctx.cartas['n-dia-de-cobro'].efecto;
+  const e = ctx.cartas['n-nomina-adelantada'].efecto;
 
   const dineroAntes = s.jugadores.j1.dinero;
-  const { s: sPost, ev } = tirarNoticias(s, 'n-dia-de-cobro');
-  assert.ok(hay(ev, { type: 'carta', carta: 'n-dia-de-cobro' }));
+  const { s: sPost, ev } = tirarNoticias(s, 'n-nomina-adelantada');
+  assert.ok(hay(ev, { type: 'carta', carta: 'n-nomina-adelantada' }));
 
   assert.equal(sPost.jugadores.j1.casilla, e.casilla);
   assert.ok(hay(ev, { type: 'salida', id: 'j1' }));
@@ -403,15 +403,15 @@ test('f-taller: pagas al banco', () => {
   assert.equal(sPost.jugadores.j1.dinero, dineroAntes - e.cantidad);
 });
 
-test('f-cumpleanos: cada jugador le paga a quien roba', () => {
+test('f-rifa: cada jugador le paga a quien roba', () => {
   const s = partida();
-  const e = ctx.cartas['f-cumpleanos'].efecto;
+  const e = ctx.cartas['f-rifa'].efecto;
   const dinero1Antes = s.jugadores.j1.dinero;
   const dinero2Antes = s.jugadores.j2.dinero;
   const dinero3Antes = s.jugadores.j3.dinero;
 
-  const { s: sPost, ev } = tirarFortuna(s, 'f-cumpleanos');
-  assert.ok(hay(ev, { type: 'carta', carta: 'f-cumpleanos' }));
+  const { s: sPost, ev } = tirarFortuna(s, 'f-rifa');
+  assert.ok(hay(ev, { type: 'carta', carta: 'f-rifa' }));
 
   assert.equal(sPost.jugadores.j1.dinero, dinero1Antes + 2 * e.cantidad);
   assert.equal(sPost.jugadores.j2.dinero, dinero2Antes - e.cantidad);
@@ -433,7 +433,7 @@ test('f-cena: quien roba paga a cada jugador', () => {
   assert.equal(sPost.jugadores.j3.dinero, dinero3Antes + e.cantidad);
 });
 
-test('f-en-coche: avanza hasta el transporte más cercano', () => {
+test('f-en-coche: avanza hasta el siguiente transporte', () => {
   const s = partida();
 
   const { s: sPost, ev } = tirarFortuna(s, 'f-en-coche');
@@ -444,7 +444,7 @@ test('f-en-coche: avanza hasta el transporte más cercano', () => {
   assert.equal(ctx.casillas[15].tipo, 'transporte');
 });
 
-test('f-sin-conexion: avanza hasta el servicio más cercano', () => {
+test('f-sin-conexion: avanza hasta el siguiente servicio', () => {
   const s = partida();
 
   const { s: sPost, ev } = tirarFortuna(s, 'f-sin-conexion');
@@ -455,7 +455,7 @@ test('f-sin-conexion: avanza hasta el servicio más cercano', () => {
   assert.equal(ctx.casillas[13].tipo, 'servicio');
 });
 
-test('f-inspeccion: vas al Calabozo', () => {
+test('f-inspeccion: lo llevan al Calabozo', () => {
   const s = partida();
 
   const { s: sPost, ev } = tirarFortuna(s, 'f-inspeccion');
@@ -514,13 +514,13 @@ test('f-goteras: paga reparaciones por sus casas y torres', () => {
   assert.equal(sPost.jugadores.j2.dinero, dinero2Antes, 'los demás jugadores no pagan goteras');
 });
 
-test('f-paseo: avanza hasta la Calle de las Estrellas sin pasar por la Salida', () => {
+test('f-visita-guiada: avanza hasta la Plaza del Reloj sin pasar por la Salida', () => {
   const s = partida();
-  const e = ctx.cartas['f-paseo'].efecto;
+  const e = ctx.cartas['f-visita-guiada'].efecto;
   const dineroAntes = s.jugadores.j1.dinero;
 
-  const { s: sPost, ev } = tirarFortuna(s, 'f-paseo');
-  assert.ok(hay(ev, { type: 'carta', carta: 'f-paseo' }));
+  const { s: sPost, ev } = tirarFortuna(s, 'f-visita-guiada');
+  assert.ok(hay(ev, { type: 'carta', carta: 'f-visita-guiada' }));
 
   assert.equal(sPost.jugadores.j1.casilla, e.casilla);
   assert.ok(!hay(ev, { type: 'salida', id: 'j1' }), 'no pasa por la Salida');

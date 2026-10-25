@@ -75,3 +75,17 @@ Aquí se anotan los cambios de cada versión. Las versiones siguen el esquema ma
   - la geometría de las 40 casillas;
   - el dibujo del tablero en SVG, con la franja de color en el borde exterior y los textos sin quedar nunca boca
     abajo.
+- Bibliotecas y tipografías locales en `public/vendor/` (Preact + htm, qrcode-generator, Fraunces e Inter), con
+  `npm run vendor` para descargarlas y comprobar su huella.
+- Idiomas: el módulo de traducción (`src/i18n/`), con formatos de dinero y porcentajes, y todos los textos del juego y
+  del narrador en español y en inglés.
+- Más pruebas: los datos, las 32 cartas, los diccionarios, 20 casos límite de las reglas y el contraste de los colores
+  (`tools/contraste.js`).
+- `tools/relato.js` cuenta una partida entre bots como lo haría el narrador.
+- El README en inglés, al día.
+
+### Cambiado
+
+- Diez cartas tienen ahora textos, temas o cifras propios, para no parecerse a las de ningún juego comercial. Por
+  ejemplo, el cumpleaños pasa a ser una rifa y el paseo, una visita guiada. La prueba de palabras prohibidas vigila
+  también esas frases.

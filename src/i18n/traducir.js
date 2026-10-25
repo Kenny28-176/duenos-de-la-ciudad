@@ -38,6 +38,7 @@ function formatearPorcentaje(valorPct, idioma) {
 
 /**
  * Aplica el formato indicado a un valor para insertarlo en un marcador.
+ * Los formatos muestran el número sin signo: el sentido lo pone el texto («vale 150 $ menos», «pierden un 10 %»).
  * @param {unknown} valor
  * @param {string|undefined} formato
  * @param {string} idioma

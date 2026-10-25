@@ -386,11 +386,11 @@ mercado vivo. Estos son los tipos de efecto:
 | Efecto | Ejemplo de Noticias | Ejemplo de Fortuna |
 |---|---|---|
 | Cobrar o pagar | «Subsidio municipal: todos cobran 50 $» | «Te devuelven un depósito: cobras 120 $» |
-| Moverse | «Desvío por obras: retrocede 3 casillas» | «Te llevan en coche: avanza hasta el transporte más cercano» |
-| Calabozo | — | «Inspección sorpresa: vas al Calabozo» · «Salvoconducto: sales gratis del Calabozo» |
+| Moverse | «Desvío por obras: retrocede 4 casillas» | «Un amigo te lleva en coche hasta la siguiente parada de transporte» |
+| Calabozo | — | «Inspección sorpresa: te llevan al Calabozo» · «Salvoconducto: una vez, sales del Calabozo sin pagar la fianza» |
 | Mercado | «Llega una gran empresa a un barrio al azar: su valor sube 200 $» · «Pánico en la Bolsa: todos los barrios pierden un 10 % de su valor» | «Un soplo: compras 5 acciones de un barrio a mitad de precio» |
 | Edificios | «Revisión de fachadas: cada dueño paga 20 $ por casa y 80 $ por torre» | — |
-| Entre jugadores | — | «Celebras tu cumpleaños: cada jugador te da 20 $» |
+| Entre jugadores | — | «Vendes papeletas para la rifa de tu club: cada jugador te compra una por 20 $» |
 
 ## 8. Qué ve cada pantalla
 

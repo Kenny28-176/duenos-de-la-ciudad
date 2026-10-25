@@ -850,7 +850,7 @@ Los retratos siguen la ficha 7.2:
 | `tarjetas/efectos/bolsa-baja.webp` | Rojo baja | No | Una pantalla oscura con líneas de luz rojas que bajan (sin cifras) y papeles cayendo |
 | `tarjetas/efectos/llega-empresa.webp` | Azul cobalto | No | Una grúa que levanta un bloque de oficinas de cristal sobre un solar |
 | `tarjetas/efectos/reparaciones.webp` | Ámbar | Sí | Un casco de obra, un martillo y una llave inglesa sobre unos planos enrollados |
-| `tarjetas/efectos/cumpleanos.webp` | Malva | Sí | Un pastel sencillo con tres velas encendidas y un sobre cerrado al lado |
+| `tarjetas/efectos/rifa.webp` | Malva | Sí | Un taco de papeletas de rifa de papel kraft, sin texto ni números, junto a una lata de metal con unas monedas dentro |
 | `tarjetas/efectos/subsidio.webp` | Verde dinero | No | La fachada de un ayuntamiento de piedra con un gran lazo rojo delante de la puerta |
 
 **Cabeceras (ficha 7.10).** Cada barrio, con su arquitectura de la sección 4 y sin personas:

@@ -448,7 +448,7 @@ test('el salvoconducto se lo queda quien lo roba, hasta que lo usa para salir de
 });
 
 test('las cartas que mueven la ficha cobran el sueldo si pasan por la Salida', () => {
-  let s = cartaArriba(partida(), 'n-dia-de-cobro');
+  let s = cartaArriba(partida(), 'n-nomina-adelantada');
   s.jugadores.j1.casilla = 14;
   ({ s } = jugar(s, { type: 'tirar', id: 'j1', dados: [1, 2] })); // Noticias
   assert.equal(s.jugadores.j1.casilla, ctx.salida);

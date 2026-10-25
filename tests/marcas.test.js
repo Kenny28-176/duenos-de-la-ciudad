@@ -46,6 +46,16 @@ const PROHIBIDAS = [
   'bGF2YXBpZXM=',
   'YnJhd2wgc3RhcnM=',
   'c3VwZXJjZWxs',
+  'cGF5ZGF5',
+  'cGF5IGRheQ==',
+  'eW91ciBiaXJ0aGRheQ==',
+  'YWR2YW5jZSB0byBzdGFydA==',
+  'YWR2YW5jZSB0byB0aGUgbmVhcmVzdA==',
+  'bG9ja3VwIGZyZWU=',
+  'bG9ja3VwIGZvciBmcmVl',
+  'ZGlyZWN0bHkgdG8gdGhlIGxvY2t1cA==',
+  'Z3JhdGlzIGRlbCBjYWxhYm96bw==',
+  'bGlicmUgZGVsIGNhbGFib3pv',
 ];
 
 // Archivos que no son texto (solo se revisa su nombre) y carpetas que no son del proyecto.
