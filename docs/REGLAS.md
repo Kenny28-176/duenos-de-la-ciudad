@@ -11,7 +11,7 @@
 *Dueños de la Ciudad* es un juego de mesa de compraventa de propiedades por turnos para **2 a 8 jugadores**, pensado para jugar con amigos en persona:
 
 - **La pantalla grande (laptop o tablet)** es el **tablero**: dibuja la ciudad, anima los movimientos, lleva la pizarra de la Bolsa y anuncia subastas, tratos y eventos.
-- **Tu celular** es tu **cartera y mando**: tiras los dados (con un toque o agitándolo), compras propiedades, gestionas tus acciones y propones tratos a tus rivales en secreto.
+- **Tu celular** es tu **cartera y mando**: tiras los dados (con un toque o agitándolo), compras propiedades, gestionas tus acciones y propones tratos a tus rivales.
 - **Sin billetes de papel ni líos de banco:** el juego hace todos los cobros, pagos y cuentas de forma automática y transparente.
 
 ---
@@ -40,7 +40,7 @@ En cada turno, tu celular te guía con botones sencillos:
 3. **Resuelve la casilla en la que caes:**
    - **Calle, transporte o servicio libre:** puedes comprarlo al precio marcado. Si decides no comprarlo, se inicia una **subasta pública** entre todos los jugadores.
    - **Propiedad de otro jugador:** le pagas el alquiler correspondiente. Además, todos los que tengan acciones de ese barrio cobran dividendos desde el banco.
-   - **Propiedad propia:** descansas gratis.
+   - **Propiedad propia:** no pasa nada.
    - **Noticias o Fortuna:** robas una carta. Su efecto se anima en la pantalla y se aplica al momento.
    - **Impuesto al Patrimonio:** pagas al banco el 5 % de tu patrimonio real.
    - **Bolsa de Valores o Agencia de Bolsa:** se abre el mercado para comprar y vender acciones.
@@ -142,7 +142,7 @@ Entras al Calabozo si caes en **¡Auditoría!**, si te manda una carta de Notici
 
 ## 8. Las 10 Fichas y sus Habilidades
 
-Cada ficha representa una metáfora económica con una habilidad **pasiva** (siempre activa) y una **activa** (con turnos de enfriamiento):
+Cada ficha representa una metáfora económica con una habilidad **pasiva** (siempre activa) y una **activa** (con turnos de enfriamiento). Las cifras de la tabla son las de una partida de 4 jugadores: algunas cambian un poco con otro número de jugadores, para que ninguna ficha tenga ventaja.
 
 | Ficha | Metáfora | Pasiva | Activa (enfriamiento) |
 |---|---|---|---|
@@ -176,7 +176,7 @@ Si debes pagar un alquiler, impuesto o carta y no tienes suficiente dinero en ef
 
 Al crear la partida en el tablero, el anfitrión puede personalizar la experiencia:
 
-- **Meta personalizada:** 7.000 $ (partida corta de 45 min), 10.000 $ (estándar de 60-90 min), 14.000 $ (partida larga) o sin meta (supervivencia hasta la última quiebra).
+- **Meta personalizada:** 7.000 $ (partida corta), 10.000 $ (la normal), 14.000 $ (partida larga) o sin meta (hasta que solo quede un jugador).
 - **Partida rápida:** cada jugador comienza con 2 calles al azar ya en su poder.
 - **Límite de tiempo:** cronómetro de 45, 60 o 90 minutos; al sonar la campana, gana el mayor patrimonio.
 - **Reglas clásicas:** posibilidad de desactivar las habilidades de las fichas, las subastas o el mercado de acciones si se prefiere una experiencia tradicional.

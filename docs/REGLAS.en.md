@@ -11,7 +11,7 @@
 *Dueños de la Ciudad* is a turn-based property trading board game for **2 to 8 players**, designed for in-person gaming sessions with friends:
 
 - **The shared screen (laptop or tablet)** acts as the **board**: it renders the city, animates token movements, displays the Stock Exchange ticker, and broadcasts auctions, trades, and market events.
-- **Your smartphone** is your personal **wallet and controller**: roll the dice (with a tap or by shaking your phone), buy properties, manage your portfolio of shares, and propose confidential deals to your rivals.
+- **Your smartphone** is your personal **wallet and controller**: roll the dice (with a tap or by shaking your phone), buy properties, manage your portfolio of shares, and propose deals to your rivals.
 - **No paper cash, no banker hassle:** the engine handles all financial transactions, rents, taxes, and bookkeeping automatically and transparently.
 
 ---
@@ -40,7 +40,7 @@ On your turn, your smartphone guides you with intuitive action buttons:
 3. **Resolve the cell you landed on:**
    - **Unowned street, transport, or utility:** you may purchase it at the listed bank price. If you decline to buy, it goes to an open **public auction** among all players.
    - **Property owned by another player:** you pay the required rent. In addition, all shareholders of that district receive bank-funded dividends.
-   - **Your own property:** rest easy for free.
+   - **Your own property:** nothing happens.
    - **News or Fortune:** draw a card. Its effect is animated on the main board and applied immediately.
    - **Wealth Tax:** pay 5% of your actual net worth to the bank.
    - **Stock Exchange or Brokerage:** the market opens to buy and sell district shares.
@@ -142,7 +142,7 @@ You are sent to the Lockup by landing on **Audit!**, drawing certain News or For
 
 ## 8. The 10 Tokens and Their Abilities
 
-Each token represents an economic metaphor and possesses one **passive ability** (always active) and one **active ability** (with cooldown turns):
+Each token represents an economic metaphor and possesses one **passive ability** (always active) and one **active ability** (with cooldown turns). The figures in the table are those of a 4-player game: some change slightly with other player counts, so that no token has an advantage.
 
 | Token | Metaphor | Passive | Active (Cooldown) |
 |---|---|---|---|
@@ -176,7 +176,7 @@ If you owe rent, taxes, or card penalties exceeding your cash balance:
 
 When setting up a room on the shared board, the host can customize game parameters:
 
-- **Victory Net Worth Goal:** $7,000 (fast ~45 min game), $10,000 (standard 60–90 min), $14,000 (long game), or no goal (survival until the final bankruptcy).
+- **Net worth goal:** $7,000 (short game), $10,000 (the usual one), $14,000 (long game), or no goal (until only one player is left).
 - **Quick Game:** each player starts with 2 random unmortgaged streets dealed.
 - **Time Limit:** 45, 60, or 90-minute timer; the highest net worth when the buzzer sounds wins.
 - **Classic Mode:** disable character abilities, auctions, or the stock market for a purist experience.

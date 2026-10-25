@@ -15,7 +15,8 @@ test('la pantalla del tablero arranca, juega una demostración y cambia de idiom
   const nav = await iniciarNavegador({ puerto: 9400 + Math.floor(Math.random() * 400) });
   try {
     const url = `http://127.0.0.1:${servidor.address().port}/public/tablero.html?velocidad=16&semilla=3&jugadores=5&depurar=1`;
-    const pestana = await nav.abrir(url, { ancho: 1366, alto: 768 });
+    const pestana = await nav.abrir(url, { ancho: 1366, alto: 768, idioma: 'es' });
+    // Sin ?idioma=, la pantalla usa el idioma del navegador: se comprueba más abajo con la portada del navegador en español.
 
     // El tablero: 40 casillas, las fichas de los 5 jugadores y su panel.
     await pestana.esperarSelector('.tablero [data-casilla]', 30000, 40);
@@ -77,6 +78,23 @@ test('la pantalla se adapta a 8 jugadores y a una pantalla baja sin dejar los co
     assert.ok(medidas.abajoDelUltimoBoton <= medidas.alto, `los controles caben (${medidas.abajoDelUltimoBoton} de ${medidas.alto})`);
     assert.equal(medidas.desborde, 0, 'no hay desplazamiento horizontal');
     assert.ok(medidas.derechaDelTablero <= medidas.izquierdaDelPanel + 1, 'el tablero no tapa el panel');
+    assert.deepEqual(nav.errores, []);
+  } finally {
+    nav.cerrar();
+    servidor.close();
+  }
+});
+
+test('sin parámetro, la pantalla usa el idioma del navegador', { skip: motivo, timeout: 120000 }, async () => {
+  const servidor = crearServidor();
+  await new Promise(listo => servidor.listen(0, '127.0.0.1', listo));
+  const nav = await iniciarNavegador({ puerto: 9400 + Math.floor(Math.random() * 400) });
+  try {
+    for (const [idioma, titulo] of [['en', 'City Owners'], ['es', 'Dueños de la Ciudad']]) {
+      const pestana = await nav.abrir(`http://127.0.0.1:${servidor.address().port}/public/tablero.html?velocidad=16`, { idioma });
+      await pestana.esperarSelector('.cabecera h1', 30000);
+      assert.equal(await pestana.eval(() => document.querySelector('h1').textContent), titulo, idioma);
+    }
     assert.deepEqual(nav.errores, []);
   } finally {
     nav.cerrar();

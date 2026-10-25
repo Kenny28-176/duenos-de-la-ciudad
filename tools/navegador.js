@@ -89,8 +89,11 @@ export async function iniciarNavegador({ puerto: puertoPorDefecto = 9333, captur
     await cdp('Page.enable', {}, sessionId);
     await cdp('Network.enable', {}, sessionId);
     await cdp('Emulation.setDeviceMetricsOverride', { width: ancho, height: alto, deviceScaleFactor: 1, mobile: false }, sessionId);
-    await cdp('Emulation.setLocaleOverride', { locale: idioma === 'en' ? 'en-US' : 'es-ES' }, sessionId).catch(() => {});
-    await cdp('Network.setExtraHTTPHeaders', { headers: { 'Accept-Language': idioma === 'en' ? 'en-US' : 'es-ES' } }, sessionId);
+    // El idioma del navegador de prueba (navigator.language y la cabecera Accept-Language), sea cual sea el del ordenador.
+    const locale = idioma === 'en' ? 'en-US' : 'es-ES';
+    const { userAgent } = await cdp('Browser.getVersion');
+    await cdp('Emulation.setUserAgentOverride', { userAgent, acceptLanguage: locale }, sessionId);
+    await cdp('Emulation.setLocaleOverride', { locale }, sessionId).catch(() => {});
     if (medios) {
       await cdp('Emulation.setEmulatedMedia', { features: Object.entries(medios).map(([name, value]) => ({ name, value })) }, sessionId);
     }
