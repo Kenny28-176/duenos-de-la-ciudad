@@ -40,7 +40,7 @@ let cliente = null;
 let vistaVista = false; // ya llegó la vista de este celular (para no enseñar un error viejo al entrar)
 let ultimoError = 0; // el número del último error que ya se enseñó
 let salaVista = false; // la sala existió: si deja de existir, es que el tablero la cerró
-let enviada = { n: 0, error: 0 }; // cómo estaba todo cuando se mandó la acción pendiente
+let enviada = { atendidas: 0, error: 0 }; // cómo estaba el acuse del tablero y el último error cuando se mandó la acción pendiente
 let relojAviso = null;
 let relojRespuesta = null;
 let puedeAntes = {};
@@ -89,8 +89,11 @@ function alCambiar() {
     mostrarAviso(textoDeError(error, diccionariosActivos()));
   }
 
-  // La acción pendiente está contestada cuando el tablero publica algo nuevo o dice que no valía.
-  if (almacen.leer().pendiente && (d.n !== enviada.n || ultimoError !== enviada.error)) {
+  // La acción pendiente está contestada cuando el tablero acusa recibo (la ha atendido: aplicada, ya animada y publicada, o rechazada)
+  // y esto ya lo muestra. No basta con que llegue cualquier publicación: si el tablero estaba animando la jugada de otro, la mía
+  // todavía no se ha aplicado, y volver a ofrecer los botones con datos viejos dejaría repetir la acción.
+  const acuse = d.vista.atendidas ?? 0;
+  if (almacen.leer().pendiente && (d.alDia || d.miId === null) && (acuse > enviada.atendidas || ultimoError !== enviada.error)) {
     clearTimeout(relojRespuesta);
     parche.pendiente = false;
   }
@@ -139,7 +142,7 @@ function otraSala() {
 async function enviar(accion) {
   if (!cliente || almacen.leer().pendiente) return;
   const d = cliente.datos();
-  enviada = { n: d.n, error: ultimoError };
+  enviada = { atendidas: d.vista.atendidas ?? 0, error: ultimoError };
   almacen.cambiar({ pendiente: true });
   clearTimeout(relojRespuesta);
   relojRespuesta = setTimeout(() => almacen.cambiar({ pendiente: false }), SEGUNDOS_SIN_RESPUESTA * 1000);

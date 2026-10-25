@@ -25,7 +25,7 @@ salas/ABCD/
   meta                { anfitrion: uid, creada: ms, version: 1 }                   solo el tablero
   estado/…            el estado de la partida, sin secretos, por partes             solo el tablero; lo lee todo el mundo
                       (con «publicacion»: el número de cada publicación)
-  vistas/<uid>/       { id, n, puede: {…}, error?: {…} }                            solo el tablero; solo lo lee ese uid
+  vistas/<uid>/       { id, n, puede: {…}, atendidas, error?: {…} }                 solo el tablero; solo lo lee ese uid
   acciones/<clave>    { uid, accion: {…} }                                          los celulares las escriben; solo el tablero las lee y las borra
 ```
 
@@ -101,8 +101,11 @@ recuerda), elige ficha y juega.
 - **Los botones son los de `vista.puede`**, que calcula el propio motor. Las cifras de cada botón (lo que cuesta construir, lo
   que se cobra al hipotecar o al vender un edificio, el precio de un paquete de acciones) salen de las mismas funciones del
   motor que usa el tablero al resolver la acción (`motor.costeConstruir`, `valorVentaEdificio`, `valorHipoteca`…).
-- **Una acción a la vez:** al mandar una, los botones se desactivan hasta que el tablero publica algo nuevo o contesta con un
-  error (o pasan 20 s). El error llega en la vista y se traduce con `src/ui/errores.js`.
+- **Una acción a la vez:** al mandar una, los botones se desactivan hasta que el tablero acusa recibo (o pasan 20 s). El acuse es
+  el contador `atendidas` de la vista, que sube cuando el tablero atiende una acción de ese celular, aplicada (con la jugada ya
+  animada y publicada) o rechazada. No basta con que llegue cualquier publicación: si el tablero estaba animando la jugada de otro,
+  la mía aún no se ha aplicado, y volver a ofrecer los botones con datos viejos dejaría repetirla. El error llega en la vista y se
+  traduce con `src/ui/errores.js`.
 - **Tiene en cuenta que el tablero anima antes de publicar:** el celular no ve el resultado hasta que acaba la animación.
 - Vibra al empezar el turno, al abrirse una subasta o al llegar un trato, y pide que la pantalla no se apague.
 
@@ -135,6 +138,9 @@ Están en [`database.rules.json`](../database.rules.json). Lo que dicen, en cort
 - `tests/posibles.test.js`: los botones de cada jugador.
 - `tests/jugador-vista.test.js`: lo que enseña el celular. Comprueba, en cientos de estados de partidas entre bots, que cada cifra
   de un botón es la que aplica el motor.
+- `tests/red-atendidas.test.js`: el acuse de recibo (`atendidas`), también con publicaciones ajenas por medio.
+- `tests/partida-celulares.test.js`: partidas enteras por la interfaz de celulares de Chrome con un jugador al azar, con un anfitrión
+  en Node y con la página del tablero (`tools/jugar-con-celulares.js`).
 - `tests/pantalla-red.test.js` y `tests/pantalla-celular.test.js`: en un Chrome de verdad, el tablero abre la sala y un celular
   entra, elige ficha y juega (tirar, comprar, habilidad, construir, Bolsa, trato, subasta).
 - Con el proyecto de Firebase creado, `node tools/comprobar-reglas.js` (pendiente) probará las reglas contra la base de

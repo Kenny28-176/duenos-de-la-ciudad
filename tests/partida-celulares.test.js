@@ -2,6 +2,7 @@
 // que ve (tools/jugar-con-celulares.js), junto a bots y el tablero de siempre. Comprueba que ninguna se atasca (un estado en el que la
 // mesa espera algo que el celular no deja hacer), que no hay errores de JavaScript y que al acabar todos ven el final. Se salta si no
 // hay Chrome. Para jugar más partidas o más largas: node tools/jugar-con-celulares.js --partidas 6 --meta 14000
+// (y --tablero pagina para usar la página del tablero).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { jugarPartida } from '../tools/jugar-con-celulares.js';
@@ -17,3 +18,12 @@ for (const [semilla, celulares, bots] of [[5, 3, 1], [12, 2, 2]]) {
     assert.ok(resumen.clics > 50, `se hicieron ${resumen.clics} clics`);
   });
 }
+
+// Lo mismo, pero con la página del tablero de verdad en Chrome (sus animaciones, su sala y su vestíbulo) en lugar de un anfitrión en
+// Node: es lo que verá quien juegue. A ×100 tarda unos 30 s. La meta se elige entre las del vestíbulo (la más corta es 7.000).
+test('una partida entera con la página del tablero y 2 celulares y 1 bot acaba sin atascos ni errores', { skip: motivo, timeout: 240000 }, async () => {
+  const { problemas, resumen, estado } = await jugarPartida({ celulares: 2, bots: 1, semilla: 20, meta: 7000, maximo: 200, silencioso: true, tablero: 'pagina' });
+  assert.deepEqual(problemas, []);
+  assert.equal(estado.fase, 'fin');
+  assert.ok(resumen.clics > 100, `se hicieron ${resumen.clics} clics`);
+});

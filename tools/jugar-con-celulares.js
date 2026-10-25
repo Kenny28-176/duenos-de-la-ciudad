@@ -6,6 +6,8 @@
 //   node tools/jugar-con-celulares.js                       3 celulares y 1 bot, meta de 3.000 $, semilla 1
 //   node tools/jugar-con-celulares.js --celulares 4 --bots 2 --semilla 7 --meta 5000 --partidas 3
 //   node tools/jugar-con-celulares.js --maximo 240          segundos máximos por partida (por defecto 180)
+//   node tools/jugar-con-celulares.js --tablero pagina --meta 7000   con la página del tablero en Chrome (animaciones, sala…) en vez
+//                                                              de un anfitrión en Node; la meta tiene que ser una del vestíbulo
 //
 // Termina con código 1 si alguna partida se atasca, da un error de JavaScript o no acaba. Las decisiones salen de un azar con
 // semilla (la misma semilla repite las mismas decisiones ante los mismos estados); jugarPartida() se puede importar desde pruebas.
@@ -98,36 +100,108 @@ export function decidir(semilla) {
   return null;
 }
 
+// El tablero de una partida, visto desde la herramienta. Hay dos maneras de tenerlo:
+//   - «nodo»: un anfitrión en Node con su orquesta (rápido, y sirve para probar solo los celulares);
+//   - «pagina»: la página del tablero en Chrome (public/tablero.html), con sus animaciones y su sala, como la usaría quien juega.
+// Las dos dan lo mismo: el código de la sala, cómo añadir bots y empezar, un resumen del estado y los eventos que pasaron.
+async function abrirTablero({ modo, base, nav, semilla, bots, meta, celulares }) {
+  const fichas = Object.keys(motor.ctx.fichas);
+  if (modo === 'nodo') {
+    const codigo = 'BCDF';
+    const transporte = crearTransporteHttp({ uid: 'tablero', base, esperaReintento: 30 });
+    const anfitrion = crearAnfitrion({ transporte, motor, codigo, semilla });
+    const orquesta = crearOrquesta({ anfitrion, motor, velocidad: () => 100, pensarMs: 50 });
+    await anfitrion.abrir();
+    const eventos = [];
+    let corre = true;
+    const bucle = (async () => {
+      while (corre) {
+        const hecho = await orquesta.paso();
+        if (!hecho) break;
+        eventos.push(...hecho.eventos);
+        await anfitrion.publicar();
+      }
+    })();
+    return {
+      codigo,
+      async empezar() {
+        for (let k = 0; k < bots; k++) anfitrion.accionPropia({ type: 'unirse', id: `b${k + 1}`, nombre: `Bot ${k + 1}`, ficha: fichas[fichas.length - 1 - k], bot: true });
+        while (anfitrion.estado().ids.length < celulares + bots) await espera(30);
+        anfitrion.accionPropia({ type: 'configurar', opciones: { meta } });
+        anfitrion.accionPropia({ type: 'empezar' });
+      },
+      async resumen() { return resumirEstado(anfitrion.estado(), anfitrion.version()); },
+      eventos: () => eventos,
+      async cerrar() {
+        corre = false;
+        await anfitrion.cerrar().catch(() => {});
+        transporte.cerrar();
+        await bucle.catch(() => {});
+      },
+    };
+  }
+
+  // La página del tablero, a ×100 para que no tarde. La meta se elige entre las del vestíbulo (la más corta es 7.000).
+  const pagina = await nav.abrir(`${base}/public/tablero.html?velocidad=100&sala=1&depurar=1`, { ancho: 1366, alto: 768 });
+  await pagina.esperarSelector('.vestibulo .codigo', 30000);
+  const codigo = await pagina.eval(() => document.querySelector('.vestibulo .codigo').textContent);
+  const leer = () => pagina.eval(resumirEstadoEnPagina);
+  return {
+    codigo,
+    async empezar() {
+      for (let k = 0; k < bots; k++) {
+        await pagina.eval(() => [...document.querySelectorAll('.vestibulo button')].find(b => /Añadir un bot|Add a bot/.test(b.textContent)).click());
+        await espera(150);
+      }
+      await pagina.esperarSelector('.vestibulo .lista-jugadores li', 20000, celulares + bots);
+      await pagina.eval(corta => {
+        const lista = document.querySelector('.vestibulo select');
+        Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value').set.call(lista, String(corta));
+        lista.dispatchEvent(new Event('change', { bubbles: true }));
+      }, meta);
+      await espera(150);
+      await pagina.eval(() => [...document.querySelectorAll('.vestibulo button')].find(b => /Empezar|Start the game/.test(b.textContent)).click());
+    },
+    resumen: leer,
+    eventos: () => [],
+    async cerrar() { /* se cierra con el navegador */ },
+  };
+}
+
+// Lo que se mira del estado para saber si la partida avanza (en Node y, la misma función, dentro de la página del tablero).
+function resumirEstado(s, version) {
+  return {
+    fase: s.fase, version, turnos: s.turnos, ronda: s.ronda, turno: s.turno && { id: s.turno.id, fase: s.turno.fase }, subasta: s.subasta, deudas: s.deudas,
+    tratos: Object.keys(s.tratos), motivoFin: s.motivoFin, ganador: s.ganador && s.jugadores[s.ganador]?.nombre,
+  };
+}
+function resumirEstadoEnPagina() {
+  const a = window.duenos.sala()?.anfitrion;
+  if (!a) return null;
+  const s = a.estado();
+  return {
+    fase: s.fase, version: a.version(), turnos: s.turnos, ronda: s.ronda, turno: s.turno && { id: s.turno.id, fase: s.turno.fase }, subasta: s.subasta, deudas: s.deudas,
+    tratos: Object.keys(s.tratos), motivoFin: s.motivoFin, ganador: s.ganador && s.jugadores[s.ganador]?.nombre,
+  };
+}
+
 // Juega una partida y devuelve { problemas, resumen, estado }: «problemas» está vacío si todo fue bien.
-export async function jugarPartida({ celulares: CELULARES = 3, bots: BOTS = 1, meta: META = 3000, semilla: SEMILLA = 1, maximo: MAXIMO_S = 180, numero: numeroDePartida = 0, silencioso = false } = {}) {
+// tablero: 'nodo' (un anfitrión en Node, por defecto) o 'pagina' (la página del tablero en Chrome).
+export async function jugarPartida({ celulares: CELULARES = 3, bots: BOTS = 1, meta: META = 3000, semilla: SEMILLA = 1, maximo: MAXIMO_S = 180, numero: numeroDePartida = 0, silencioso = false, tablero: MODO = 'nodo' } = {}) {
   if (buscarChrome() === null) throw new Error('No hay Chrome en este ordenador.');
   const servidor = crearServidor();
   await new Promise(listo => servidor.listen(0, '127.0.0.1', listo));
   const base = `http://127.0.0.1:${servidor.address().port}`;
   const nav = await iniciarNavegador({ puerto: 9300 + Math.floor(Math.random() * 600) });
-  const codigo = 'BCDF';
-  const transporte = crearTransporteHttp({ uid: 'tablero', base, esperaReintento: 30 });
-  const anfitrion = crearAnfitrion({ transporte, motor, codigo, semilla: SEMILLA });
-  const orquesta = crearOrquesta({ anfitrion, motor, velocidad: () => 100, pensarMs: 50 });
-  await anfitrion.abrir();
-  const eventos = [];
-  let corre = true;
-  const bucle = (async () => {
-    while (corre) {
-      const hecho = await orquesta.paso();
-      if (!hecho) break;
-      eventos.push(...hecho.eventos);
-      await anfitrion.publicar();
-    }
-  })();
-
   const problemas = [];
   const resumen = { celulares: CELULARES, bots: BOTS, clics: 0, avisos: {}, atascos: 0 };
+  let mesa = null;
+  let final = null;
   try {
-    const fichas = Object.keys(motor.ctx.fichas);
+    mesa = await abrirTablero({ modo: MODO, base, nav, semilla: SEMILLA, bots: BOTS, meta: META, celulares: CELULARES });
     const pestanas = [];
     for (let k = 0; k < CELULARES; k++) {
-      const p = await nav.abrir(`${base}/public/jugador.html?sala=${codigo}&depurar=1`, { ancho: 390, alto: 844, idioma: k % 2 ? 'en' : 'es' });
+      const p = await nav.abrir(`${base}/public/jugador.html?sala=${mesa.codigo}&depurar=1`, { ancho: 390, alto: 844, idioma: k % 2 ? 'en' : 'es' });
       await p.esperarSelector('.campo-nombre', 30000);
       await p.eval(n => {
         const campo = document.querySelector('.campo-nombre');
@@ -139,19 +213,17 @@ export async function jugarPartida({ celulares: CELULARES = 3, bots: BOTS = 1, m
       await p.esperarSelector('.fichas-elegir', 20000);
       pestanas.push(p);
     }
-    for (let k = 0; k < BOTS; k++) anfitrion.accionPropia({ type: 'unirse', id: `b${k + 1}`, nombre: `Bot ${k + 1}`, ficha: fichas[fichas.length - 1 - k], bot: true });
-    while (anfitrion.estado().ids.length < CELULARES + BOTS) await espera(30);
-    anfitrion.accionPropia({ type: 'configurar', opciones: { meta: META } });
-    anfitrion.accionPropia({ type: 'empezar' });
-    await Promise.all(pestanas.map(p => p.esperarSelector('.partida', 30000)));
+    await mesa.empezar();
+    await Promise.all(pestanas.map(p => p.esperarSelector('.partida', 60000)));
 
     // El juego: cada celular mira lo que tiene delante y hace una cosa, una y otra vez, hasta que acaba la partida.
     const inicio = Date.now();
     let ultimoAvance = Date.now();
-    let ultimaVersion = anfitrion.version();
+    let ultimaVersion = -1;
     const avisosVistos = new Map();
-    while (anfitrion.estado().fase === 'juego') {
-      if (Date.now() - inicio > MAXIMO_S * 1000) { problemas.push(`la partida no acabó en ${MAXIMO_S} s (turno ${anfitrion.estado().turnos}, ronda ${anfitrion.estado().ronda})`); break; }
+    let s = await mesa.resumen();
+    while (s?.fase === 'juego') {
+      if (Date.now() - inicio > MAXIMO_S * 1000) { problemas.push(`la partida no acabó en ${MAXIMO_S} s (turno ${s.turnos}, ronda ${s.ronda})`); break; }
       for (const [k, p] of pestanas.entries()) {
         const hecho = await p.eval(decidir, SEMILLA * 100 + k).catch(error => { problemas.push(`celular ${k + 1}: ${error.message}`); return null; });
         if (hecho) resumen.clics++;
@@ -162,41 +234,40 @@ export async function jugarPartida({ celulares: CELULARES = 3, bots: BOTS = 1, m
           resumen.avisos[aviso] = (resumen.avisos[aviso] ?? 0) + 1;
         }
       }
-      if (anfitrion.version() !== ultimaVersion) { ultimaVersion = anfitrion.version(); ultimoAvance = Date.now(); }
+      s = await mesa.resumen();
+      if (s.version !== ultimaVersion) { ultimaVersion = s.version; ultimoAvance = Date.now(); }
       if (Date.now() - ultimoAvance > 20000) {
         resumen.atascos++;
-        const s = anfitrion.estado();
         const pantallas = await Promise.all(pestanas.map(async (p, k) => `celular ${k + 1}: ${(await p.eval(() => `${document.querySelector('.situacion')?.innerText ?? ''} | ${document.querySelector('.dock')?.innerText ?? document.querySelector('.subasta')?.innerText ?? ''}`)).replace(/\s+/g, ' ')} | puede=${await p.eval(() => JSON.stringify(window.duenos.cliente().datos().vista.puede))}`));
-        problemas.push(`ATASCADA hace 20 s. Turno de ${s.turno?.id} (fase ${s.turno?.fase}), subasta=${JSON.stringify(s.subasta)}, deudas=${JSON.stringify(s.deudas)}, tratos=${Object.keys(s.tratos)}.\n    ${pantallas.join('\n    ')}`);
+        problemas.push(`ATASCADA hace 20 s. Turno de ${s.turno?.id} (fase ${s.turno?.fase}), subasta=${JSON.stringify(s.subasta)}, deudas=${JSON.stringify(s.deudas)}, tratos=${s.tratos}.\n    ${pantallas.join('\n    ')}`);
         break;
       }
       await espera(40);
     }
-    const s = anfitrion.estado();
-    if (s.fase === 'fin') {
+    final = s;
+    if (s?.fase === 'fin') {
       await espera(500);
       const enFinal = await Promise.all(pestanas.map(p => p.eval(() => document.querySelector('.final') !== null)));
       if (!enFinal.every(Boolean)) problemas.push(`al acabar la partida, no todos los celulares enseñan el final: ${enFinal}`);
     }
     const duracion = ((Date.now() - inicio) / 1000).toFixed(1);
     const decir = silencioso ? () => {} : console.log;
-    decir(`Partida ${numeroDePartida + 1}: ${s.fase === 'fin' ? `acabó (${s.motivoFin}, gana ${s.jugadores[s.ganador]?.nombre})` : 'sin acabar'} · ${s.turnos} turnos, ronda ${s.ronda} · ${duracion} s · ${resumen.clics} clics`);
+    decir(`Partida ${numeroDePartida + 1} (tablero en ${MODO === 'pagina' ? 'Chrome' : 'Node'}): ${s?.fase === 'fin' ? `acabó (${s.motivoFin}, gana ${s.ganador})` : 'sin acabar'} · ${s?.turnos} turnos, ronda ${s?.ronda} · ${duracion} s · ${resumen.clics} clics`);
     const tipos = {};
-    for (const e of eventos) tipos[e.type] = (tipos[e.type] ?? 0) + 1;
-    const interesantes = ['compra', 'subastaGanada', 'subastaDesierta', 'construir', 'venderEdificio', 'hipotecar', 'deshipotecar', 'accionesCompradas', 'accionesVendidas', 'tratoAceptado', 'tratoRechazado', 'habilidad', 'bancarrota', 'deuda'];
-    decir(`  eventos: ${interesantes.map(t => `${t} ${tipos[t] ?? 0}`).join(' · ')}`);
+    for (const e of mesa.eventos()) tipos[e.type] = (tipos[e.type] ?? 0) + 1;
+    if (mesa.eventos().length) {
+      const interesantes = ['compra', 'subastaGanada', 'subastaDesierta', 'construir', 'venderEdificio', 'hipotecar', 'deshipotecar', 'accionesCompradas', 'accionesVendidas', 'tratoAceptado', 'tratoRechazado', 'habilidad', 'bancarrota', 'deuda'];
+      decir(`  eventos: ${interesantes.map(t => `${t} ${tipos[t] ?? 0}`).join(' · ')}`);
+    }
     if (Object.keys(resumen.avisos).length) decir(`  avisos del tablero a los celulares: ${JSON.stringify(resumen.avisos)}`);
     if (nav.errores.length) problemas.push(`errores de JavaScript: ${JSON.stringify([...new Set(nav.errores)].slice(0, 5))}`);
   } finally {
-    corre = false;
+    await mesa?.cerrar();
     nav.cerrar();
-    await anfitrion.cerrar().catch(() => {});
-    transporte.cerrar();
-    await bucle.catch(() => {});
     servidor.closeAllConnections();
     await new Promise(listo => servidor.close(listo));
   }
-  return { problemas, resumen, estado: anfitrion.estado() };
+  return { problemas, resumen, estado: final };
 }
 
 // --- Desde la terminal ----------------------------------------------------------------------------------------------------
@@ -209,6 +280,7 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   for (let k = 0; k < partidas; k++) {
     const { problemas } = await jugarPartida({
       celulares: numero('celulares', 3), bots: numero('bots', 1), meta: numero('meta', 3000), semilla: numero('semilla', 1) + k, maximo: numero('maximo', 180), numero: k,
+      tablero: argumentos.tablero === 'pagina' ? 'pagina' : 'nodo',
     });
     for (const p of problemas) console.log(`  ✖ ${p}`);
     if (problemas.length) fallos++;

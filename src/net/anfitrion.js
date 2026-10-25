@@ -26,6 +26,7 @@ export function crearAnfitrion({ transporte, motor, codigo, semilla = Date.now()
   let arbolPublicado = {};
   const vistasPublicadas = new Map(); // uid → árbol de su vista
   const errores = new Map(); // uid → su último error, con un número para saber si es uno nuevo
+  const atendidas = new Map(); // uid → cuántas acciones suyas ha atendido el tablero (aplicadas o rechazadas): es su acuse de recibo
   let numeroDeError = 0;
   let parar = null;
 
@@ -73,9 +74,9 @@ export function crearAnfitrion({ transporte, motor, codigo, semilla = Date.now()
     // Un «unirse» fallido no deja al celular con un jugador: se olvida su uid.
     if (jugadorDe.has(uid) && !estado.jugadores[jugadorDe.get(uid)]) jugadorDe.delete(uid);
     const previa = vistasPublicadas.get(uid) ?? {};
-    const vista = { ...previa, error: codificar(nuevo) };
+    const vista = { ...previa, error: codificar(nuevo), atendidas: atendidas.get(uid) };
     vistasPublicadas.set(uid, vista);
-    const cambios = diferencias({ error: previa.error }, { error: vista.error }, r.vista(uid));
+    const cambios = diferencias({ error: previa.error, atendidas: previa.atendidas }, { error: vista.error, atendidas: vista.atendidas }, r.vista(uid));
     if (Object.keys(cambios).length) await transporte.update(cambios);
   }
 
@@ -117,6 +118,7 @@ export function crearAnfitrion({ transporte, motor, codigo, semilla = Date.now()
         const mensaje = cola.shift();
         const preparada = mensaje.propia ? { accion: mensaje.accion } : preparar(mensaje.uid, mensaje.accion);
         const resultado = preparada.error ? preparada : aplicar(preparada.accion);
+        if (!mensaje.propia) atendidas.set(mensaje.uid, (atendidas.get(mensaje.uid) ?? 0) + 1);
         if (resultado.error) {
           if (!mensaje.propia) await avisarError(mensaje.uid, resultado.error);
           continue;
@@ -134,7 +136,7 @@ export function crearAnfitrion({ transporte, motor, codigo, semilla = Date.now()
       const cambios = diferencias(arbolPublicado, arbol, r.estado);
       for (const [uid] of jugadorDe) {
         const id = jugadorDe.get(uid);
-        const vista = codificar({ id, n: publicaciones, puede: motor.posibles(estado, id), error: errores.get(uid) }) ?? {};
+        const vista = codificar({ id, n: publicaciones, puede: motor.posibles(estado, id), atendidas: atendidas.get(uid) ?? 0, error: errores.get(uid) }) ?? {};
         Object.assign(cambios, diferencias(vistasPublicadas.get(uid) ?? {}, vista, r.vista(uid)));
         vistasPublicadas.set(uid, vista);
       }

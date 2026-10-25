@@ -5,7 +5,8 @@
 //     meta              { anfitrion: uid, creada: ms, version: 1 }                      lo escribe el tablero
 //     estado/…          el estado de la partida, sin secretos, por partes               lo escribe el tablero; lo leen todos
 //                       (con «publicacion»: el número de la publicación, que sube cada vez)
-//     vistas/<uid>/     { id, n, puede: {…}, error?: {…} }  lo que le toca a ese celular lo escribe el tablero; lo lee ese uid
+//     vistas/<uid>/     { id, n, puede: {…}, atendidas, error?: {…} }  lo que le toca a ese celular lo escribe el tablero; lo lee ese uid
+//                       («atendidas»: cuántas acciones suyas ha atendido el tablero; el celular sabe así que la suya ya se resolvió)
 //     acciones/<clave>  { uid, accion: {…} }                                            lo escriben los celulares; el tablero las lee y las borra
 //
 // Los celulares nunca escriben el estado: solo piden acciones, y el tablero decide. Quien manda una acción no dice quién es:
