@@ -74,6 +74,10 @@ Reglas de oro:
 - **Los eventos se convierten en animaciones.** El motor devuelve eventos (`dados`, `mover`, `pagar`…) y el tablero
   los reproduce en cola. Los celulares esperan a que termine la animación para no destripar la sorpresa.
 - **Cada movimiento de dinero queda anotado** con su motivo, y la suma cuadra con el dinero de cada jugador.
+- **Los errores del motor se traducen en la interfaz.** Una acción que falla devuelve `{ codigo, mensaje, datos }`: el
+  mensaje (en español) es para los registros, y `datos` lleva las cifras, las casillas y los nombres (y una `variante`
+  cuando un código tiene varios mensajes). Los textos están en `src/i18n/<idioma>/errores.json` y `src/ui/errores.js` los
+  rellena. Si añades un error, añade su texto en los dos idiomas: `tests/errores.test.js` lo comprueba.
 
 ## Mapa del código
 

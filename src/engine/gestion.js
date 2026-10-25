@@ -7,13 +7,15 @@ import {
 import { cobrar, transferir } from './dinero.js';
 import { apuestaBajista } from './habilidades.js';
 
-const no = (codigo, mensaje) => ({ codigo, mensaje });
+// Un error de una acción: su código, el mensaje en español (para los registros) y los datos con los que la interfaz
+// lo traduce. «variante» distingue los distintos mensajes de un mismo código.
+const no = (codigo, mensaje, datos = {}) => ({ codigo, mensaje, datos });
 const TORRE = 5;
 
 function calleDe(ctx, s, id, i) {
   const c = ctx.casillas[i];
-  if (!c || c.tipo !== 'calle') return no('casilla', 'Elige una calle.');
-  if (s.props[i].dueno !== id) return no('no_es_tuya', 'Esa calle no es tuya.');
+  if (!c || c.tipo !== 'calle') return no('casilla', 'Elige una calle.', { variante: 'calle' });
+  if (s.props[i].dueno !== id) return no('no_es_tuya', 'Esa propiedad no es tuya.');
   return null;
 }
 
@@ -24,17 +26,17 @@ export function construir(ctx, s, a, ev) {
   const p = s.props[a.casilla];
   if (!barrioCompleto(ctx, s, c.barrio, a.id)) return no('barrio_incompleto', 'Necesitas todas las calles del barrio.');
   if (ctx.barrios[c.barrio].calles.some(i => s.props[i].hipotecada)) {
-    return no('hipotecada', 'No se puede construir en un barrio con calles hipotecadas.');
+    return no('hipotecada', 'No se puede construir en un barrio con calles hipotecadas.', { variante: 'construir' });
   }
-  if (p.nivel >= TORRE) return no('maximo', 'Esa calle ya tiene una torre.');
+  if (p.nivel >= TORRE) return no('maximo', 'Esa calle ya tiene una torre.', { variante: 'torre' });
   if (p.nivel > Math.min(...nivelesBarrio(ctx, s, c.barrio))) {
-    return no('parejo', 'Hay que construir de forma pareja: primero en las calles con menos edificios.');
+    return no('parejo', 'Hay que construir de forma pareja: primero en las calles con menos edificios.', { variante: 'construir' });
   }
   if (p.nivel === TORRE - 1 ? s.banco.torres < 1 : s.banco.casas < 1) {
     return no('existencias', 'El banco no tiene edificios: hay que esperar a que alguien venda.');
   }
   const coste = costeConstruir(ctx, s, a.id, a.casilla);
-  if (s.jugadores[a.id].dinero < coste) return no('sin_dinero', `Construir cuesta ${coste} $.`);
+  if (s.jugadores[a.id].dinero < coste) return no('sin_dinero', `Construir cuesta ${coste} $.`, { coste });
   transferir(s, ev, a.id, 'banco', coste, 'construir');
   if (p.nivel === TORRE - 1) {
     s.banco.torres--;
@@ -56,7 +58,7 @@ export function venderEdificio(ctx, s, a, ev) {
   const p = s.props[a.casilla];
   if (p.nivel === 0) return no('sin_edificios', 'Esa calle no tiene edificios.');
   if (p.nivel < Math.max(...nivelesBarrio(ctx, s, c.barrio))) {
-    return no('parejo', 'Hay que vender de forma pareja: primero en las calles con más edificios.');
+    return no('parejo', 'Hay que vender de forma pareja: primero en las calles con más edificios.', { variante: 'vender' });
   }
   const antes = p.nivel;
   if (p.nivel === TORRE) {
@@ -78,7 +80,7 @@ export function venderEdificio(ctx, s, a, ev) {
 export function hipotecar(ctx, s, a, ev) {
   const c = ctx.casillas[a.casilla];
   const p = s.props[a.casilla];
-  if (!p) return no('casilla', 'Elige una propiedad.');
+  if (!p) return no('casilla', 'Elige una propiedad.', { variante: 'propiedad' });
   if (p.dueno !== a.id) return no('no_es_tuya', 'Esa propiedad no es tuya.');
   if (p.hipotecada) return no('hipotecada', 'Ya está hipotecada.');
   if (c.tipo === 'calle' && nivelesBarrio(ctx, s, c.barrio).some(n => n > 0)) {
@@ -94,11 +96,11 @@ export function hipotecar(ctx, s, a, ev) {
 
 export function deshipotecar(ctx, s, a, ev) {
   const p = s.props[a.casilla];
-  if (!p) return no('casilla', 'Elige una propiedad.');
+  if (!p) return no('casilla', 'Elige una propiedad.', { variante: 'propiedad' });
   if (p.dueno !== a.id) return no('no_es_tuya', 'Esa propiedad no es tuya.');
   if (!p.hipotecada) return no('no_hipotecada', 'No está hipotecada.');
   const coste = costeDeshipotecar(ctx, a.casilla);
-  if (s.jugadores[a.id].dinero < coste) return no('sin_dinero', `Levantar la hipoteca cuesta ${coste} $.`);
+  if (s.jugadores[a.id].dinero < coste) return no('sin_dinero', `Levantar la hipoteca cuesta ${coste} $.`, { coste });
   transferir(s, ev, a.id, 'banco', coste, 'deshipotecar');
   p.hipotecada = false;
   ev.push({ type: 'deshipotecar', id: a.id, casilla: a.casilla, coste });
@@ -109,7 +111,7 @@ function cantidadDeAcciones(ctx, a) {
   if (!ctx.barrios[a.barrio]) return no('barrio', 'Elige un barrio.');
   const paquete = ctx.eco.bolsa.paquete;
   if (!Number.isInteger(a.cantidad) || a.cantidad <= 0 || a.cantidad % paquete) {
-    return no('cantidad', `Las acciones van en paquetes de ${paquete}.`);
+    return no('cantidad', `Las acciones van en paquetes de ${paquete}.`, { variante: 'paquete', paquete });
   }
   return null;
 }
@@ -120,11 +122,11 @@ export function comprarAcciones(ctx, s, a, ev) {
   const j = s.jugadores[a.id];
   const tiene = j.acciones[a.barrio] ?? 0;
   if (tiene + a.cantidad > ctx.eco.bolsa.maxPorJugador) {
-    return no('maximo', `Nadie puede tener más de ${ctx.eco.bolsa.maxPorJugador} acciones de un barrio.`);
+    return no('maximo', `Nadie puede tener más de ${ctx.eco.bolsa.maxPorJugador} acciones de un barrio.`, { maximo: ctx.eco.bolsa.maxPorJugador });
   }
   if (a.cantidad > accionesDisponibles(ctx, s, a.barrio)) return no('agotadas', 'No quedan tantas acciones de ese barrio.');
   const coste = a.cantidad * precioAccion(ctx, s, a.barrio);
-  if (j.dinero < coste) return no('sin_dinero', `Esas acciones cuestan ${coste} $.`);
+  if (j.dinero < coste) return no('sin_dinero', `Esas acciones cuestan ${coste} $.`, { coste });
   transferir(s, ev, a.id, 'banco', coste, 'acciones');
   j.acciones[a.barrio] = tiene + a.cantidad;
   ev.push({ type: 'accionesCompradas', id: a.id, barrio: a.barrio, cantidad: a.cantidad, coste });

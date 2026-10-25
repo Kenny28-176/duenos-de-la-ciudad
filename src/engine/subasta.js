@@ -6,7 +6,9 @@ import { pasiva } from './contexto.js';
 import { transferir } from './dinero.js';
 import { activos, pasarTurno, seguir } from './turno.js';
 
-const no = (codigo, mensaje) => ({ codigo, mensaje });
+// Un error de una acción: su código, el mensaje en español (para los registros) y los datos con los que la interfaz
+// lo traduce. «variante» distingue los distintos mensajes de un mismo código.
+const no = (codigo, mensaje, datos = {}) => ({ codigo, mensaje, datos });
 
 // Añade casillas a la cola de subastas y empieza la primera si no hay otra en marcha.
 export function iniciarSubasta(ctx, s, ev, casillas, origen) {
@@ -36,10 +38,10 @@ export function pujar(ctx, s, a, ev) {
   if (!sub.activos.includes(a.id)) return no('fuera', 'Ya no participas en esta subasta.');
   if (sub.lider === a.id) return no('ya_lider', 'Ya tienes la puja más alta.');
   const cantidad = a.cantidad;
-  if (!Number.isInteger(cantidad)) return no('cantidad', 'La puja tiene que ser una cantidad entera.');
+  if (!Number.isInteger(cantidad)) return no('cantidad', 'La puja tiene que ser una cantidad entera.', { variante: 'puja' });
   const minima = pujaMinima(ctx, s, a.id);
-  if (cantidad < minima) return no('puja_baja', `La puja mínima es ${minima} $.`);
-  if (cantidad > s.jugadores[a.id].dinero) return no('sin_dinero', 'No tienes tanto dinero.');
+  if (cantidad < minima) return no('puja_baja', `La puja mínima es ${minima} $.`, { minima });
+  if (cantidad > s.jugadores[a.id].dinero) return no('sin_dinero', 'No tienes tanto dinero.', { variante: 'puja' });
   sub.puja = cantidad;
   sub.lider = a.id;
   ev.push({ type: 'puja', id: a.id, cantidad });

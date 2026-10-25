@@ -6,7 +6,9 @@ import { activa, pasiva, propiedadesDe } from './contexto.js';
 import { cargar, cobrar, transferir } from './dinero.js';
 import { activos } from './turno.js';
 
-const no = (codigo, mensaje) => ({ codigo, mensaje });
+// Un error de una acción: su código, el mensaje en español (para los registros) y los datos con los que la interfaz
+// lo traduce. «variante» distingue los distintos mensajes de un mismo código.
+const no = (codigo, mensaje, datos = {}) => ({ codigo, mensaje, datos });
 
 // --- Al empezar el turno de un jugador -----------------------------------------------------------------
 
@@ -88,21 +90,21 @@ export function usarHabilidad(ctx, s, a, ev) {
   const t = s.turno;
   const hab = activa(ctx, s, a.id);
   if (t.habilidadUsada) return no('una_por_turno', 'Solo se puede usar una habilidad activa por turno.');
-  if (j.hab.enfriamiento > 0) return no('enfriamiento', `Todavía faltan ${j.hab.enfriamiento} turnos.`);
+  if (j.hab.enfriamiento > 0) return no('enfriamiento', `Todavía faltan ${j.hab.enfriamiento} turnos.`, { n: j.hab.enfriamiento, variante: j.hab.enfriamiento === 1 ? 'uno' : 'otros' });
   if (hab.momento === 'antes-de-tirar' && (t.fase !== 'inicio' || (hab.id === 'hibernar' && t.dados))) {
     return no('momento', 'Esta habilidad se usa antes de tirar los dados.');
   }
   const detalle = {};
   switch (hab.id) {
     case 'esprint':
-      if (j.calabozo) return no('calabozo', 'No se puede usar en el Calabozo.');
+      if (j.calabozo) return no('calabozo', 'No se puede usar en el Calabozo.', { variante: 'habilidad' });
       t.esprint = true;
       break;
     case 'prestamo-expres': {
       if (j.hab.prestamo) return no('prestamo', 'Ya tienes un préstamo sin devolver.');
       const cantidad = a.cantidad;
       if (!Number.isInteger(cantidad) || cantidad < 10 || cantidad > hab.maximo || cantidad % 10) {
-        return no('cantidad', `Pide entre 10 y ${hab.maximo} $, en múltiplos de 10.`);
+        return no('cantidad', `Pide entre 10 y ${hab.maximo} $, en múltiplos de 10.`, { variante: 'prestamo', maximo: hab.maximo });
       }
       j.hab.prestamo = { devolver: Math.round(cantidad * (1 + hab.interes)), turnos: hab.turnos };
       cobrar(s, ev, a.id, cantidad, 'prestamo');
@@ -121,7 +123,7 @@ export function usarHabilidad(ctx, s, a, ev) {
     case 'inflar': {
       const p = s.props[a.casilla];
       if (!p || ctx.casillas[a.casilla].tipo !== 'calle' || p.dueno !== a.id || p.hipotecada) {
-        return no('casilla', 'Elige una de tus calles sin hipotecar.');
+        return no('casilla', 'Elige una de tus calles sin hipotecar.', { variante: 'calle_propia' });
       }
       s.efectos = s.efectos.filter(e => !(e.casilla === a.casilla && (e.tipo === 'inflada' || e.tipo === 'estallada')));
       s.efectos.push({ tipo: 'inflada', casilla: a.casilla, factor: hab.factor, factorEstallido: hab.factorEstallido, hasta: a.id });
@@ -134,7 +136,7 @@ export function usarHabilidad(ctx, s, a, ev) {
     case 'obras-eternas': {
       const p = s.props[a.casilla];
       if (!p || ctx.casillas[a.casilla].tipo !== 'calle' || !p.dueno || p.dueno === a.id) {
-        return no('casilla', 'Elige una calle de otro jugador.');
+        return no('casilla', 'Elige una calle de otro jugador.', { variante: 'calle_ajena' });
       }
       const fallo = objetivoValido(s, j, p.dueno);
       if (fallo) return fallo;
@@ -157,7 +159,7 @@ export function usarHabilidad(ctx, s, a, ev) {
       break;
     }
     default:
-      return no('habilidad', `Habilidad desconocida: ${hab.id}`);
+      return no('habilidad', `Habilidad desconocida: ${hab.id}`, { habilidad: hab.id });
   }
   t.habilidadUsada = true;
   // El enfriamiento del préstamo empieza cuando se devuelve.

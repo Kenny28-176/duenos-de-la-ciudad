@@ -5,7 +5,9 @@
 import { barrioSinEdificios, valorHipoteca } from './contexto.js';
 import { cargar, transferir } from './dinero.js';
 
-const no = (codigo, mensaje) => ({ codigo, mensaje });
+// Un error de una acción: su código, el mensaje en español (para los registros) y los datos con los que la interfaz
+// lo traduce. «variante» distingue los distintos mensajes de un mismo código.
+const no = (codigo, mensaje, datos = {}) => ({ codigo, mensaje, datos });
 const VACIO = { dinero: 0, propiedades: [], acciones: {}, salvoconductos: 0 };
 
 // Normaliza una parte del trato (lo que da un jugador) o devuelve null si no tiene la forma esperada.
@@ -22,18 +24,18 @@ function normalizar(parte = {}) {
 // ¿Puede dar este jugador esta parte ahora mismo?
 function validarParte(ctx, s, id, parte) {
   const j = s.jugadores[id];
-  if (parte.dinero > j.dinero) return no('sin_dinero', `${j.nombre} no tiene tanto dinero.`);
+  if (parte.dinero > j.dinero) return no('sin_dinero', `${j.nombre} no tiene tanto dinero.`, { variante: 'trato', jugador: j.nombre });
   for (const i of parte.propiedades) {
     const c = ctx.casillas[i];
-    if (!s.props[i] || s.props[i].dueno !== id) return no('propiedad', `${c?.nombre ?? i} no es de ${j.nombre}.`);
+    if (!s.props[i] || s.props[i].dueno !== id) return no('propiedad', `${c?.nombre ?? i} no es de ${j.nombre}.`, { casilla: i, jugador: j.nombre });
     if (c.tipo === 'calle' && !barrioSinEdificios(ctx, s, c.barrio)) {
-      return no('edificios', `${c.nombre} tiene edificios en su barrio: hay que venderlos antes.`);
+      return no('edificios', `${c.nombre} tiene edificios en su barrio: hay que venderlos antes.`, { variante: 'trato', casilla: i });
     }
   }
   for (const [barrio, n] of Object.entries(parte.acciones)) {
-    if (!ctx.barrios[barrio] || (j.acciones[barrio] ?? 0) < n) return no('acciones', `${j.nombre} no tiene esas acciones.`);
+    if (!ctx.barrios[barrio] || (j.acciones[barrio] ?? 0) < n) return no('acciones', `${j.nombre} no tiene esas acciones.`, { jugador: j.nombre });
   }
-  if (parte.salvoconductos > j.salvoconductos) return no('salvoconducto', `${j.nombre} no tiene salvoconductos.`);
+  if (parte.salvoconductos > j.salvoconductos) return no('salvoconducto', `${j.nombre} no tiene salvoconductos.`, { variante: 'jugador', jugador: j.nombre });
   return null;
 }
 
@@ -41,10 +43,10 @@ const vacia = parte => !parte.dinero && !parte.propiedades.length && !Object.key
 
 export function proponerTrato(ctx, s, a, ev) {
   const para = s.jugadores[a.para];
-  if (!para || para.quebrado || a.para === a.id) return no('jugador', 'Elige a otro jugador que siga en la partida.');
+  if (!para || para.quebrado || a.para === a.id) return no('jugador', 'Elige a otro jugador que siga en la partida.', { variante: 'otro' });
   const ofrece = normalizar(a.ofrece);
   const pide = normalizar(a.pide);
-  if (!ofrece || !pide) return no('trato', 'El trato no tiene la forma esperada.');
+  if (!ofrece || !pide) return no('trato', 'El trato no tiene la forma esperada.', { variante: 'forma' });
   if (vacia(ofrece) && vacia(pide)) return no('vacio', 'El trato está vacío.');
   const fallo = validarParte(ctx, s, a.id, ofrece) ?? validarParte(ctx, s, a.para, pide);
   if (fallo) return fallo;
@@ -75,7 +77,7 @@ function entregar(ctx, s, ev, de, a, parte) {
 
 export function aceptarTrato(ctx, s, a, ev) {
   const t = s.tratos[a.trato];
-  if (!t) return no('trato', 'Ese trato ya no existe.');
+  if (!t) return no('trato', 'Ese trato ya no existe.', { variante: 'inexistente' });
   if (t.para !== a.id) return no('no_es_para_ti', 'Ese trato no es para ti.');
   const fallo = validarParte(ctx, s, t.de, t.ofrece) ?? validarParte(ctx, s, t.para, t.pide);
   if (fallo) return fallo;
@@ -83,7 +85,7 @@ export function aceptarTrato(ctx, s, a, ev) {
   for (const [quien, recibe] of [[t.para, t.ofrece], [t.de, t.pide]]) {
     for (const [barrio, n] of Object.entries(recibe.acciones)) {
       if ((s.jugadores[quien].acciones[barrio] ?? 0) + n > maximo) {
-        return no('maximo', `Nadie puede tener más de ${maximo} acciones de un barrio.`);
+        return no('maximo', `Nadie puede tener más de ${maximo} acciones de un barrio.`, { maximo });
       }
     }
   }
@@ -96,7 +98,7 @@ export function aceptarTrato(ctx, s, a, ev) {
 
 export function rechazarTrato(ctx, s, a, ev) {
   const t = s.tratos[a.trato];
-  if (!t) return no('trato', 'Ese trato ya no existe.');
+  if (!t) return no('trato', 'Ese trato ya no existe.', { variante: 'inexistente' });
   if (t.para !== a.id && t.de !== a.id) return no('no_es_tuyo', 'Ese trato no es tuyo.');
   delete s.tratos[a.trato];
   ev.push({ type: t.de === a.id ? 'tratoCancelado' : 'tratoRechazado', trato: t.id, de: t.de, para: t.para });

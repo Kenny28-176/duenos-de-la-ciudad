@@ -17,8 +17,10 @@ export const OPCIONES = {
 };
 export { MAX_JUGADORES };
 
-const err = (state, codigo, mensaje) => ({ state, events: [], error: { codigo, mensaje } });
-const no = (codigo, mensaje) => ({ codigo, mensaje });
+const err = (state, codigo, mensaje, datos = {}) => ({ state, events: [], error: { codigo, mensaje, datos } });
+// Un error de una acción: su código, el mensaje en español (para los registros) y los datos con los que la interfaz
+// lo traduce. «variante» distingue los distintos mensajes de un mismo código.
+const no = (codigo, mensaje, datos = {}) => ({ codigo, mensaje, datos });
 
 export function nuevaPartida(ctx, { sala = null, semilla = Date.now() } = {}) {
   return {
@@ -68,7 +70,7 @@ function unirse(ctx, s, a) {
   if (s.ids.some(id => s.jugadores[id].nombre.toLowerCase() === nombre.toLowerCase())) {
     return no('nombre_repetido', 'Ya hay alguien con ese nombre.');
   }
-  if (s.ids.length >= MAX_JUGADORES) return no('llena', `La sala está llena (máximo ${MAX_JUGADORES}).`);
+  if (s.ids.length >= MAX_JUGADORES) return no('llena', `La sala está llena (máximo ${MAX_JUGADORES}).`, { maximo: MAX_JUGADORES });
   s.ids.push(a.id);
   s.jugadores[a.id] = nuevoJugador(a.id, nombre, a.bot);
   if (a.ficha) {
@@ -80,7 +82,7 @@ function unirse(ctx, s, a) {
 
 function elegirFicha(ctx, s, a) {
   if (s.fase !== 'sala') return no('empezada', 'La partida ya empezó.');
-  if (!s.jugadores[a.id]) return no('jugador', 'No estás en la sala.');
+  if (!s.jugadores[a.id]) return no('jugador', 'No estás en la sala.', { variante: 'sala' });
   if (!ctx.fichas[a.ficha]) return no('ficha', 'Esa ficha no existe.');
   if (s.ids.some(id => id !== a.id && s.jugadores[id].ficha === a.ficha)) return no('ficha_ocupada', 'Esa ficha ya la tiene otro jugador.');
   s.jugadores[a.id].ficha = a.ficha;
@@ -89,7 +91,7 @@ function elegirFicha(ctx, s, a) {
 
 function salir(ctx, s, a) {
   if (s.fase !== 'sala') return no('empezada', 'La partida ya empezó.');
-  if (!s.jugadores[a.id]) return no('jugador', 'No estás en la sala.');
+  if (!s.jugadores[a.id]) return no('jugador', 'No estás en la sala.', { variante: 'sala' });
   s.ids = s.ids.filter(id => id !== a.id);
   delete s.jugadores[a.id];
   return undefined;
@@ -100,8 +102,8 @@ function configurar(ctx, s, a) {
   const o = a.opciones ?? {};
   if ('meta' in o && o.meta !== null && !(Number.isInteger(o.meta) && o.meta > 0)) return no('meta', 'La meta tiene que ser una cantidad positiva o ninguna.');
   for (const clave of Object.keys(o)) {
-    if (!(clave in OPCIONES)) return no('opcion', `Opción desconocida: ${clave}`);
-    if (clave !== 'meta' && typeof o[clave] !== 'boolean') return no('opcion', `La opción ${clave} es sí o no.`);
+    if (!(clave in OPCIONES)) return no('opcion', `Opción desconocida: ${clave}`, { variante: 'desconocida', clave });
+    if (clave !== 'meta' && typeof o[clave] !== 'boolean') return no('opcion', `La opción ${clave} es sí o no.`, { variante: 'booleana', clave });
   }
   Object.assign(s.opciones, o);
   return undefined;
@@ -109,7 +111,7 @@ function configurar(ctx, s, a) {
 
 function empezar(ctx, s, a, ev) {
   if (s.fase !== 'sala') return no('empezada', 'La partida ya empezó.');
-  if (s.ids.length < MIN_JUGADORES) return no('pocos', `Hacen falta al menos ${MIN_JUGADORES} jugadores.`);
+  if (s.ids.length < MIN_JUGADORES) return no('pocos', `Hacen falta al menos ${MIN_JUGADORES} jugadores.`, { minimo: MIN_JUGADORES });
   const libres = shuffle(s, Object.keys(ctx.fichas).filter(f => !s.ids.some(id => s.jugadores[id].ficha === f)));
   for (const id of s.ids) if (!s.jugadores[id].ficha) s.jugadores[id].ficha = libres.shift();
   s.orden = shuffle(s, s.ids);
@@ -141,7 +143,7 @@ function empezar(ctx, s, a, ev) {
 function tirar(ctx, s, a, ev) {
   const t = s.turno;
   const j = s.jugadores[a.id];
-  if (t.fase !== 'inicio') return no('fase', 'Ahora no toca tirar.');
+  if (t.fase !== 'inicio') return no('fase', 'Ahora no toca tirar.', { variante: 'tirar' });
   let dados;
   if (a.dados && s.opciones.dadosDePrueba) dados = [...a.dados];
   else dados = [dado(s), dado(s)];
@@ -182,10 +184,10 @@ function tirar(ctx, s, a, ev) {
 
 function comprar(ctx, s, a, ev) {
   const t = s.turno;
-  if (t.compra == null) return no('fase', 'No hay nada que comprar.');
+  if (t.compra == null) return no('fase', 'No hay nada que comprar.', { variante: 'comprar' });
   const i = t.compra;
   const precio = ctx.casillas[i].precio;
-  if (s.jugadores[a.id].dinero < precio) return no('sin_dinero', `Cuesta ${precio} $.`);
+  if (s.jugadores[a.id].dinero < precio) return no('sin_dinero', `Cuesta ${precio} $.`, { coste: precio });
   transferir(s, ev, a.id, 'banco', precio, 'compra');
   s.props[i].dueno = a.id;
   t.compra = null;
@@ -196,7 +198,7 @@ function comprar(ctx, s, a, ev) {
 
 function noComprar(ctx, s, a, ev) {
   const t = s.turno;
-  if (t.compra == null) return no('fase', 'No hay nada que comprar.');
+  if (t.compra == null) return no('fase', 'No hay nada que comprar.', { variante: 'comprar' });
   const i = t.compra;
   t.compra = null;
   ev.push({ type: 'noCompra', id: a.id, casilla: i });
@@ -208,7 +210,7 @@ function noComprar(ctx, s, a, ev) {
 function pagarFianza(ctx, s, a, ev) {
   const j = s.jugadores[a.id];
   if (s.turno.fase !== 'inicio' || !j.calabozo) return no('calabozo', 'No estás en el Calabozo.');
-  if (j.dinero < ctx.eco.fianza) return no('sin_dinero', `La fianza cuesta ${ctx.eco.fianza} $.`);
+  if (j.dinero < ctx.eco.fianza) return no('sin_dinero', `La fianza cuesta ${ctx.eco.fianza} $.`, { coste: ctx.eco.fianza });
   transferir(s, ev, a.id, 'banco', ctx.eco.fianza, 'fianza');
   j.calabozo = null;
   ev.push({ type: 'saleDelCalabozo', id: a.id, como: 'fianza' });
@@ -227,7 +229,7 @@ function usarSalvoconducto(ctx, s, a, ev) {
 }
 
 function terminarTurno(ctx, s, a, ev) {
-  if (s.turno.fase !== 'gestion') return no('fase', 'Todavía no puedes terminar el turno.');
+  if (s.turno.fase !== 'gestion') return no('fase', 'Todavía no puedes terminar el turno.', { variante: 'terminar' });
   finDeTurno(ctx, s, ev, a.id);
   pasarTurno(ctx, s, ev);
   return undefined;
@@ -284,10 +286,10 @@ const ACCIONES = {
 
 function permiso(ctx, s, regla, a) {
   if (regla.sala) return null;
-  if (s.fase !== 'juego') return no('fuera_de_juego', s.fase === 'sala' ? 'La partida no ha empezado.' : 'La partida ha terminado.');
+  if (s.fase !== 'juego') return no('fuera_de_juego', s.fase === 'sala' ? 'La partida no ha empezado.' : 'La partida ha terminado.', { variante: s.fase === 'sala' ? 'sala' : 'fin' });
   if (regla.anfitrion) return null;
   const j = s.jugadores[a.id];
-  if (!j || j.quebrado) return no('jugador', 'No estás en la partida.');
+  if (!j || j.quebrado) return no('jugador', 'No estás en la partida.', { variante: 'partida' });
   if (regla.subasta) return null;
   if (s.subasta) return no('subasta', 'Hay una subasta en marcha.');
   if (regla.trato) return null;
@@ -308,14 +310,14 @@ function permiso(ctx, s, regla, a) {
 
 export function paso(ctx, estado, accion) {
   const regla = ACCIONES[accion?.type];
-  if (!regla) return err(estado, 'accion', `Acción desconocida: ${accion?.type}`);
+  if (!regla) return err(estado, 'accion', `Acción desconocida: ${accion?.type}`, { tipo: String(accion?.type) });
   const fallo = permiso(ctx, estado, regla, accion);
-  if (fallo) return err(estado, fallo.codigo, fallo.mensaje);
+  if (fallo) return err(estado, fallo.codigo, fallo.mensaje, fallo.datos);
   const s = structuredClone(estado);
   const ev = [];
   const manejador = Object.values(regla).find(v => typeof v === 'function');
   const error = manejador(ctx, s, accion, ev);
-  if (error) return err(estado, error.codigo, error.mensaje);
+  if (error) return err(estado, error.codigo, error.mensaje, error.datos);
   if (s.fase === 'juego') {
     resolverDeudas(s, ev);
     actualizarRachas(ctx, s, ev);
