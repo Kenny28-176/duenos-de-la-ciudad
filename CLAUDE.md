@@ -57,7 +57,7 @@ después, en [`docs/IDEAS.md`](docs/IDEAS.md).
 | Jugadores | Su celular (Android o iPhone), en el navegador. Entran con un enlace y el código de la sala, o escaneando un QR. |
 | Sincronización | **Firebase Realtime Database** (plan gratuito), con **inicio de sesión anónimo** y reglas por usuario. Los celulares nunca calculan reglas ni dinero. |
 | Datos en Firebase | **Por partes** (`jugadores/j1/dinero`, `casillas/12/dueno`…), escribiendo solo lo que cambia. Hay del orden de mil cambios por partida y la descarga gratuita es de 360 MB al día. |
-| Red | Aislada en un módulo (`src/net/`). Así se puede añadir después un modo de red local o de navegador a navegador sin tocar el motor. |
+| Red | Aislada en un módulo (`src/net/`) con un «transporte» intercambiable (en memoria para las pruebas, Firebase para jugar). Así se puede añadir después un modo de red local o de navegador a navegador sin tocar el motor. Ver `docs/RED.md`. |
 | Stack | JS modular (módulos ES) sin paso de compilación. Pantallas con Preact + htm, copiados en `public/vendor/`. Nada se carga de servidores externos. |
 | Tablero visual | **2D**: SVG generado desde los datos, animaciones con la API del navegador y dados en CSS 3D. El dibujo va separado del motor. |
 | Idiomas | Ningún texto visible va escrito en el código: sale de los diccionarios de `src/i18n/`, como en *Aldeanos vs Lobos*. Hay una carpeta por idioma (`es/` y `en/`), con cuatro partes: `juego`, `narrador`, `errores` e `interfaz`. |
@@ -86,7 +86,12 @@ index.html, public/      portada (es y en/) y estilos; más adelante, las pantal
 public/visuales/         imágenes del juego (marca, tablero, fichas, tarjetas, botones, interfaz) y su CREDITOS.md
 src/data/                los datos del juego: tablero.json, economia.json, fichas.json y cartas.json, y cargar.js
 src/engine/              el motor puro: juego.js (acciones y permisos), turno, cartas, subasta, gestion, tratos,
-                         quiebra, habilidades, dinero, contexto (fórmulas y patrimonio) y rng; bots.js y simulador.js
+                         quiebra, habilidades, dinero, contexto (fórmulas y patrimonio) y rng; posibles.js (qué botones
+                         tiene cada jugador); bots.js y simulador.js
+src/net/                 la red: protocolo.js (qué se escribe y dónde), anfitrion.js (el tablero), cliente.js (el
+                         celular), codec.js (el estado, listo para Firebase) y memoria.js (una base en memoria que
+                         imita a Firebase, para probar sin red); docs/RED.md lo explica y database.rules.json son las
+                         reglas de seguridad
 src/i18n/                traducir.js e idioma.js (textos y formatos) y un diccionario por idioma en es/ y en/
 src/ui/                  preact.js (Preact + htm), almacen.js y usarAlmacen.js (datos que repintan la pantalla),
                          narrador.js (de eventos a frases) y cola.js (cola de animaciones)
@@ -107,7 +112,7 @@ docs/                    DISENO.md (las reglas tal como las aplica el motor), VI
 
 Lo que llega en las fases 3 y 4:
 
-- `src/net/`: la conexión con Firebase;
+- el transporte con Firebase de verdad (`src/net/firebase.js`), cuando exista el proyecto (`docs/FIREBASE.md`);
 - las pantallas del celular y de la sala, en `src/ui/`.
 
 ## Cómo se trabaja

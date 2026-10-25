@@ -1,0 +1,69 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "salas": {
+      "$sala": {
+        ".validate": "$sala.matches(/^[BCDFGHJKLMNPRSTVWXZ]{4}$/)",
+        "meta": {
+          ".read": true,
+          ".write": "auth != null && ((!data.exists() && newData.child('anfitrion').val() === auth.uid) || data.child('anfitrion').val() === auth.uid)",
+          ".validate": "newData.hasChildren(['anfitrion', 'creada', 'version'])",
+          "anfitrion": { ".validate": "newData.isString() && newData.val().length < 64" },
+          "creada": { ".validate": "newData.isNumber()" },
+          "version": { ".validate": "newData.isNumber()" },
+          "$otro": { ".validate": false }
+        },
+        "estado": {
+          ".read": true,
+          ".write": "auth != null && root.child('salas').child($sala).child('meta').child('anfitrion').val() === auth.uid"
+        },
+        "vistas": {
+          "$uid": {
+            ".read": "auth != null && $uid === auth.uid",
+            ".write": "auth != null && root.child('salas').child($sala).child('meta').child('anfitrion').val() === auth.uid"
+          }
+        },
+        "acciones": {
+          ".read": "auth != null && root.child('salas').child($sala).child('meta').child('anfitrion').val() === auth.uid",
+          "$clave": {
+            ".write": "auth != null && ((!data.exists() && newData.child('uid').val() === auth.uid && root.child('salas').child($sala).child('meta').exists()) || root.child('salas').child($sala).child('meta').child('anfitrion').val() === auth.uid)",
+            ".validate": "newData.hasChildren(['uid', 'accion']) && newData.child('uid').val() === auth.uid",
+            "uid": { ".validate": "newData.isString() && newData.val().length < 64" },
+            "accion": {
+              ".validate": "newData.hasChild('type')",
+              "type": { ".validate": "newData.isString() && newData.val().length < 30" },
+              "id": { ".validate": "newData.isString() && newData.val().length < 40" },
+              "nombre": { ".validate": "newData.isString() && newData.val().length < 25" },
+              "ficha": { ".validate": "newData.isString() && newData.val().length < 30" },
+              "barrio": { ".validate": "newData.isString() && newData.val().length < 30" },
+              "objetivo": { ".validate": "newData.isString() && newData.val().length < 40" },
+              "para": { ".validate": "newData.isString() && newData.val().length < 40" },
+              "trato": { ".validate": "newData.isString() && newData.val().length < 20" },
+              "casilla": { ".validate": "newData.isNumber()" },
+              "cantidad": { ".validate": "newData.isNumber()" },
+              "dados": { "$i": { ".validate": "newData.isNumber()" } },
+              "ofrece": {
+                "dinero": { ".validate": "newData.isNumber()" },
+                "salvoconductos": { ".validate": "newData.isNumber()" },
+                "propiedades": { "$i": { ".validate": "newData.isNumber()" } },
+                "acciones": { "$barrio": { ".validate": "newData.isNumber()" } },
+                "$otro": { ".validate": false }
+              },
+              "pide": {
+                "dinero": { ".validate": "newData.isNumber()" },
+                "salvoconductos": { ".validate": "newData.isNumber()" },
+                "propiedades": { "$i": { ".validate": "newData.isNumber()" } },
+                "acciones": { "$barrio": { ".validate": "newData.isNumber()" } },
+                "$otro": { ".validate": false }
+              },
+              "$otro": { ".validate": false }
+            },
+            "$otro": { ".validate": false }
+          }
+        },
+        "$otro": { ".validate": false }
+      }
+    }
+  }
+}

@@ -98,6 +98,18 @@ Aquí se anotan los cambios de cada versión. Las versiones siguen el esquema ma
   (`tools/ver.js` y `tools/navegador.js`).
 - La portada enlaza a la demostración del tablero.
 
+- **Fase 3, la red entre el tablero y los celulares** (`src/net/`, `docs/RED.md`), probada sin Firebase:
+  - el tablero (anfitrión) recibe las acciones de los celulares, las pasa por el motor y publica el resultado por partes;
+  - cada celular (cliente) ve el estado público y sus propios botones, y pide acciones sin decir quién es (el tablero lo
+    sabe por su identidad, así nadie se hace pasar por otro);
+  - una base de datos en memoria que escribe como Firebase (listas a objetos, sin valores vacíos) permite probar todo;
+  - una prueba juega una partida entera entre un tablero y cuatro celulares, con y sin latencia, y comprueba que todos
+    acaban viendo lo mismo y que el dinero cuadra.
+- Qué botones tiene cada jugador (`src/engine/posibles.js`): lo calcula el propio motor, probando cada acción, así lo que
+  ve el celular y lo que acepta el tablero no pueden contradecirse.
+- Los errores del motor llevan sus datos y se traducen al español y al inglés (81 textos).
+- Las reglas de seguridad de Firebase (`database.rules.json`), con pruebas de que no dejan nada abierto de más.
+
 ### Cambiado
 
 - Una ficha que está sola en su casilla se ve más grande; si comparten casilla, se achican para que quepan todas.
