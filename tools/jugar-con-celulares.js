@@ -6,6 +6,7 @@
 //   node tools/jugar-con-celulares.js                       3 celulares y 1 bot, meta de 3.000 $, semilla 1
 //   node tools/jugar-con-celulares.js --celulares 4 --bots 2 --semilla 7 --meta 5000 --partidas 3
 //   node tools/jugar-con-celulares.js --maximo 240          segundos máximos por partida (por defecto 180)
+//   node tools/jugar-con-celulares.js --sin-mercado --sin-habilidades --sin-subastas --rapida     otras reglas de la sala (con anfitrión en Node)
 //   node tools/jugar-con-celulares.js --tablero pagina --meta 7000   con la página del tablero en Chrome (animaciones, sala…) en vez
 //                                                              de un anfitrión en Node; la meta tiene que ser una del vestíbulo
 //
@@ -104,7 +105,7 @@ export function decidir(semilla) {
 //   - «nodo»: un anfitrión en Node con su orquesta (rápido, y sirve para probar solo los celulares);
 //   - «pagina»: la página del tablero en Chrome (public/tablero.html), con sus animaciones y su sala, como la usaría quien juega.
 // Las dos dan lo mismo: el código de la sala, cómo añadir bots y empezar, un resumen del estado y los eventos que pasaron.
-async function abrirTablero({ modo, base, nav, semilla, bots, meta, celulares }) {
+async function abrirTablero({ modo, base, nav, semilla, bots, meta, celulares, opciones }) {
   const fichas = Object.keys(motor.ctx.fichas);
   if (modo === 'nodo') {
     const codigo = 'BCDF';
@@ -127,7 +128,7 @@ async function abrirTablero({ modo, base, nav, semilla, bots, meta, celulares })
       async empezar() {
         for (let k = 0; k < bots; k++) anfitrion.accionPropia({ type: 'unirse', id: `b${k + 1}`, nombre: `Bot ${k + 1}`, ficha: fichas[fichas.length - 1 - k], bot: true });
         while (anfitrion.estado().ids.length < celulares + bots) await espera(30);
-        anfitrion.accionPropia({ type: 'configurar', opciones: { meta } });
+        anfitrion.accionPropia({ type: 'configurar', opciones: { meta, ...opciones } });
         anfitrion.accionPropia({ type: 'empezar' });
       },
       async resumen() { return resumirEstado(anfitrion.estado(), anfitrion.version()); },
@@ -187,7 +188,7 @@ function resumirEstadoEnPagina() {
 
 // Juega una partida y devuelve { problemas, resumen, estado }: «problemas» está vacío si todo fue bien.
 // tablero: 'nodo' (un anfitrión en Node, por defecto) o 'pagina' (la página del tablero en Chrome).
-export async function jugarPartida({ celulares: CELULARES = 3, bots: BOTS = 1, meta: META = 3000, semilla: SEMILLA = 1, maximo: MAXIMO_S = 180, numero: numeroDePartida = 0, silencioso = false, tablero: MODO = 'nodo' } = {}) {
+export async function jugarPartida({ celulares: CELULARES = 3, bots: BOTS = 1, meta: META = 3000, semilla: SEMILLA = 1, maximo: MAXIMO_S = 180, numero: numeroDePartida = 0, silencioso = false, tablero: MODO = 'nodo', opciones: OPCIONES = {} } = {}) {
   if (buscarChrome() === null) throw new Error('No hay Chrome en este ordenador.');
   const servidor = crearServidor();
   await new Promise(listo => servidor.listen(0, '127.0.0.1', listo));
@@ -198,7 +199,7 @@ export async function jugarPartida({ celulares: CELULARES = 3, bots: BOTS = 1, m
   let mesa = null;
   let final = null;
   try {
-    mesa = await abrirTablero({ modo: MODO, base, nav, semilla: SEMILLA, bots: BOTS, meta: META, celulares: CELULARES });
+    mesa = await abrirTablero({ modo: MODO, base, nav, semilla: SEMILLA, bots: BOTS, meta: META, celulares: CELULARES, opciones: OPCIONES });
     const pestanas = [];
     for (let k = 0; k < CELULARES; k++) {
       const p = await nav.abrir(`${base}/public/jugador.html?sala=${mesa.codigo}&depurar=1`, { ancho: 390, alto: 844, idioma: k % 2 ? 'en' : 'es' });
@@ -273,7 +274,7 @@ export async function jugarPartida({ celulares: CELULARES = 3, bots: BOTS = 1, m
 // --- Desde la terminal ----------------------------------------------------------------------------------------------------
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
-  const argumentos = Object.fromEntries(process.argv.slice(2).reduce((lista, a, i, todos) => (a.startsWith('--') ? [...lista, [a.slice(2), todos[i + 1]]] : lista), []));
+  const argumentos = Object.fromEntries(process.argv.slice(2).reduce((lista, a, i, todos) => (a.startsWith('--') ? [...lista, [a.slice(2), todos[i + 1] && !todos[i + 1].startsWith('--') ? todos[i + 1] : true]] : lista), []));
   const numero = (nombre, porDefecto) => Number(argumentos[nombre] ?? porDefecto);
   const partidas = numero('partidas', 1);
   let fallos = 0;
@@ -281,6 +282,10 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
     const { problemas } = await jugarPartida({
       celulares: numero('celulares', 3), bots: numero('bots', 1), meta: numero('meta', 3000), semilla: numero('semilla', 1) + k, maximo: numero('maximo', 180), numero: k,
       tablero: argumentos.tablero === 'pagina' ? 'pagina' : 'nodo',
+      opciones: {
+        ...('sin-mercado' in argumentos ? { mercado: false } : {}), ...('sin-habilidades' in argumentos ? { habilidades: false } : {}),
+        ...('sin-subastas' in argumentos ? { subastas: false } : {}), ...('rapida' in argumentos ? { partidaRapida: true } : {}),
+      },
     });
     for (const p of problemas) console.log(`  ✖ ${p}`);
     if (problemas.length) fallos++;
