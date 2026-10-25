@@ -8,6 +8,7 @@ import { readFile } from 'node:fs/promises';
 import { networkInterfaces } from 'node:os';
 import { extname, join, normalize, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { crearRelay } from './red-local.js';
 
 const RAIZ = fileURLToPath(new URL('..', import.meta.url));
 const TIPOS = {
@@ -17,9 +18,12 @@ const TIPOS = {
   '.woff2': 'font/woff2', '.webmanifest': 'application/manifest+json', '.mp3': 'audio/mpeg',
 };
 
-// Devuelve un servidor http (sin arrancar) que sirve los archivos de `raiz`.
+// Devuelve un servidor http (sin arrancar) que sirve los archivos de `raiz` y, en /red, el relé de la red local (tools/red-local.js):
+// el buzón por el que el tablero y los celulares se hablan por la wifi sin Firebase.
 export function crearServidor(raiz = RAIZ) {
-  return createServer(async (req, res) => {
+  const relay = crearRelay();
+  const servidor = createServer(async (req, res) => {
+    if (await relay.manejar(req, res)) return;
     let ruta = decodeURIComponent(new URL(req.url, 'http://x').pathname);
     if (ruta.endsWith('/')) ruta += 'index.html';
     const archivo = normalize(join(raiz, ruta));
@@ -32,6 +36,8 @@ export function crearServidor(raiz = RAIZ) {
       res.writeHead(404).end('No encontrado');
     }
   });
+  servidor.relay = relay;
+  return servidor;
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
