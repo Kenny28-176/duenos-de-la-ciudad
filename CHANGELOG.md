@@ -118,6 +118,9 @@ Aquí se anotan los cambios de cada versión. Las versiones siguen el esquema ma
   y una prueba comprueba, en cientos de estados de partidas entre bots, que coinciden con lo que luego se aplica.
 - **Delegar en un bot**: el botón BOT de la tarjeta de cada persona, en el tablero, pone un bot a jugar por quien se ausentó o
   cuyo celular se cayó (y se quita igual). Un trato sin contestar para una persona ya no para a los bots.
+- **Partidas enteras por la interfaz del celular** (`tools/jugar-con-celulares.js`, y dos de ellas en `npm test`): celulares de Chrome
+  con un jugador al azar que pulsa lo que ve (tirar, comprar, subastar, construir, Bolsa, tratos, habilidades, deudas, bancarrota),
+  junto a bots. Busca atascos, errores de JavaScript y acciones que el tablero rechaza; en diez partidas (algunas largas, con quiebras) no encontró ninguno.
 - Si la conexión de un celular se queda muerta (se le apagó la pantalla), se recupera sola.
 - Pruebas de punta a punta en un Chrome de verdad: el celular entra, elige ficha y juega (`tests/pantalla-celular.test.js`), y
   el tablero abre una sala con celulares (`tests/pantalla-red.test.js`).

@@ -112,7 +112,8 @@ src/ui/jugador/          la pantalla del celular: app.js (arranque y conexión),
                          cifras: funciones puras que consultan al motor)
 tools/                   serve.js (servidor local) y red-local.js (el relé: el buzón de la partida por la wifi),
                          construir-sitio.js (revisa y empaqueta la web para Pages),
-                         simular.js (equilibrio con bots), relato.js (cuenta una partida), ver.js y navegador.js (abren
+                         simular.js (equilibrio con bots), jugar-con-celulares.js (partidas enteras por la interfaz real,
+                         con un jugador al azar: busca atascos), relato.js (cuenta una partida), ver.js y navegador.js (abren
                          una página en Chrome sin ventana: capturas y errores), vendor.js (bibliotecas locales),
                          contraste.js, revisar-imagenes.js, optimizar-imagenes.py y hoja-de-contactos.js (con las
                          reglas de limites-imagenes.json)
@@ -135,6 +136,7 @@ npm test                                 # todas las pruebas
 node tools/serve.js                      # servidor local en http://localhost:8080/public/ (también el buzón para jugar con
                                          # celulares por la wifi: abre tablero.html y pulsa «Jugar con celulares»)
 node tools/construir-sitio.js --revisar  # comprueba que la web no depende de servidores externos
+node tools/jugar-con-celulares.js         # partidas enteras por la interfaz del celular (Chrome): --partidas 6 --meta 14000
 npm run simular -- --partidas 1000       # partidas entre bots: duración, victorias por ficha y por asiento…
                                          # (--jugadores N, --sin-habilidades, --ajuste fichas.toro.pasiva.factor=2)
 node tools/relato.js --semilla 7         # cuenta una partida entre bots con las frases del narrador (--idioma en)
