@@ -1,23 +1,5 @@
-/* La pantalla del tablero: la laptop, la tablet o la TV. Los colores son los de docs/VISUALES.md (sección 3.2): el
+/* La pantalla del tablero: la laptop, la tablet o la TV. Los colores están en tema.css (docs/VISUALES.md, sección 3.2): el
    tablero va sobre la noche y todo lo demás, con la misma paleta apagada. */
-:root {
-  --noche: #1e242b;
-  --noche-2: #262d35;
-  --noche-3: #2e3741;
-  --papel: #efeae0;
-  --hueso: #f4efe6;
-  --tinta: #23262b;
-  --pizarra: #3a3f45;
-  --piedra: #9a968e;
-  --ambar: #c98b3a;
-  --azul-noticias: #34507a;
-  --verde-dinero: #3f7a66;
-  --verde-sube: #4e9a6a;
-  --rojo-baja: #b5483f;
-  --oro-viejo: #c9a44c;
-}
-
-* { box-sizing: border-box; }
 .pantalla-tablero {
   margin: 0;
   background: var(--noche);

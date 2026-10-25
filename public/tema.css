@@ -1,0 +1,20 @@
+/* Los colores del juego (docs/VISUALES.md, sección 3.2): una paleta apagada sobre la noche. La comparten las pantallas del
+   tablero (tablero.css) y del celular (jugador.css). */
+:root {
+  --noche: #1e242b;
+  --noche-2: #262d35;
+  --noche-3: #2e3741;
+  --papel: #efeae0;
+  --hueso: #f4efe6;
+  --tinta: #23262b;
+  --pizarra: #3a3f45;
+  --piedra: #9a968e;
+  --ambar: #c98b3a;
+  --azul-noticias: #34507a;
+  --verde-dinero: #3f7a66;
+  --verde-sube: #4e9a6a;
+  --rojo-baja: #b5483f;
+  --oro-viejo: #c9a44c;
+}
+
+* { box-sizing: border-box; }
