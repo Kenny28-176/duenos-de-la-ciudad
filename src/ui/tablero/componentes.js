@@ -3,6 +3,7 @@
 // diccionarios (t), nunca del código.
 import { html, useEffect, useRef, useState } from '../preact.js';
 import { t, tn } from '../../i18n/idioma.js';
+import { SEGUNDOS_DE_SUBASTA } from '../../net/protocolo.js';
 import { BASE, Imagen } from '../imagen.js';
 import { usarAlmacen } from '../usarAlmacen.js';
 import { Vestibulo } from './vestibulo.js';
@@ -88,7 +89,9 @@ function Carta({ carta, n }) {
   </div>`;
 }
 
-function Subasta({ subasta, nombres }) {
+// «cuenta»: los segundos que faltan para que el tablero cierre la subasta si nadie puja (0 si no hay cuenta atrás); «reinicio» cambia
+// cada vez que se publica algo, que es cuando el tablero vuelve a contar desde cero.
+function Subasta({ subasta, nombres, cuenta = 0, reinicio = 0 }) {
   if (!subasta) return null;
   return html`<div class="subasta">
     <header>${t('subasta.titulo')}</header>
@@ -98,6 +101,7 @@ function Subasta({ subasta, nombres }) {
       : subasta.desierta ? html`<p class="lider">${t('subasta.desierta')}</p>`
         : subasta.lider ? html`<p class="lider">${t('subasta.lidera', { jugador: nombres[subasta.lider] })}</p>` : null}
     <ol>${subasta.pujas.map(p => html`<li>${nombres[p.id]} · ${dinero(p.cantidad)}</li>`)}</ol>
+    ${cuenta > 0 && !subasta.ganador && !subasta.desierta ? html`<div class="cuenta" key=${reinicio} style=${{ animationDuration: `${cuenta}s` }}></div>` : null}
   </div>`;
 }
 
@@ -191,7 +195,7 @@ export function Pantalla({ almacen, motor, alMontar, acciones }) {
         <div class="montaje" ref=${alMontar}></div>
         <${Dados} dados=${d.dados} />
         <${Carta} carta=${d.carta} n=${d.cartaN} />
-        <${Subasta} subasta=${d.subasta} nombres=${nombres} />
+        <${Subasta} subasta=${d.subasta} nombres=${nombres} cuenta=${d.modo === 'partida' ? SEGUNDOS_DE_SUBASTA / d.velocidad : 0} reinicio=${d.publicadas} />
         <${Aviso} aviso=${d.aviso} />
         <${Final} fin=${d.fin} filas=${filas} alNueva=${() => (d.modo === 'demo' ? acciones.nueva(d.jugadores) : acciones.cerrarSala())} texto=${t(d.modo === 'demo' ? 'controles.nueva' : 'controles.cerrar_sala')} />
         ${d.modo === 'sala' ? html`<${Vestibulo} sala=${d.sala} estado=${d.estado} acciones=${acciones} colores=${f => motor.ctx.fichas[f].color} />` : null}

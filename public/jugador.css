@@ -143,6 +143,10 @@ small { color: var(--piedra); }
 .puja-actual b { color: var(--oro-viejo); font-variant-numeric: tabular-nums; }
 .pujas { display: flex; flex-direction: column; gap: 0.5rem; }
 .rapidas { display: grid; grid-template-columns: repeat(auto-fit, minmax(6rem, 1fr)); gap: 0.5rem; }
+/* La cuenta atrás: se vacía en 10 s y vuelve a llenarse con cada publicación del tablero (cada puja). */
+.cuenta-subasta { height: 0.4rem; border-radius: 0.25rem; background: rgba(255, 255, 255, 0.12); overflow: hidden; }
+.cuenta-subasta span { display: block; height: 100%; background: var(--ambar); transform-origin: left; animation: cuenta linear forwards; }
+@keyframes cuenta { from { transform: scaleX(1); } to { transform: scaleX(0); } }
 .puja-libre { display: flex; gap: 0.5rem; }
 .puja-libre .boton { flex: 0 0 auto; }
 .puja-libre input { flex: 1 1 8rem; min-width: 0; min-height: 3rem; padding: 0.4rem 0.8rem; border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 0.75rem; background: var(--noche-3); font-size: 1rem; }

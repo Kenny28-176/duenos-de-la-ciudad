@@ -1,6 +1,7 @@
 // La subasta en el celular: la calle que se subasta, la puja más alta y los botones para pujar o retirarse. La cuenta atrás la
 // lleva el tablero; aquí solo se ve lo que hay y se pide lo que el tablero acepta (la puja mínima viene de la vista).
 import { t } from '../../i18n/idioma.js';
+import { SEGUNDOS_DE_SUBASTA } from '../../net/protocolo.js';
 import { html, useState } from '../preact.js';
 import { Boton, Icono, dinero, nombreBarrio, nombreCasilla, nombreDe } from './comun.js';
 import { opcionesDePuja } from './vista.js';
@@ -43,5 +44,7 @@ export function PanelSubasta({ c }) {
       </form>
     </div>` : null}
     ${puede.retirarse ? html`<${Boton} icono="pasar" texto=${t('jugador.subasta.retirarme')} desactivado=${c.ocupado} onClick=${() => c.enviar({ type: 'retirarse' })} />` : null}
+    <div class="cuenta-subasta" role="img" aria-label=${t('jugador.subasta.cuenta', { n: SEGUNDOS_DE_SUBASTA })} key=${c.n}><span style=${{ animationDuration: `${SEGUNDOS_DE_SUBASTA}s` }}></span></div>
+    <p class="nota">${t('jugador.subasta.cuenta', { n: SEGUNDOS_DE_SUBASTA })}</p>
   </section>`;
 }

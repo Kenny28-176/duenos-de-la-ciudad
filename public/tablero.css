@@ -114,6 +114,10 @@
 .subasta .puja { margin: 0; font-size: 3.4cqw; font-weight: 600; font-variant-numeric: tabular-nums; }
 .subasta .lider { margin: 0.3cqw 0 0; font-size: 1.7cqw; color: var(--piedra); }
 .subasta .lider.ganador { color: var(--verde-sube); font-weight: 600; }
+/* La cuenta atrás de la subasta: una barra que se vacía; con cada puja vuelve a llenarse. */
+.subasta { overflow: hidden; }
+.subasta .cuenta { height: 0.55cqw; margin: 1.4cqw -2cqw -1.6cqw; background: var(--ambar); transform-origin: left; animation: cuenta linear forwards; }
+@keyframes cuenta { from { transform: scaleX(1); } to { transform: scaleX(0); } }
 .subasta ol { list-style: none; margin: 1cqw 0 0; padding: 0; display: grid; gap: 0.2cqw; font-size: 1.4cqw; color: var(--piedra); }
 
 .aviso { position: absolute; left: 50%; top: 15.5cqw; transform: translateX(-50%); max-width: 62cqw; padding: 0.9cqw 2cqw; text-align: center; font-size: 2cqw; font-weight: 500;

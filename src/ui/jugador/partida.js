@@ -21,7 +21,7 @@ export function Partida({ d, motor, acciones }) {
   const { estado: s, vista, miId: id } = d.datos;
   const puede = vista.puede ?? {};
   const [pestana, setPestana] = useState('calles');
-  const c = { motor, s, id, puede, enviar: acciones.enviar, ocupado: d.pendiente };
+  const c = { motor, s, id, puede, enviar: acciones.enviar, ocupado: d.pendiente, n: d.datos.n };
   const recibidos = tratos(s, id, puede).filter(tr => tr.recibido).length;
   const contenido = { calles: PestanaCalles, bolsa: PestanaBolsa, tratos: PestanaTratos, mesa: PestanaMesa }[pestana];
   return html`<div class="partida" style=${{ '--color': motor.ctx.fichas[s.jugadores[id].ficha].color }}>

@@ -67,7 +67,7 @@ tanto llegó otra acción.
 - **Delegar en un bot.** Si una persona se ausenta o se le cae el celular, el tablero (el botón BOT de su tarjeta) puede poner
   un bot a jugar por ella: la orquesta la trata como a un bot (`delegados`) hasta que se lo quiten. Es del tablero, no del
   celular: quien está en la mesa decide.
-- La subasta entre personas se cierra a los 10 s sin pujas (el tablero todavía no enseña la cuenta atrás).
+- La subasta entre personas se cierra a los 10 s sin pujas (`SEGUNDOS_DE_SUBASTA`, en `protocolo.js`), y cada puja vuelve a contar. El tablero y el celular enseñan la cuenta atrás como una barra que se vacía y se reinicia con cada publicación.
 
 ## Jugar en casa, sin Firebase (el relé local)
 

@@ -46,7 +46,7 @@ const estadoInicial = () => ({
   estado: null, dinero: {}, precios: {}, preciosPrevios: {}, registro: [], flotantes: [], turnoDe: null,
   dados: null, carta: null, cartaN: 0, subasta: null, aviso: null, fin: null, error: null,
   pausado: false, velocidad: numero('velocidad', 1, 1, 100), idioma, jugadores: numero('jugadores', 4, 2, 8),
-  modo: 'demo', sala: null, red: null, delegados: [],
+  modo: 'demo', sala: null, red: null, delegados: [], publicadas: 0,
 });
 const almacen = crearAlmacen(estadoInicial());
 
@@ -173,7 +173,12 @@ function empezarPartida(esta, primerPaso) {
     dinero: Object.fromEntries(estado.orden.map(id => [id, 0])),
   });
   montarTablero();
-  reproductor = nuevoReproductor(fuente, { despuesDePaso: () => esta.anfitrion.publicar() });
+  // Al publicar se cuenta una publicación más: la cuenta atrás de la subasta vuelve a empezar (la orquesta también cuenta desde ahí).
+  const despuesDePaso = async () => {
+    await esta.anfitrion.publicar();
+    almacen.cambiar(d => ({ publicadas: d.publicadas + 1 }));
+  };
+  reproductor = nuevoReproductor(fuente, { despuesDePaso });
   reproductor.correr();
 }
 

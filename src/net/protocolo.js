@@ -28,6 +28,10 @@ export const rutas = codigo => ({
   acciones: `salas/${codigo}/acciones`,
 });
 
+// Los segundos que espera el tablero, en una subasta entre personas, antes de cerrarla si nadie puja (vuelven a contar con cada puja).
+// Lo usan la orquesta (que la cierra) y las pantallas (que enseñan la cuenta atrás).
+export const SEGUNDOS_DE_SUBASTA = 10;
+
 // El código de una sala: cuatro consonantes (sin vocales no forman palabras, y sin la Q ni la Y no se confunden).
 const LETRAS = 'BCDFGHJKLMNPRSTVWXZ';
 export const CODIGO = /^[BCDFGHJKLMNPRSTVWXZ]{4}$/;

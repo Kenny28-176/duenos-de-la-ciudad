@@ -177,5 +177,6 @@
   "jugador.dock.pedir": "Ask for it",
   "sala.otras": "If a phone can't get in, try another address: {direcciones}",
   "panel.poner_bot": "Let a bot play for {jugador} (if they step away)",
-  "panel.quitar_bot": "Give control back to {jugador}"
+  "panel.quitar_bot": "Give control back to {jugador}",
+  "jugador.subasta.cuenta": "The auction closes if nobody bids within {n} s."
 }

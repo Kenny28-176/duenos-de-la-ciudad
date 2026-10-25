@@ -227,6 +227,10 @@ test('un celular entra a la sala, elige ficha y juega con sus botones hasta cons
     await sinClavesSueltas(ana, 'subasta');
     const minima = motor.ctx.eco.subasta.minimo;
     assert.equal(cifras(await texto(ana, '.subasta .rapidas button')), minima, 'el primer botón es la puja mínima');
+    assert.deepEqual(
+      await ana.eval(() => ({ barra: document.querySelector('.subasta .cuenta-subasta span') !== null, botones: document.querySelectorAll('.subasta .rapidas button').length })),
+      { barra: true, botones: 3 }, 'la cuenta atrás y las tres pujas rápidas (+10, +50, +100)',
+    );
     await pulsarCuandoEste(ana, '$', '.subasta .rapidas button');
     await esperarHasta(() => hubo('puja', e => e.id === 'j1' && e.cantidad === minima), 8000, 'no se registró la puja');
     await esperarHasta(() => hubo('subastaGanada', e => e.id === 'j1' && e.casilla === calleLibre), 8000, 'Ana no ganó la subasta');

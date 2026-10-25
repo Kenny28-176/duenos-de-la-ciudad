@@ -6,8 +6,9 @@
 // Tiene la misma forma que la partida de demostración (src/ui/tablero/demo.js): paso() y estado(), así el reproductor del
 // tablero anima una y otra igual.
 import { decidirBot, quienActua } from '../engine/bots.js';
+import { SEGUNDOS_DE_SUBASTA } from './protocolo.js';
 
-export const SEGUNDOS_DE_SUBASTA = 10;
+export { SEGUNDOS_DE_SUBASTA };
 
 // delegados() da el conjunto de jugadores a los que juega un bot. Si cambia mientras se espera, reprogramar() lo tiene en cuenta.
 export function crearOrquesta({ anfitrion, motor, velocidad = () => 1, pensarMs = 500, delegados = () => new Set() }) {
