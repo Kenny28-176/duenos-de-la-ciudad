@@ -3,16 +3,10 @@
 // diccionarios (t), nunca del código.
 import { html, useEffect, useRef, useState } from '../preact.js';
 import { t, tn } from '../../i18n/idioma.js';
+import { BASE, Imagen } from '../imagen.js';
 import { usarAlmacen } from '../usarAlmacen.js';
+import { Vestibulo } from './vestibulo.js';
 import { filasBolsa, resumenJugadores } from './vista.js';
-
-const BASE = 'visuales/';
-
-// Una imagen que solo se ve cuando ha cargado (las que aún no existen no enseñan el icono de imagen rota).
-function Imagen({ src, clase = '', alt = '' }) {
-  const [lista, setLista] = useState(false);
-  return html`<img class=${`${clase} ${lista ? 'cargada' : 'por-cargar'}`} src=${src} alt=${alt} onLoad=${() => setLista(true)} onError=${() => setLista(false)} />`;
-}
 
 const dinero = cantidad => t('fmt.dinero', { cantidad });
 const dineroConSigno = delta => t(delta > 0 ? 'fmt.dinero.mas' : 'fmt.dinero.menos', { cantidad: Math.abs(delta) });
@@ -112,14 +106,14 @@ function Aviso({ aviso }) {
   return html`<div class=${`aviso aviso-${aviso.tipo}`} key=${aviso.clave}>${aviso.texto}</div>`;
 }
 
-function Final({ fin, filas, alNueva }) {
+function Final({ fin, filas, alNueva, texto }) {
   if (!fin) return null;
   const ganador = filas.find(f => f.id === fin.ganador);
   return html`<div class="final">
     <p class="etiqueta">${t(`fin.${fin.motivo}`)}</p>
     <h2>${t('fin.titulo', { jugador: ganador?.nombre ?? '' })}</h2>
     <ol>${[...filas].sort((a, b) => b.patrimonio - a.patrimonio).map(f => html`<li><span>${f.nombre}</span><b>${dinero(f.patrimonio)}</b></li>`)}</ol>
-    <button class="boton" onClick=${alNueva}>${t('controles.nueva')}</button>
+    <button class="boton" onClick=${alNueva}>${texto}</button>
   </div>`;
 }
 
@@ -164,15 +158,17 @@ const VELOCIDADES = [1, 2, 4, 8];
 
 function Controles({ d, acciones }) {
   const [jugadores, setJugadores] = useState(d.jugadores);
+  const demo = d.modo === 'demo';
   return html`<section class="controles">
-    <button class="boton" onClick=${acciones.pausar}>${d.pausado ? t('controles.seguir') : t('controles.pausa')}</button>
+    ${d.modo === 'sala' ? null : html`<button class="boton" onClick=${acciones.pausar}>${d.pausado ? t('controles.seguir') : t('controles.pausa')}</button>
     <span class="velocidad" role="group" aria-label=${t('controles.velocidad')}>
       ${VELOCIDADES.map(v => html`<button class=${`boton chico ${d.velocidad === v ? 'activo' : ''}`} onClick=${() => acciones.velocidad(v)}>×${v}</button>`)}
-    </span>
-    <label class="nueva">${t('controles.jugadores')}
+    </span>`}
+    ${demo ? html`<label class="nueva">${t('controles.jugadores')}
       <select value=${jugadores} onChange=${e => setJugadores(Number(e.target.value))}>${[2, 3, 4, 5, 6, 7, 8].map(n => html`<option value=${n}>${n}</option>`)}</select>
     </label>
     <button class="boton" onClick=${() => acciones.nueva(jugadores)}>${t('controles.nueva')}</button>
+    ${d.red ? html`<button class="boton principal" onClick=${acciones.abrirSala}>${t('controles.sala')}</button>` : null}` : html`<button class="boton" onClick=${acciones.cerrarSala}>${t('controles.cerrar_sala')}</button>`}
     <span class="idioma" role="group">${['es', 'en'].map(l => html`<button class=${`boton chico ${d.idioma === l ? 'activo' : ''}`} onClick=${() => acciones.idioma(l)}>${l.toUpperCase()}</button>`)}</span>
   </section>`;
 }
@@ -182,9 +178,10 @@ function Controles({ d, acciones }) {
 export function Pantalla({ almacen, motor, alMontar, acciones }) {
   const d = usarAlmacen(almacen);
   const nombreDeFicha = f => t(`ficha.${f}`);
-  const filas = d.estado ? resumenJugadores(motor, d.estado, { dinero: d.dinero, nombreDeFicha }) : [];
+  const enJuego = d.estado && d.estado.fase !== 'sala'; // en el vestíbulo todavía no hay partida
+  const filas = enJuego ? resumenJugadores(motor, d.estado, { dinero: d.dinero, nombreDeFicha }) : [];
   const nombres = Object.fromEntries(filas.map(f => [f.id, f.nombre]));
-  const bolsa = d.estado ? filasBolsa(motor, d.estado, d.preciosPrevios) : [];
+  const bolsa = enJuego ? filasBolsa(motor, d.estado, d.preciosPrevios) : [];
   return html`<div class="pantalla" data-jugadores=${filas.length}>
     <section class="zona-tablero">
       <div class="caja-tablero">
@@ -193,14 +190,16 @@ export function Pantalla({ almacen, motor, alMontar, acciones }) {
         <${Carta} carta=${d.carta} n=${d.cartaN} />
         <${Subasta} subasta=${d.subasta} nombres=${nombres} />
         <${Aviso} aviso=${d.aviso} />
-        <${Final} fin=${d.fin} filas=${filas} alNueva=${() => acciones.nueva(d.jugadores)} />
+        <${Final} fin=${d.fin} filas=${filas} alNueva=${() => (d.modo === 'demo' ? acciones.nueva(d.jugadores) : acciones.cerrarSala())} texto=${t(d.modo === 'demo' ? 'controles.nueva' : 'controles.cerrar_sala')} />
+        ${d.modo === 'sala' ? html`<${Vestibulo} sala=${d.sala} estado=${d.estado} acciones=${acciones} colores=${f => motor.ctx.fichas[f].color} />` : null}
+        ${d.error ? html`<div class="error-sala" role="alert">${d.error}</div>` : null}
       </div>
     </section>
     <aside class="panel">
       <header class="cabecera">
         <h1>${t('tablero.nombre')}</h1>
-        <p>${d.estado ? t('tablero.ronda', { ronda: d.estado.ronda }) : ''}${d.estado?.opciones.meta ? ` · ${t('tablero.meta', { meta: d.estado.opciones.meta })}` : ''}</p>
-        <span class="demo">${t('tablero.demo')}</span>
+        <p>${enJuego ? t('tablero.ronda', { ronda: d.estado.ronda }) : ''}${enJuego && d.estado.opciones.meta ? ` · ${t('tablero.meta', { meta: d.estado.opciones.meta })}` : ''}</p>
+        <span class="demo">${t(d.modo === 'demo' ? 'tablero.demo' : 'tablero.partida')}</span>
       </header>
       <ul class="jugadores">${filas.map(j => html`<${TarjetaJugador} key=${j.id} j=${j} velocidad=${d.velocidad} flotantes=${d.flotantes.filter(f => f.id === j.id)} />`)}</ul>
       <${Bolsa} filas=${bolsa} />

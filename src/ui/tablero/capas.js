@@ -16,12 +16,26 @@ function crear(tipo, atributos = {}, padre = null) {
   return el;
 }
 
-// Una imagen que solo se ve cuando ha cargado: las que todavía no existen no enseñan el icono de imagen rota.
+// Una imagen que solo se ve cuando ha cargado: las que todavía no existen no enseñan el icono de imagen rota. Las que ya se
+// cargaron una vez se ven al momento (si no, las monedas de los dueños y las casas, que se repintan en cada paso, parpadearían).
+const yaCargadas = new Set();
+function mostrarCuandoCargue(imagen) {
+  const href = imagen.getAttribute('href');
+  if (yaCargadas.has(href)) {
+    imagen.classList.add('cargada');
+    return;
+  }
+  const prueba = new Image();
+  prueba.onload = () => {
+    yaCargadas.add(href);
+    imagen.classList.add('cargada');
+  };
+  prueba.src = href;
+}
+
 export function imagenSegura(atributos, padre) {
   const imagen = crear('image', atributos, padre);
-  const prueba = new Image();
-  prueba.onload = () => imagen.classList.add('cargada');
-  prueba.src = atributos.href;
+  mostrarCuandoCargue(imagen);
   return imagen;
 }
 
@@ -127,6 +141,7 @@ export function crearCapas(svg, motor, geo, { base = 'visuales/' } = {}) {
     }
     for (const i of ctx.propiedades) {
       const p = s.props[i];
+      if (!p) continue; // antes de empezar la partida todavía no hay propiedades
       const g = geo.casillas[i];
       svg.querySelector(`[data-casilla="${i}"]`)?.classList.toggle('hipotecada', p.hipotecada);
       if (!p.dueno) continue;
@@ -158,11 +173,7 @@ export function crearCapas(svg, motor, geo, { base = 'visuales/' } = {}) {
     }
   }
 
-  for (const imagen of svg.querySelectorAll('image')) {
-    const prueba = new Image();
-    prueba.onload = () => imagen.classList.add('cargada');
-    prueba.src = imagen.getAttribute('href');
-  }
+  for (const imagen of svg.querySelectorAll('image')) mostrarCuandoCargue(imagen);
 
   return {
     actualizar(s) {

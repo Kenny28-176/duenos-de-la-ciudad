@@ -1,4 +1,5 @@
-// El reproductor de la partida de demostración. Pide un paso a la demo (src/ui/tablero/demo.js), cuenta y anima sus
+// El reproductor de la partida (la de demostración o la de verdad con celulares). Pide un paso a su fuente (la demo de
+// src/ui/tablero/demo.js o la orquesta de src/net/orquesta.js: las dos tienen paso() y estado()), cuenta y anima sus
 // eventos uno detrás de otro (los dados que ruedan, la ficha que camina, el dinero que sube y baja, las cartas, las
 // subastas…) y, al terminar el paso, deja la pantalla igual que el estado del motor. Así las cosas se ven en el orden en
 // que pasan, no todas de golpe. La velocidad y la pausa vienen del almacén (almacen.js).
@@ -16,7 +17,9 @@ const AVISOS = {
 // demo: crearDemo(); almacen: el almacén de la pantalla; capas: () → las capas del tablero de ahora (crearCapas; cambian
 // si se vuelve a dibujar el tablero); narrador: () → el narrador del idioma actual (crearNarrador); nombreBarrio:
 // traduce un barrio.
-export function crearReproductor({ motor, demo, almacen, capas, narrador, nombreBarrio }) {
+// despuesDePaso(paso, estado), si se da, se llama al terminar de animar cada paso: la partida con celulares publica ahí el
+// resultado, para que los celulares lo vean cuando acaba la animación y no antes.
+export function crearReproductor({ motor, demo, almacen, capas, narrador, nombreBarrio, despuesDePaso = null }) {
   let contador = 0;
   let parado = false;
   let reanudar = null;
@@ -99,7 +102,8 @@ export function crearReproductor({ motor, demo, almacen, capas, narrador, nombre
   }
 
   // Cuenta y anima los eventos de un paso y deja la pantalla igual que el estado en que acaba.
-  async function presentar({ eventos }) {
+  async function presentar(paso) {
+    const { eventos } = paso;
     const s = demo.estado();
     for (const e of eventos) {
       const texto = narrador().frase(e, s);
@@ -120,6 +124,7 @@ export function crearReproductor({ motor, demo, almacen, capas, narrador, nombre
       return { estado: s, dinero: Object.fromEntries(s.orden.map(id => [id, s.jugadores[id].dinero])), precios: nuevos, preciosPrevios: previos };
     });
     capas().actualizar(s);
+    await despuesDePaso?.(paso, s);
     await pausa(60);
   }
 
@@ -135,7 +140,7 @@ export function crearReproductor({ motor, demo, almacen, capas, narrador, nombre
         if (parado) return;
         let paso;
         try {
-          paso = demo.paso();
+          paso = await demo.paso();
         } catch (error) {
           almacen.cambiar({ error: error.message });
           return;

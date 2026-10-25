@@ -240,6 +240,38 @@
   .bolsa h3 { display: none; }
 }
 
+/* --- El vestíbulo: antes de empezar una partida con celulares ---------------------------------------------------------- */
+.vestibulo { position: absolute; inset: 11cqw; display: grid; grid-template-columns: minmax(0, 15rem) minmax(0, 1fr); gap: 1.4rem; padding: 1.4rem;
+  background: rgba(30, 36, 43, 0.97); border: 1px solid var(--oro-viejo); border-radius: 10px; overflow: auto; box-shadow: 0 1.2cqw 2.6cqw rgba(0, 0, 0, 0.55); animation: aparece 0.4s both; --tx: 0px; --ty: 0px; }
+.vestibulo-izquierda { display: grid; align-content: start; justify-items: center; gap: 0.5rem; }
+.vestibulo .qr { width: 100%; background: #fff; padding: 0.4rem; border-radius: 8px; }
+.vestibulo .qr svg { display: block; width: 100%; height: auto; }
+.vestibulo .etiqueta { margin: 0.6rem 0 0; font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--piedra); }
+.vestibulo .codigo { font: 700 3.1rem/1 "Fraunces", Georgia, serif; letter-spacing: 0.16em; color: var(--oro-viejo); padding-left: 0.16em; }
+.vestibulo h2 { margin: 0; font: 600 1.6rem/1.15 "Fraunces", Georgia, serif; }
+.vestibulo h3 { margin: 1rem 0 0.4rem; font: 600 0.72rem "Inter", sans-serif; letter-spacing: 0.1em; text-transform: uppercase; color: var(--piedra); }
+.vestibulo .ayuda { margin: 0.3rem 0 0; color: rgba(239, 234, 224, 0.75); font-size: 0.9rem; }
+.vestibulo .aviso-local { margin: 0.5rem 0 0; color: #e0867d; font-size: 0.85rem; }
+.lista-jugadores { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.35rem 0.6rem; }
+.lista-jugadores li { display: flex; align-items: center; gap: 0.5rem; padding: 0.25rem 0.5rem; background: var(--noche-2); border-left: 4px solid var(--color); border-radius: 6px; min-width: 0; animation: aparece 0.35s both; --tx: 0px; --ty: 0px; }
+.lista-jugadores .vacio { grid-column: 1 / -1; background: none; border: 1px dashed rgba(255, 255, 255, 0.2); color: var(--piedra); border-left-width: 1px; }
+.lista-jugadores .pieza { width: 2.1rem; height: 2.1rem; object-fit: contain; flex: none; }
+.lista-jugadores .pieza.vacia { display: grid; place-items: center; border-radius: 50%; border: 2px dashed var(--piedra); color: var(--piedra); }
+.lista-jugadores .nombre { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.etiqueta-bot, .eligiendo { margin-left: auto; font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--piedra); }
+.opciones { display: grid; gap: 0.35rem; }
+.opciones .meta { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; font-size: 0.9rem; }
+.opciones select { font: 0.85rem "Inter", sans-serif; color: var(--papel); background: #2b333c; border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 6px; padding: 0.3rem 0.4rem; }
+.interruptor { display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; cursor: pointer; }
+.interruptor input { width: 1rem; height: 1rem; accent-color: var(--oro-viejo); }
+.botones-vestibulo { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
+.boton.principal { background: var(--oro-viejo); border-color: var(--oro-viejo); color: var(--tinta); font-weight: 600; }
+.boton.principal:disabled { background: #2b333c; border-color: rgba(255, 255, 255, 0.14); color: var(--piedra); cursor: not-allowed; }
+.boton:disabled:not(.principal) { opacity: 0.45; cursor: not-allowed; }
+.vestibulo .faltan { margin: 0.5rem 0 0; font-size: 0.85rem; color: var(--piedra); }
+.error-sala { position: absolute; left: 50%; top: 2cqw; transform: translateX(-50%); padding: 0.6rem 1rem; background: rgba(181, 72, 63, 0.95); border-radius: 6px; font-size: 0.9rem; }
+@media (max-width: 1100px) { .vestibulo { grid-template-columns: 1fr; inset: 4cqw; } .vestibulo-izquierda { grid-template-columns: 9rem 1fr; justify-items: start; align-items: center; } }
+
 @media (prefers-reduced-motion: reduce) {
   .carta, .subasta, .aviso, .final, .flotante, .registro li { animation-duration: 0.01s; }
   .tablero .ficha, .tablero .escala { transition: none; }

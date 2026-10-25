@@ -1,10 +1,18 @@
-// Arranque de la pantalla del tablero (public/tablero.html). Por ahora muestra una partida de demostración entre bots;
-// más adelante, la partida de verdad con los celulares. Se puede probar con parámetros en la dirección:
-//   ?jugadores=4  ?semilla=7  ?velocidad=4  ?idioma=en
+// Arranque de la pantalla del tablero (public/tablero.html). Tiene tres modos:
+//   demo      una partida de demostración entre bots (lo que se ve al abrir la página);
+//   sala      el vestíbulo de una partida con celulares: el código, el QR y los jugadores que van entrando;
+//   partida   la partida de verdad: el tablero recibe las acciones de los celulares, las pasa por el motor, las anima y las publica.
+// Se puede probar con parámetros en la dirección:
+//   ?jugadores=4  ?semilla=7  ?velocidad=4  ?idioma=en  ?sala=1 (abre una sala al cargar)  ?depurar=1
 import { cargarDatos } from '../../data/cargar.js';
+import { MAX_JUGADORES } from '../../engine/contexto.js';
 import { crearMotor } from '../../engine/index.js';
 import { fichasParaPartida } from '../../engine/simulador.js';
 import { alCambiarIdioma, diccionariosActivos, iniciarIdioma, t, usarIdioma } from '../../i18n/idioma.js';
+import { crearAnfitrion } from '../../net/anfitrion.js';
+import { conectar, identidad, redDisponible } from '../../net/conectar.js';
+import { crearOrquesta } from '../../net/orquesta.js';
+import { codigoDeSala } from '../../net/protocolo.js';
 import { crearAlmacen } from '../almacen.js';
 import { crearNarrador } from '../narrador.js';
 import { html, render } from '../preact.js';
@@ -37,13 +45,15 @@ const dibujar = () => dibujarTablero(motor.ctx, geo, {
 const estadoInicial = () => ({
   estado: null, dinero: {}, precios: {}, preciosPrevios: {}, registro: [], flotantes: [], turnoDe: null,
   dados: null, carta: null, cartaN: 0, subasta: null, aviso: null, fin: null, error: null,
-  pausado: false, velocidad: numero('velocidad', 1, 1, 16), idioma, jugadores: numero('jugadores', 4, 2, 8),
+  pausado: false, velocidad: numero('velocidad', 1, 1, 100), idioma, jugadores: numero('jugadores', 4, 2, 8),
+  modo: 'demo', sala: null, red: null,
 });
 const almacen = crearAlmacen(estadoInicial());
 
 let capas = null;
 let reproductor = null;
 let contenedor = null;
+let sala = null; // la sala abierta: { transporte, anfitrion, codigo, cerrada, bots }
 
 // El narrador del idioma actual, con los bots llamados por su ficha («Rata», «Toro»…).
 function narradorActual() {
@@ -59,22 +69,149 @@ function montarTablero() {
   if (estado) capas.actualizar(estado);
 }
 
+const nuevoReproductor = (fuente, extra = {}) => crearReproductor({
+  motor, demo: fuente, almacen, capas: () => capas, narrador: narradorActual, nombreBarrio: b => t(`barrio.${b}`), ...extra,
+});
+
+// --- Demostración ----------------------------------------------------------------------------------------------------
+
 // Empieza una partida de demostración nueva con ese número de jugadores.
 function nuevaPartida(jugadores, semilla = numero('semilla', Date.now() % 100000, 1, 4294967295)) {
   reproductor?.parar();
-  const { velocidad, idioma: lang } = almacen.leer();
+  const { velocidad, idioma: lang, red } = almacen.leer();
   const fichas = fichasParaPartida(motor, semilla, jugadores);
   const demo = crearDemo(motor, { semilla, fichas });
   const estado = demo.estado();
   // El dinero empieza en cero: sube al repartirse el inicial.
-  almacen.cambiar({ ...estadoInicial(), velocidad, idioma: lang, jugadores, estado, dinero: Object.fromEntries(estado.orden.map(id => [id, 0])) });
+  almacen.cambiar({ ...estadoInicial(), velocidad, idioma: lang, jugadores, red, estado, dinero: Object.fromEntries(estado.orden.map(id => [id, 0])) });
   montarTablero();
-  reproductor = crearReproductor({ motor, demo, almacen, capas: () => capas, narrador: narradorActual, nombreBarrio: b => t(`barrio.${b}`) });
+  reproductor = nuevoReproductor(demo);
   reproductor.correr();
 }
 
+// --- Una partida con celulares ------------------------------------------------------------------------------------
+
+// La dirección con la que entran los celulares: la de esta página, salvo que sea «localhost» (que desde un celular no
+// llega a la laptop): en ese caso, la de la laptop en la wifi que dice el servidor.
+function direccionParaCelulares(red) {
+  const local = ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname);
+  if (!local) return { raiz: location.origin, sinRed: false };
+  // Abierto por «localhost»: los celulares entran por la dirección de la laptop en la wifi; si no tiene, no podrán entrar.
+  return red.direcciones.length ? { raiz: red.direcciones[0], sinRed: false } : { raiz: location.origin, sinRed: true };
+}
+
+async function abrirSala() {
+  const { red } = almacen.leer();
+  if (!red || sala) return;
+  reproductor?.parar();
+  try {
+    const transporte = conectar(red.modo, identidad('tablero', 'duenos:uid-tablero'));
+    let codigo = null;
+    for (let intento = 0; intento < 30 && !codigo; intento++) {
+      const candidato = codigoDeSala();
+      if (!(await transporte.get(`salas/${candidato}/meta`))) codigo = candidato;
+    }
+    if (!codigo) throw new Error('no hay códigos libres');
+    const anfitrion = crearAnfitrion({ transporte, motor, codigo });
+    await anfitrion.abrir();
+    sala = { transporte, anfitrion, codigo, cerrada: false, bots: 0, fichasPedidas: new Set() };
+    const { raiz, sinRed } = direccionParaCelulares(red);
+    const url = `${raiz}${new URL('jugador.html', location.href).pathname}?sala=${codigo}`;
+    const { velocidad, idioma: lang } = almacen.leer();
+    almacen.cambiar({
+      ...estadoInicial(), velocidad, idioma: lang, red, modo: 'sala', estado: anfitrion.estado(),
+      sala: { codigo, url, direccion: new URL(url).host + new URL(url).pathname, sinRed },
+    });
+    montarTablero();
+    atenderVestibulo(sala);
+  } catch (error) {
+    sala = null;
+    almacen.cambiar({ error: t('sala.error', { motivo: error.message }) });
+    nuevaPartida(almacen.leer().jugadores);
+  }
+}
+
+// En el vestíbulo, el tablero atiende a los celulares que entran, eligen ficha o salen, y publica cada cambio.
+async function atenderVestibulo(esta) {
+  while (!esta.cerrada) {
+    const paso = await esta.anfitrion.siguientePaso();
+    if (!paso || esta.cerrada) return;
+    if (paso.accion.type === 'empezar') {
+      empezarPartida(esta, paso);
+      return;
+    }
+    await esta.anfitrion.publicar();
+    almacen.cambiar({ estado: esta.anfitrion.estado() });
+  }
+}
+
+// Pasa del vestíbulo a la partida: el primer paso (el reparto del dinero inicial) se anima como los demás y, al acabar cada
+// paso, se publica para que los celulares lo vean cuando termina la animación.
+function empezarPartida(esta, primerPaso) {
+  const orquesta = crearOrquesta({ anfitrion: esta.anfitrion, motor, velocidad: () => almacen.leer().velocidad });
+  let primero = primerPaso;
+  const fuente = {
+    estado: () => esta.anfitrion.estado(),
+    paso: async () => {
+      if (primero) {
+        const p = primero;
+        primero = null;
+        return p;
+      }
+      return orquesta.paso();
+    },
+  };
+  const estado = esta.anfitrion.estado();
+  const { velocidad, idioma: lang, red, sala: datosSala } = almacen.leer();
+  almacen.cambiar({
+    ...estadoInicial(), velocidad, idioma: lang, red, modo: 'partida', sala: datosSala, estado,
+    dinero: Object.fromEntries(estado.orden.map(id => [id, 0])),
+  });
+  montarTablero();
+  reproductor = nuevoReproductor(fuente, { despuesDePaso: () => esta.anfitrion.publicar() });
+  reproductor.correr();
+}
+
+async function cerrarSala() {
+  const esta = sala;
+  if (!esta) return;
+  sala = null;
+  esta.cerrada = true;
+  reproductor?.parar();
+  try {
+    await esta.anfitrion.cerrar();
+  } finally {
+    esta.transporte.cerrar?.();
+  }
+  nuevaPartida(almacen.leer().jugadores);
+}
+
+// Un bot para completar la mesa: elige una ficha libre al azar.
+function anadirBot() {
+  if (!sala || sala.cerrada) return;
+  const s = sala.anfitrion.estado();
+  // Se cuentan también los bots ya pedidos que el tablero todavía no ha procesado (si se pulsa varias veces seguidas).
+  const ocupadas = id => s.ids.some(k => s.jugadores[k].ficha === id);
+  const pendientes = [...sala.fichasPedidas].filter(f => !ocupadas(f));
+  if (s.ids.length + pendientes.length >= MAX_JUGADORES) return;
+  const libres = Object.keys(motor.ctx.fichas).filter(f => !ocupadas(f) && !sala.fichasPedidas.has(f));
+  if (!libres.length) return;
+  const ficha = libres[Math.floor(Math.random() * libres.length)];
+  const n = ++sala.bots;
+  sala.fichasPedidas.add(ficha);
+  sala.anfitrion.accionPropia({ type: 'unirse', id: `b${n}`, nombre: `Bot ${n}`, ficha, bot: true });
+}
+
+function empezar(opciones) {
+  if (!sala || sala.cerrada) return;
+  sala.anfitrion.accionPropia({ type: 'configurar', opciones });
+  sala.anfitrion.accionPropia({ type: 'empezar' });
+}
+
+// --- La pantalla -------------------------------------------------------------------------------------------------------
+
 // Con ?depurar=1, la pantalla enseña su almacén en window.duenos (para probarla desde fuera, p. ej. tools/ver.js).
-if (parametros.has('depurar')) window.duenos = { almacen, motor, t };
+if (parametros.has('depurar')) window.duenos = { almacen, motor, t, sala: () => sala };
 
 const acciones = {
   pausar: () => reproductor?.pausar(),
@@ -85,6 +222,7 @@ const acciones = {
     almacen.cambiar({ idioma: lang });
     montarTablero();
   },
+  abrirSala, cerrarSala, anadirBot, empezar,
 };
 
 alCambiarIdioma(lang => {
@@ -92,9 +230,13 @@ alCambiarIdioma(lang => {
   document.title = t('tablero.titulo');
 });
 
+// ¿Se puede jugar con celulares desde esta página? Solo si el servidor de la laptop (tools/serve.js) está detrás.
+almacen.cambiar({ red: await redDisponible() });
+
 // El contenedor del tablero está vacío para Preact: el SVG lo pone esta función y lo mueve capas.js.
 render(html`<${Pantalla} almacen=${almacen} motor=${motor} acciones=${acciones} alMontar=${el => {
   if (!el || contenedor === el) return;
   contenedor = el;
   nuevaPartida(almacen.leer().jugadores);
+  if (parametros.has('sala')) abrirSala();
 }} />`, document.getElementById('app'));
