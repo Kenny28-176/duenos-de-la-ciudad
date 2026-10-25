@@ -45,7 +45,8 @@ export function reconstruir(valor) {
 export function decodificar(arbol, plantilla = {}) {
   const estado = reconstruir(arbol ?? {});
   for (const [clave, defecto] of Object.entries(plantilla)) {
-    if (estado[clave] === undefined) estado[clave] = structuredClone(defecto);
+    // JSON y no structuredClone: el celular también lo ejecuta, y los iPhone con iOS anterior al 15.4 no lo tienen.
+    if (estado[clave] === undefined) estado[clave] = JSON.parse(JSON.stringify(defecto));
   }
   restaurarVacios(estado);
   return estado;

@@ -15,7 +15,8 @@ h1, h2, h3, .dinero-grande, .codigo, .marca-juego { font-family: "Fraunces", Geo
 button, input { font: inherit; color: inherit; }
 button { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
 .por-cargar { display: none; }
-.app { min-height: 100dvh; display: flex; flex-direction: column; }
+/* 100vh de respaldo: los navegadores sin dvh (iOS anterior al 15.4) la ignorarían entera. */
+.app { min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; }
 small { color: var(--piedra); }
 .etiqueta { font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--piedra); }
 .nota { font-size: 0.88rem; color: var(--piedra); }
@@ -86,7 +87,7 @@ small { color: var(--piedra); }
 .espera { text-align: center; }
 
 /* --- La partida: la cabecera ------------------------------------------------------------------------------------------------ */
-.partida { flex: 1; display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto auto; height: 100dvh; }
+.partida { flex: 1; display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto auto; height: 100vh; height: 100dvh; }
 .cabecera { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 0.25rem 0.75rem;
   padding: calc(0.6rem + env(safe-area-inset-top)) 1rem 0.6rem; background: var(--noche-2); border-bottom: 3px solid var(--color); }
 .quien { display: flex; flex-direction: column; min-width: 0; }

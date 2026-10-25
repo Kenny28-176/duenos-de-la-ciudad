@@ -36,7 +36,7 @@
 | | |
 |---|---|
 | 🖥️ **A laptop or tablet** | Acts as the board. Landscape orientation works best; a TV also works. |
-| 📱 **One phone per player** | 2 to 8 players, on Android or iPhone using any modern browser. |
+| 📱 **One phone per player** | 2 to 8 players, on Android (recent Chrome) or iPhone (iOS 15 or later) using any modern browser. |
 | 📶 **A wifi network** | For now, all devices on the same wifi. Playing over the internet will come later. |
 
 ## Status and roadmap

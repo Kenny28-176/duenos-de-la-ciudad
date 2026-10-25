@@ -36,7 +36,7 @@
 | | |
 |---|---|
 | 🖥️ **Una laptop o tablet** | Es el tablero. Mejor en horizontal; también sirve una TV. |
-| 📱 **Un celular por jugador** | De 2 a 8 jugadores, con Android o iPhone y cualquier navegador moderno. |
+| 📱 **Un celular por jugador** | De 2 a 8 jugadores, con Android (Chrome reciente) o iPhone (iOS 15 o posterior) y cualquier navegador moderno. |
 | 📶 **Una wifi** | Por ahora, todos los dispositivos en la misma wifi. Más adelante, también por internet. |
 
 ## Estado y hoja de ruta
