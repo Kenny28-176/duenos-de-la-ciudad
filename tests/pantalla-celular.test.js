@@ -233,6 +233,16 @@ test('un celular entra a la sala, elige ficha y juega con sus botones hasta cons
     assert.equal(anfitrion.estado().jugadores.j1.dinero, efectivo - minima);
     marca('Ana pujó y ganó');
 
+    // --- Recargar la página a media partida: el celular vuelve a su sitio, sin pedir el nombre otra vez -------------------
+    const dineroAntesDeRecargar = anfitrion.estado().jugadores.j1.dinero;
+    await ana.eval(() => { location.reload(); });
+    await ana.esperarSelector('.partida', 20000);
+    await alDia(ana);
+    assert.equal(await ana.eval(() => window.duenos.cliente().datos().miId), 'j1', 'sigue siendo el mismo jugador');
+    assert.equal(cifras(await texto(ana, '.dinero-grande')), dineroAntesDeRecargar);
+    assert.equal(anfitrion.estado().ids.length, 3, 'no entró un jugador nuevo');
+    marca('Ana recargó y volvió a su sitio');
+
     // Nunca hubo un error de JavaScript en el celular.
     assert.deepEqual(nav.errores, []);
   } finally {
