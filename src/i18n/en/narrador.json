@@ -33,11 +33,11 @@
   ],
   "evento.ronda": "Round {ronda} begins.",
   "evento.dados": [
-    "{jugador} rolls a {total}.",
+    "{jugador} rolls {total}.",
     "{jugador} rolls the dice and gets {total}.",
     "The dice show {total} for {jugador}."
   ],
-  "evento.dados.dobles": "{jugador} rolls doubles with a {total} and rolls again.",
+  "evento.dados.dobles": "{jugador} rolls doubles for a total of {total} and goes again.",
   "evento.salida": "{jugador} passes Start and collects their salary.",
   "evento.compra": [
     "{jugador} buys {casilla} for {precio:dinero}.",

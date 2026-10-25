@@ -198,3 +198,13 @@ export function alCambiarIdioma(fn) {
 export function idiomaActual() {
   return idiomaActivo;
 }
+
+/**
+ * Los diccionarios activos (el del idioma elegido y el español, que es la base), para quien necesite traducir fuera de
+ * `t()`, como el narrador.
+ *
+ * @returns {{ dic: object, base: object, idioma: string }}
+ */
+export function diccionariosActivos() {
+  return { dic: diccionarioActivo, base: diccionarioBase, idioma: idiomaActivo };
+}
