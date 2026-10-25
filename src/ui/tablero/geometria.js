@@ -146,9 +146,21 @@ export function geometriaTablero({ lado = 1000, esquina = 130, banda = 0.22 } = 
   return { lado, esquina, paso, banda, centro, casillas };
 }
 
+// Cuánto mide la imagen de una ficha (como fracción del ancho de una casilla normal) según cuántas comparten casilla:
+// sola, se ve grande; con varias, cada una se achica para que quepan todas. El círculo que ocupa una ficha tiene el 42 %
+// del lado de su imagen (la pieza no llena todo el cuadrado).
+const TAMANO_IMAGEN = [0, 0.62, 0.5, 0.45, 0.45, 0.38, 0.38, 0.33, 0.33];
+const CIRCULO = 0.42;
+// Columnas y filas en que se reparten las fichas de una casilla normal.
+const DISPOSICION = [null, [1, 1], [1, 2], [2, 2], [2, 2], [2, 3], [2, 3], [2, 4], [2, 4]];
+
+// Lado de la imagen de una ficha cuyo círculo tiene este radio (para dibujarla).
+export const ladoDeFicha = radio => radio / CIRCULO;
+
 /**
  * Calcula las coordenadas (x, y) y radio para dibujar la ficha «n» de un grupo de «total» fichas en una casilla.
  * Garantiza que hasta 8 fichas no se solapen, permanezcan dentro de la casilla y fuera de la franja exterior (banda).
+ * Una ficha sola es grande; si comparten casilla, se achican. En el Calabozo, siempre pequeñas.
  *
  * @param {object} geo - Geometría devuelta por geometriaTablero.
  * @param {object|number} casilla - Casilla o su índice (0 a 39).
@@ -161,16 +173,12 @@ export function geometriaTablero({ lado = 1000, esquina = 130, banda = 0.22 } = 
 export function posicionFicha(geo, casilla, n, total, { preso = false } = {}) {
   const c = typeof casilla === 'number' ? geo.casillas[casilla] : casilla;
   const bandaFrac = geo.banda ?? 0.22;
+  const redondear = x => Math.round(x * 100) / 100;
+  const radioNormal = redondear(CIRCULO * TAMANO_IMAGEN[total] * geo.paso);
 
-  // Radio proporcional a las dimensiones mínimas para encajar hasta 8 fichas con separación segura
-  const ranuraTangencial = geo.paso / 2;
-  const ranuraRadial = (geo.esquina * (1 - bandaFrac)) / 4;
-  const ranuraCalabozo = (0.6 * geo.esquina) / 3;
-  const ranuraMin = Math.min(ranuraTangencial, ranuraRadial, ranuraCalabozo);
-  const radio = Math.max(1, Math.round(ranuraMin * 0.44 * 100) / 100);
-
-  // Casilla 10: Calabozo
+  // Casilla 10: Calabozo (las fichas son pequeñas: las ranuras son de un tercio o un quinto de la esquina)
   if (c.i === 10) {
+    const radio = Math.max(1, redondear(Math.min(geo.paso / 2, (geo.esquina * (1 - bandaFrac)) / 4, (0.6 * geo.esquina) / 3) * 0.44));
     if (preso) {
       // Cuadrado interior (60 % de la esquina más cercano al centro del tablero)
       const minX = 0.4 * geo.esquina;
@@ -184,30 +192,16 @@ export function posicionFicha(geo, casilla, n, total, { preso = false } = {}) {
       ];
       const idx = total === 1 ? 8 : n;
       const [col, fila] = ranuras[idx];
-      return {
-        x: minX + (col + 0.5) * ranura,
-        y: minY + (fila + 0.5) * ranura,
-        radio,
-      };
+      return { x: minX + (col + 0.5) * ranura, y: minY + (fila + 0.5) * ranura, radio };
     }
 
     // Zona de visita: franja en L exterior (5 ranuras en brazo superior, 3 en brazo izquierdo)
-    if (n < 5) {
-      return {
-        x: (n + 0.5) * (geo.esquina / 5),
-        y: 0.2 * geo.esquina,
-        radio,
-      };
-    }
+    if (n < 5) return { x: (n + 0.5) * (geo.esquina / 5), y: 0.2 * geo.esquina, radio };
     const k = n - 5;
-    return {
-      x: 0.2 * geo.esquina,
-      y: 0.4 * geo.esquina + (k + 0.5) * (0.6 * geo.esquina / 3),
-      radio,
-    };
+    return { x: 0.2 * geo.esquina, y: 0.4 * geo.esquina + (k + 0.5) * (0.6 * geo.esquina / 3), radio };
   }
 
-  // Esquinas 0, 20 y 30
+  // Esquinas 0, 20 y 30: una cuadrícula de 3 × 3 con la ficha sola en el centro
   if (c.esquina) {
     const ranura = geo.esquina / 3;
     const ranuras = [
@@ -218,57 +212,20 @@ export function posicionFicha(geo, casilla, n, total, { preso = false } = {}) {
     ];
     const idx = total === 1 ? 8 : n;
     const [col, fila] = ranuras[idx];
-    return {
-      x: c.x + (col + 0.5) * ranura,
-      y: c.y + (fila + 0.5) * ranura,
-      radio,
-    };
+    return { x: c.x + (col + 0.5) * ranura, y: c.y + (fila + 0.5) * ranura, radio: Math.min(radioNormal, redondear(ranura * 0.49)) };
   }
 
-  // Casillas estándar (lados 1 a 4): área útil interior, fuera de la banda
+  // Casillas normales (lados 1 a 4): área útil interior, fuera de la banda, repartida en columnas y filas
   const longTangencial = geo.paso;
   const longRadial = geo.esquina * (1 - bandaFrac);
-
-  let u, v;
-  if (total === 1) {
-    u = 0.5 * longTangencial;
-    v = 0.5 * longRadial;
-  } else {
-    const col = n % 2;
-    const fila = Math.floor(n / 2);
-    u = (col + 0.5) * (longTangencial / 2);
-    v = (fila + 0.5) * (longRadial / 4);
-  }
+  const [columnas, filas] = DISPOSICION[total];
+  const u = ((n % columnas) + 0.5) * (longTangencial / columnas);
+  const v = (Math.floor(n / columnas) + 0.5) * (longRadial / filas);
+  const radio = radioNormal;
 
   // Mapear coordenadas locales (u tangencial, v radial alejándose de la banda) al tablero
-  if (c.lado === 1) {
-    return {
-      x: geo.esquina * bandaFrac + v,
-      y: c.y + u,
-      radio,
-    };
-  }
-
-  if (c.lado === 2) {
-    return {
-      x: c.x + u,
-      y: geo.esquina * bandaFrac + v,
-      radio,
-    };
-  }
-
-  if (c.lado === 3) {
-    return {
-      x: geo.lado - geo.esquina * bandaFrac - v,
-      y: c.y + u,
-      radio,
-    };
-  }
-
-  // Lado 4
-  return {
-    x: c.x + u,
-    y: geo.lado - geo.esquina * bandaFrac - v,
-    radio,
-  };
+  if (c.lado === 1) return { x: geo.esquina * bandaFrac + v, y: c.y + u, radio };
+  if (c.lado === 2) return { x: c.x + u, y: geo.esquina * bandaFrac + v, radio };
+  if (c.lado === 3) return { x: geo.lado - geo.esquina * bandaFrac - v, y: c.y + u, radio };
+  return { x: c.x + u, y: geo.lado - geo.esquina * bandaFrac - v, radio };
 }
