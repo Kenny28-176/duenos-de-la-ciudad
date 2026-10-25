@@ -12,13 +12,20 @@ export function crearOrquesta({ anfitrion, motor, velocidad = () => 1, pensarMs 
   const { ctx } = motor;
   const esBot = (s, id) => s.jugadores[id]?.bot === true;
 
+  // Quién tiene que mover ahora. Un trato pendiente para una persona no frena a los bots: ella contesta cuando quiera, y mientras
+  // tanto la mesa sigue (si no, un trato sin contestar pararía la partida). Los tratos para un bot, sí: los contesta enseguida.
+  function quienDebeActuar(s) {
+    const paraBots = Object.fromEntries(Object.entries(s.tratos).filter(([, trato]) => esBot(s, trato.para)));
+    return quienActua({ ...s, tratos: paraBots });
+  }
+
   // Programa lo que tenga que hacer el tablero por su cuenta, a menos que antes llegue algo de un celular.
   function programar() {
     const s = anfitrion.estado();
     if (s.fase !== 'juego') return () => {};
     const version = anfitrion.version();
     const v = velocidad();
-    const quien = quienActua(s);
+    const quien = quienDebeActuar(s);
     let ms;
     let accion;
     if (quien === null) {

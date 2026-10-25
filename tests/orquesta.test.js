@@ -146,3 +146,30 @@ test('la orquesta no hace nada por su cuenta antes de empezar la partida ni cuan
   assert.equal(await conLimite(espera, 1000, 'no terminó'), null);
   await esperarHasta(() => true);
 });
+
+test('un trato sin contestar para una persona no para a los bots; uno para un bot lo contesta el bot', async () => {
+  const { anfitrion, celulares } = await salaMixta();
+  const persona = celulares[0].datos().miId;
+  const orquesta = crearOrquesta({ anfitrion, motor, velocidad: () => 1000 });
+  const oferta = (de, para, dinero) => ({ id: 't9', de, para, ofrece: { dinero, propiedades: [], acciones: {}, salvoconductos: 0 }, pide: { dinero: 0, propiedades: [], acciones: {}, salvoconductos: 0 } });
+
+  // Es el turno de un bot y hay un trato de otro bot esperando a una persona: el bot sigue con su turno.
+  const s = anfitrion.estado();
+  s.turno.id = 'b1'; s.turno.fase = 'inicio'; s.turno.dados = null; s.turno.compra = null;
+  s.tratos.t9 = oferta('b2', persona, 100);
+  s.siguienteTrato = 10;
+  const juega = await conLimite(orquesta.paso(), 3000, 'los bots esperaron al trato de una persona');
+  assert.equal(juega.accion.id, 'b1', 'sigue el turno del bot');
+  assert.equal(juega.accion.type, 'tirar');
+  assert.ok(anfitrion.estado().tratos.t9, 'el trato sigue ahí, esperando a la persona');
+
+  // Un trato para un bot lo contesta el bot, aunque sea el turno de otro.
+  const t = anfitrion.estado();
+  delete t.tratos.t9;
+  t.turno.id = persona; t.turno.fase = 'inicio'; t.turno.dados = null; t.turno.compra = null;
+  t.tratos.t10 = { ...oferta(persona, 'b2', 0), id: 't10', pide: { dinero: 0, propiedades: [], acciones: {}, salvoconductos: 0 }, ofrece: { dinero: 500, propiedades: [], acciones: {}, salvoconductos: 0 } };
+  const responde = await conLimite(orquesta.paso(), 3000, 'el bot no contestó el trato');
+  assert.equal(responde.accion.id, 'b2');
+  assert.match(responde.accion.type, /^(aceptar|rechazar)Trato$/);
+  assert.equal(anfitrion.estado().tratos.t10, undefined, 'el trato ya está contestado');
+});
