@@ -62,9 +62,14 @@ function vibrar(patron) {
 async function mantenerPantalla() {
   try { await navigator.wakeLock?.request('screen'); } catch { /* sin permiso o sin soporte */ }
 }
+// Al volver a la página (o recuperar la red) la conexión con el tablero puede estar muerta: se abre otra y trae lo último.
 document.addEventListener('visibilitychange', () => {
-  if (document.visibilityState === 'visible' && cliente) mantenerPantalla();
+  if (document.visibilityState === 'visible' && cliente) {
+    transporte?.reconectar?.();
+    mantenerPantalla();
+  }
 });
+window.addEventListener('online', () => transporte?.reconectar?.());
 
 // --- Lo que llega del tablero ----------------------------------------------------------------------------------------------
 

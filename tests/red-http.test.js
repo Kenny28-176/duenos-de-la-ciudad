@@ -101,3 +101,46 @@ test('una partida por HTTP: un tablero y cuatro celulares, y todos acaban viendo
     await sala.cerrar();
   });
 });
+
+// Una conexión larga que parece abierta pero ya no trae nada (un celular al que se le apagó la pantalla): se cuenta cada intento.
+function conexionMuda() {
+  const estado = { intentos: 0, abiertas: 0 };
+  const peticion = async (url, { signal }) => {
+    estado.intentos++;
+    estado.abiertas++;
+    signal.addEventListener('abort', () => { estado.abiertas--; });
+    return {
+      body: {
+        getReader: () => ({
+          read: () => new Promise((_, ko) => signal.addEventListener('abort', () => ko(new DOMException('abortado', 'AbortError')))),
+        }),
+      },
+    };
+  };
+  return { estado, peticion };
+}
+
+test('si la conexión larga se queda en silencio, el transporte la da por muerta y abre otra', async () => {
+  const { estado, peticion } = conexionMuda();
+  const transporte = crearTransporteHttp({ uid: 'celular', peticion, esperaReintento: 5, silencioMaximo: 60, revisarCada: 15 });
+  transporte.escuchar('salas/BCDF/estado', () => {});
+  await esperarHasta(() => estado.intentos >= 3, 3000, 'no volvió a conectar tras el silencio');
+  assert.ok(estado.abiertas <= 1, 'no se acumulan conexiones abiertas');
+  transporte.cerrar();
+  const intentos = estado.intentos;
+  await new Promise(listo => setTimeout(listo, 150));
+  assert.equal(estado.intentos, intentos, 'cerrado el transporte, no vuelve a conectar');
+  assert.equal(estado.abiertas, 0);
+});
+
+test('reconectar() corta las conexiones largas y las abre de nuevo', async () => {
+  const { estado, peticion } = conexionMuda();
+  const transporte = crearTransporteHttp({ uid: 'celular', peticion, esperaReintento: 5, silencioMaximo: 1e9 });
+  transporte.escuchar('a', () => {});
+  transporte.escucharHijos('b', () => {});
+  await esperarHasta(() => estado.intentos === 2, 2000, 'no abrió las dos conexiones');
+  transporte.reconectar();
+  await esperarHasta(() => estado.intentos === 4, 2000, 'no abrió otras dos al reconectar');
+  assert.equal(estado.abiertas, 2);
+  transporte.cerrar();
+});

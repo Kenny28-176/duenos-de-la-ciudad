@@ -11,8 +11,12 @@
 //
 // Ojo: no tiene ninguna seguridad (cualquiera de la red puede leer y escribir). Es solo para casa y para desarrollo.
 
-export function crearTransporteHttp({ uid, base = '', peticion = (...a) => fetch(...a), esperaReintento = 800 }) {
+// Un celular al que se le apaga la pantalla puede quedarse con la conexión larga muerta sin que nadie se entere. El relé manda
+// un latido cada 15 s: si pasa «silencioMaximo» sin recibir nada (ni latido), se da la conexión por muerta y se vuelve a abrir.
+// «reconectar()» hace lo mismo a la fuerza (al volver a la página o al recuperar la red).
+export function crearTransporteHttp({ uid, base = '', peticion = (...a) => fetch(...a), esperaReintento = 800, silencioMaximo = 40000, revisarCada = 5000 }) {
   const parar = new Set();
+  const cortar = new Set(); // lo que corta la conexión larga de cada escucha (la reabre el bucle de suscribir)
 
   async function llamar(cuerpo) {
     const respuesta = await peticion(`${base}/red/op`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ uid, ...cuerpo }) });
@@ -25,12 +29,16 @@ export function crearTransporteHttp({ uid, base = '', peticion = (...a) => fetch
   function suscribir(tipo, ruta, cb) {
     let activa = true;
     let control = null;
-    const cerrar = () => { activa = false; control?.abort(); parar.delete(cerrar); };
+    const interrumpir = () => control?.abort();
+    const cerrar = () => { activa = false; interrumpir(); parar.delete(cerrar); cortar.delete(interrumpir); };
     parar.add(cerrar);
+    cortar.add(interrumpir);
 
     async function conectar() {
       while (activa) {
         control = new AbortController();
+        let ultimoDato = Date.now();
+        const vigilante = setInterval(() => { if (Date.now() - ultimoDato > silencioMaximo) interrumpir(); }, revisarCada);
         try {
           const url = `${base}/red/escuchar?uid=${encodeURIComponent(uid)}&tipo=${tipo}&ruta=${encodeURIComponent(ruta)}`;
           const respuesta = await peticion(url, { signal: control.signal });
@@ -39,6 +47,7 @@ export function crearTransporteHttp({ uid, base = '', peticion = (...a) => fetch
           let pendiente = '';
           while (activa) {
             const { done, value } = await lector.read();
+            ultimoDato = Date.now();
             if (done) break;
             pendiente += decodificador.decode(value, { stream: true });
             let corte;
@@ -55,6 +64,8 @@ export function crearTransporteHttp({ uid, base = '', peticion = (...a) => fetch
           }
         } catch (error) {
           if (!activa) return;
+        } finally {
+          clearInterval(vigilante);
         }
         if (activa) await new Promise(listo => setTimeout(listo, esperaReintento));
       }
@@ -72,6 +83,8 @@ export function crearTransporteHttp({ uid, base = '', peticion = (...a) => fetch
     empujar: async (ruta, valor) => (await llamar({ op: 'empujar', ruta, valor })).clave,
     escuchar: (ruta, cb) => suscribir('valor', ruta, cb),
     escucharHijos: (ruta, cb) => suscribir('hijos', ruta, cb),
+    // Corta las conexiones largas para que se vuelvan a abrir y traigan lo último (al volver a la página o recuperar la red).
+    reconectar: () => [...cortar].forEach(interrumpir => interrumpir()),
     // Deja de escuchar todo (al cerrar la pantalla).
     cerrar: () => [...parar].forEach(cerrar => cerrar()),
   };
