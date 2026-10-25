@@ -144,3 +144,27 @@ test('reconectar() corta las conexiones largas y las abre de nuevo', async () =>
   assert.equal(estado.abiertas, 2);
   transporte.cerrar();
 });
+
+test('el servidor local solo sirve la web: ni el repositorio, ni el plan, ni el material de referencia', async () => {
+  const servidor = crearServidor();
+  await new Promise(listo => servidor.listen(0, '127.0.0.1', listo));
+  const base = `http://127.0.0.1:${servidor.address().port}`;
+  try {
+    const estado = async ruta => (await fetch(`${base}${ruta}`)).status;
+    // Lo que necesita la web.
+    for (const ruta of ['/', '/index.html', '/public/tablero.html', '/public/jugador.html', '/src/engine/index.js', '/src/data/tablero.json', '/public/visuales/CREDITOS.md']) {
+      assert.equal(await estado(ruta), 200, `${ruta} se sirve`);
+    }
+    // Lo que no debe salir de la laptop (el servidor escucha en toda la wifi).
+    for (const ruta of ['/PLAN.md', '/CLAUDE.md', '/package.json', '/trabajoParalelo.md', '/Documentos/', '/Documentos/x.pdf', '/.git/config', '/.gitignore', '/tests/red-http.test.js', '/tools/serve.js', '/docs/DISENO.md', '/visuales-originales/x.png']) {
+      assert.equal(await estado(ruta), 404, `${ruta} no se sirve`);
+    }
+    // Y no se sale de la carpeta con «..» (ni escrito de otra manera).
+    for (const ruta of ['/public/../PLAN.md', '/public/%2e%2e/PLAN.md', '/src/..%2fPLAN.md', '/public/..%5cPLAN.md']) {
+      assert.notEqual(await estado(ruta), 200, `${ruta} no se sirve`);
+    }
+  } finally {
+    servidor.closeAllConnections();
+    await new Promise(listo => servidor.close(listo));
+  }
+});
