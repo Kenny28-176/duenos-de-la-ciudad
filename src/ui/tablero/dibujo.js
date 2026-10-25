@@ -97,7 +97,10 @@ export function dibujarTablero(ctx, geo, { orientacion = 'derechos', base = 'vis
   const giros = ORIENTACION[orientacion];
   if (!giros) throw new Error(`Orientación desconocida: ${orientacion}`);
   const { lado, esquina: fondo } = geo;
+  // La imagen de la ciudad deja un margen de noche alrededor (la ciudad ocupa un 78 % de su ancho): se agranda para que
+  // la ciudad llene el hueco y las casillas, que se dibujan encima, tapan lo que sobra.
   const interior = lado - 2 * fondo;
+  const ciudad = Math.round(interior * 1.27);
   const casillas = geo.casillas.map(g => {
     const c = ctx.casillas[g.i];
     const clase = `casilla casilla-${c.tipo}`;
@@ -109,7 +112,7 @@ export function dibujarTablero(ctx, geo, { orientacion = 'derechos', base = 'vis
   return [
     `<svg class="tablero" viewBox="0 0 ${lado} ${lado}" xmlns="http://www.w3.org/2000/svg">`,
     `<rect class="noche" width="${lado}" height="${lado}"/>`,
-    `<image class="ciudad" href="${escapar(`${base}tablero/centro/ciudad.webp`)}" x="${fondo}" y="${fondo}" width="${interior}" height="${interior}"/>`,
+    `<image class="ciudad" href="${escapar(`${base}tablero/centro/ciudad.webp`)}" x="${num((lado - ciudad) / 2)}" y="${num((lado - ciudad) / 2)}" width="${ciudad}" height="${ciudad}"/>`,
     `<g class="casillas">${casillas.join('')}</g>`,
     '<g class="capa capa-duenos"></g>',
     '<g class="capa capa-edificios"></g>',

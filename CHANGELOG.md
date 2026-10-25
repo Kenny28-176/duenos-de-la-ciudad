@@ -84,7 +84,23 @@ Aquí se anotan los cambios de cada versión. Las versiones siguen el esquema ma
 - `tools/relato.js` cuenta una partida entre bots como lo haría el narrador.
 - El README en inglés, al día.
 
+- **Fase 2, la pantalla del tablero** (`public/tablero.html`), con una partida de demostración entre bots:
+  - la ciudad pintada en el centro, las casillas con su franja de color, su icono y su precio, y las cuatro esquinas;
+  - las fichas caminan casilla a casilla sobre un anillo del color de cada jugador, y se reparten el sitio cuando
+    comparten casilla;
+  - dueños, casas, torres y marcadores (hipotecada, en obras…) sobre el tablero;
+  - dados en 3D, cartas que se dan la vuelta, subastas y avisos de habilidades;
+  - panel con el dinero de cada jugador (que sube y baja con números flotantes), su patrimonio y su avance hacia la
+    meta, la Bolsa con flechas ▲▼ y el registro de lo que pasa;
+  - pausa, velocidad ×1 a ×8, de 2 a 8 jugadores, español e inglés, y se adapta a pantallas bajas.
+- El narrador (`src/ui/narrador.js`) convierte los eventos del motor en frases; lo usan la pantalla y `tools/relato.js`.
+- Pruebas de la pantalla en Chrome sin ventana (`tests/pantalla.test.js`) y herramientas para verla sin abrirla a mano
+  (`tools/ver.js` y `tools/navegador.js`).
+- La portada enlaza a la demostración del tablero.
+
 ### Cambiado
+
+- Una ficha que está sola en su casilla se ve más grande; si comparten casilla, se achican para que quepan todas.
 
 - Diez cartas tienen ahora textos, temas o cifras propios, para no parecerse a las de ningún juego comercial. Por
   ejemplo, el cumpleaños pasa a ser una rifa y el paseo, una visita guiada. La prueba de palabras prohibidas vigila

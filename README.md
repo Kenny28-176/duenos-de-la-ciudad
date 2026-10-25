@@ -44,7 +44,7 @@
 |---|---|---|
 | 0. Base | Repositorio, normas de contenido, pruebas y publicación | Hecha |
 | 1. Motor | Todas las reglas, bots y un simulador para equilibrar la economía | Hecha |
-| 2. Tablero | Tablero animado con una partida de bots | Siguiente |
+| 2. Tablero | Tablero animado con una partida de bots | **En marcha** (ya se ve en la [demostración](public/tablero.html)) |
 | 3. Celulares | Primera partida real | Pendiente |
 | 4. Gestión y tratos | **v0.1**: construir, hipotecar, deudas, tratos y guardar la partida | Pendiente |
 | 5. Pulido | Reglas de la sala, estadísticas, inglés, accesibilidad, modo TV | Pendiente |

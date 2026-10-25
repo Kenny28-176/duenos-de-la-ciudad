@@ -44,7 +44,7 @@
 |---|---|---|
 | 0. Foundation | Repository, content guidelines, tests and publishing | Done |
 | 1. Engine | All rules, bots and a simulator to balance the economy | Done |
-| 2. Board | Animated board with a bot demo match | Next |
+| 2. Board | Animated board with a bot demo match | **In progress** (already visible in the [demo](public/tablero.html)) |
 | 3. Phones | First real game | Pending |
 | 4. Management & trading | **v0.1**: building, mortgaging, debt, deals and game saving | Pending |
 | 5. Polish | Room settings, stats, English, accessibility, TV mode | Pending |

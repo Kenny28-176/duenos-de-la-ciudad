@@ -16,8 +16,8 @@ Lo que lo hace distinto es el **mercado vivo** (cada barrio cotiza en la Bolsa) 
 primero que llega a la meta y vuelve a la Salida). Todo funciona en el navegador, sin instalar nada. Es un proyecto
 **libre (MIT), gratuito y sin ánimo de lucro**, hermano de *Aldeanos vs Lobos*.
 
-**Estado:** fase 1 hecha. El motor, los bots y el simulador funcionan, pero todavía no hay pantallas. Lo siguiente es la
-fase 2, el tablero animado. Las reglas están en borrador en [`docs/DISENO.md`](docs/DISENO.md) y las ideas para
+**Estado:** fase 1 hecha y fase 2 en marcha. El motor, los bots y el simulador funcionan, y el tablero ya se ve y se
+anima con una partida de demostración entre bots (`public/tablero.html`). Todavía no hay celulares ni red. Las reglas están en borrador en [`docs/DISENO.md`](docs/DISENO.md) y las ideas para
 después, en [`docs/IDEAS.md`](docs/IDEAS.md).
 
 ## Reglas de contenido (importante)
@@ -83,22 +83,28 @@ public/visuales/         imágenes del juego (marca, tablero, fichas, tarjetas, 
 src/data/                los datos del juego: tablero.json, economia.json, fichas.json y cartas.json, y cargar.js
 src/engine/              el motor puro: juego.js (acciones y permisos), turno, cartas, subasta, gestion, tratos,
                          quiebra, habilidades, dinero, contexto (fórmulas y patrimonio) y rng; bots.js y simulador.js
-src/ui/                  cola.js (cola de animaciones) y tablero/: geometria.js (dónde va cada casilla y cada ficha),
-                         dibujo.js (el tablero en SVG) y demo.js (partida de demostración entre bots)
+src/i18n/                traducir.js e idioma.js (textos y formatos) y un diccionario por idioma en es/ y en/
+src/ui/                  preact.js (Preact + htm), almacen.js y usarAlmacen.js (datos que repintan la pantalla),
+                         narrador.js (de eventos a frases) y cola.js (cola de animaciones)
+src/ui/tablero/          la pantalla del tablero: app.js (arranque), componentes.js (panel, dados, cartas, subasta…),
+                         reproductor.js (anima los eventos en orden), capas.js (fichas, dueños y edificios sobre el
+                         SVG), dibujo.js (el tablero en SVG), geometria.js (dónde va cada casilla y cada ficha),
+                         vista.js (qué muestra, calculado del estado) y demo.js (partida de demostración entre bots)
 tools/                   serve.js (servidor local), construir-sitio.js (revisa y empaqueta la web para Pages),
-                         simular.js (equilibrio con bots), revisar-imagenes.js, optimizar-imagenes.py y
-                         hoja-de-contactos.js (con las reglas de limites-imagenes.json)
+                         simular.js (equilibrio con bots), relato.js (cuenta una partida), ver.js y navegador.js (abren
+                         una página en Chrome sin ventana: capturas y errores), vendor.js (bibliotecas locales),
+                         contraste.js, revisar-imagenes.js, optimizar-imagenes.py y hoja-de-contactos.js (con las
+                         reglas de limites-imagenes.json)
 tests/                   pruebas (node:test, sin dependencias): reglas del motor, partidas entre bots, marcas,
                          documentación, web e imágenes
 docs/                    DISENO.md (las reglas tal como las aplica el motor), VISUALES.md (todo lo que hay que dibujar),
                          IDEAS.md (para después) y FIREBASE.md (cómo crear el proyecto de Firebase)
 ```
 
-Lo que llega en las fases 2 y 3:
+Lo que llega en las fases 3 y 4:
 
 - `src/net/`: la conexión con Firebase;
-- el resto de `src/ui/`: las pantallas del tablero y del celular;
-- `src/i18n/`: los idiomas.
+- las pantallas del celular y de la sala, en `src/ui/`.
 
 ## Cómo se trabaja
 
@@ -108,6 +114,9 @@ node tools/serve.js                      # servidor local en http://localhost:80
 node tools/construir-sitio.js --revisar  # comprueba que la web no depende de servidores externos
 npm run simular -- --partidas 1000       # partidas entre bots: duración, victorias por ficha y por asiento…
                                          # (--jugadores N, --sin-habilidades, --ajuste fichas.toro.pasiva.factor=2)
+node tools/relato.js --semilla 7         # cuenta una partida entre bots con las frases del narrador (--idioma en)
+node tools/ver.js public/tablero.html    # abre la página en Chrome sin ventana, hace una captura y cuenta los errores
+                                         # (--ancho, --alto, --esperas 3,9, --js "…"; ver la cabecera de tools/ver.js)
 npm run revisar:imagenes                 # lista, nombre, formato, medida exacta, SVG y créditos de public/visuales/
 python tools/optimizar-imagenes.py       # informa (con --aplicar, recorta, deja la medida exacta y pasa a WebP)
 npm run hoja:visuales                    # hoja de contactos para comparar las imágenes (visuales-originales/)
@@ -117,6 +126,10 @@ npm run hoja:visuales                    # hoja de contactos para comparar las i
   `public/visuales/`. No mezcles en un mismo commit código e imágenes, y no edites imágenes ajenas. Si el código
   necesita una imagen nueva, añádela primero a `docs/VISUALES.md`.
 
+- **La pantalla del tablero se prueba de verdad.** `tests/pantalla.test.js` la abre en Chrome sin ssin ventana (se salta si no
+  hay Chrome). Con `?depurar=1` en la dirección, `window.duenos` da el almacén de datos para moverlo desde fuera (por ejemplo,
+  forzar una carta o la pantalla final y sacarles una captura con `tools/ver.js`). Otros parámetros de la demo: `jugadores`,
+  `semilla`, `velocidad` e `idioma`.
 - **Puede haber otra IA trabajando a la vez** en esta carpeta. Su reparto de tareas está en `trabajoParalelo.md`, un
   archivo local que no se sube. Si existe, léelo antes de tocar nada: dice de quién es cada archivo.
 
