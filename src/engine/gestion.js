@@ -2,7 +2,8 @@
 // hipotecas y comprar o vender acciones. Quién puede hacerlo y cuándo lo decide juego.js; aquí van las reglas.
 // Los edificios son niveles por calle: 1 a 4 casas y 5 = torre (que devuelve sus 4 casas al banco).
 import {
-  accionesDisponibles, barrioCompleto, costeConstruir, costeDeshipotecar, nivelesBarrio, precioAccion, valorHipoteca,
+  TORRE, accionesDisponibles, barrioCompleto, costeConstruir, costeDeshipotecar, nivelesBarrio, precioAccion, valorHipoteca,
+  valorVentaEdificio,
 } from './contexto.js';
 import { cobrar, transferir } from './dinero.js';
 import { apuestaBajista } from './habilidades.js';
@@ -10,7 +11,6 @@ import { apuestaBajista } from './habilidades.js';
 // Un error de una acción: su código, el mensaje en español (para los registros) y los datos con los que la interfaz
 // lo traduce. «variante» distingue los distintos mensajes de un mismo código.
 const no = (codigo, mensaje, datos = {}) => ({ codigo, mensaje, datos });
-const TORRE = 5;
 
 function calleDe(ctx, s, id, i) {
   const c = ctx.casillas[i];
@@ -60,7 +60,7 @@ export function venderEdificio(ctx, s, a, ev) {
   if (p.nivel < Math.max(...nivelesBarrio(ctx, s, c.barrio))) {
     return no('parejo', 'Hay que vender de forma pareja: primero en las calles con más edificios.', { variante: 'vender' });
   }
-  const antes = p.nivel;
+  const cantidad = valorVentaEdificio(ctx, s, a.casilla); // antes de tocar las existencias del banco
   if (p.nivel === TORRE) {
     const casas = Math.min(TORRE - 1, s.banco.casas);
     s.banco.torres++;
@@ -70,7 +70,6 @@ export function venderEdificio(ctx, s, a, ev) {
     s.banco.casas++;
     p.nivel--;
   }
-  const cantidad = Math.round((antes - p.nivel) * c.costeCasa * ctx.eco.ventaEdificios);
   cobrar(s, ev, a.id, cantidad, 'venta-edificios');
   ev.push({ type: 'venderEdificio', id: a.id, casilla: a.casilla, nivel: p.nivel, cantidad });
   apuestaBajista(ctx, s, ev, a.id);

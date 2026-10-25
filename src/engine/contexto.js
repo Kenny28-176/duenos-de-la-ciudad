@@ -128,6 +128,18 @@ export function costeConstruir(ctx, s, id, i) {
   return elefante ? Math.round(coste * (1 - elefante.descuento)) : coste;
 }
 
+// Los edificios son niveles por calle: 1 a 4 casas y 5 = torre (que al venderla vuelve a 4 casas si el banco las tiene).
+export const TORRE = 5;
+
+// Lo que se cobra al vender un nivel de edificio en esa calle ahora mismo. De una torre se baja a 4 casas, o a las que tenga el
+// banco si son menos: entonces se cobra más. Lo usan la venta (gestion.js) y el celular, que enseña la cifra antes de vender.
+export function valorVentaEdificio(ctx, s, i) {
+  const nivel = s.props[i].nivel;
+  if (nivel === 0) return 0;
+  const despues = nivel === TORRE ? Math.min(TORRE - 1, s.banco.casas) : nivel - 1;
+  return Math.round((nivel - despues) * ctx.casillas[i].costeCasa * ctx.eco.ventaEdificios);
+}
+
 export const valorHipoteca = (ctx, i) => Math.round(ctx.casillas[i].precio * ctx.eco.hipoteca);
 export const costeDeshipotecar = (ctx, i) => Math.round(valorHipoteca(ctx, i) * (1 + ctx.eco.interesHipoteca));
 

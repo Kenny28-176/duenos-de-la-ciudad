@@ -1,7 +1,8 @@
 // Punto de entrada del motor. Recibe los datos (tablero, economía, fichas y cartas) ya leídos, para funcionar igual en
 // el navegador y en Node (pruebas y simulador).
 import {
-  accionesDisponibles, alquiler, costeConstruir, fichaEnPartida, patrimonio, precioAccion, prepararContexto, valorBarrio,
+  accionesDisponibles, alquiler, costeConstruir, costeDeshipotecar, fichaEnPartida, patrimonio, precioAccion, prepararContexto,
+  valorBarrio, valorHipoteca, valorVentaEdificio,
 } from './contexto.js';
 import { OPCIONES, nuevaPartida, paso } from './juego.js';
 import { posibles } from './posibles.js';
@@ -21,6 +22,10 @@ export function crearMotor(datos) {
     accionesDisponibles: (s, barrio) => accionesDisponibles(ctx, s, barrio),
     alquiler: (s, i, dados) => alquiler(ctx, s, i, dados),
     costeConstruir: (s, id, i) => costeConstruir(ctx, s, id, i),
+    // Lo que se cobra al vender un edificio de una calle, al hipotecar una propiedad y lo que cuesta levantar la hipoteca.
+    valorVentaEdificio: (s, i) => valorVentaEdificio(ctx, s, i),
+    valorHipoteca: i => valorHipoteca(ctx, i),
+    costeDeshipotecar: i => costeDeshipotecar(ctx, i),
     // La ficha de un jugador, con las cifras de sus habilidades para el número de jugadores de la partida.
     ficha: (s, id) => fichaEnPartida(ctx, s, id),
   };
