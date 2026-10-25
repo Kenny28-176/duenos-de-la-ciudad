@@ -109,9 +109,19 @@ Aquí se anotan los cambios de cada versión. Las versiones siguen el esquema ma
   ve el celular y lo que acepta el tablero no pueden contradecirse.
 - Los errores del motor llevan sus datos y se traducen al español y al inglés (81 textos).
 - Las reglas de seguridad de Firebase (`database.rules.json`), con pruebas de que no dejan nada abierto de más.
+- **Jugar con celulares en casa, sin Firebase**: el servidor local (`node tools/serve.js`) hace de buzón por la wifi
+  (`tools/red-local.js`, `src/net/http.js`). El tablero abre una sala con su código y su QR, deja añadir bots y elegir las
+  opciones, y una orquesta (`src/net/orquesta.js`) mueve a los bots y cierra las subastas.
+- **La pantalla del celular** (`public/jugador.html`, `src/ui/jugador/`): entrar con el código, escribir el nombre, elegir
+  ficha y jugar con los botones que da el tablero: tirar, comprar, subastar y pujar, construir, vender, hipotecar, comprar y
+  vender acciones, tratos, habilidades, deudas y bancarrota. En español y en inglés. Las cifras de cada botón salen del motor,
+  y una prueba comprueba, en cientos de estados de partidas entre bots, que coinciden con lo que luego se aplica.
+- Pruebas de punta a punta en un Chrome de verdad: el celular entra, elige ficha y juega (`tests/pantalla-celular.test.js`), y
+  el tablero abre una sala con celulares (`tests/pantalla-red.test.js`).
 
 ### Cambiado
 
+- Los colores del juego están ahora en `public/tema.css`, compartidos por el tablero y el celular.
 - Una ficha que está sola en su casilla se ve más grande; si comparten casilla, se achican para que quepan todas.
 
 - Diez cartas tienen ahora textos, temas o cifras propios, para no parecerse a las de ningún juego comercial. Por

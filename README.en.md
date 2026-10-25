@@ -8,8 +8,9 @@
 - **Each player uses their phone as a wallet**. It holds their cash, streets and shares. From there they roll,
   buy, bid, build, mortgage, invest and trade.
 
-> 🚧 **Under construction.** The game engine is working (phase 1), but user screens are not ready yet, so the game
-> cannot be played yet. The draft rules are in [`docs/DISENO.md`](docs/DISENO.md) (in Spanish).
+> 🚧 **Under construction.** A test game can already be played at home, with the laptop as the board and the phones on
+> the same wifi (see [“Play at home”](#play-at-home-local-mode)). Playing over the internet without installing anything
+> is not ready yet. The draft rules are in [`docs/DISENO.md`](docs/DISENO.md) (in Spanish).
 
 > A **free, open-source, non-profit** project under the [MIT](LICENSE) license. Sibling of
 > [Villagers vs Wolves](https://github.com/Kenny28-176/aldeanos-vs-lobos). Not affiliated with any commercial game
@@ -36,7 +37,7 @@
 |---|---|
 | 🖥️ **A laptop or tablet** | Acts as the board. Landscape orientation works best; a TV also works. |
 | 📱 **One phone per player** | 2 to 8 players, on Android or iPhone using any modern browser. |
-| 📶 **Internet connection** | On all devices (Wi-Fi or mobile data). |
+| 📶 **A wifi network** | For now, all devices on the same wifi. Playing over the internet will come later. |
 
 ## Status and roadmap
 
@@ -44,13 +45,28 @@
 |---|---|---|
 | 0. Foundation | Repository, content guidelines, tests and publishing | Done |
 | 1. Engine | All rules, bots and a simulator to balance the economy | Done |
-| 2. Board | Animated board with a bot demo match | **In progress** (already visible in the [demo](public/tablero.html)) |
-| 3. Phones | First real game | Pending |
+| 2. Board | Animated board with a bot demo match | Done (see the [demo](public/tablero.html)) |
+| 3. Phones | The network between the board and the phones, and the phone screen | **In progress**: playable on the home wifi; Firebase is still needed to play over the internet |
 | 4. Management & trading | **v0.1**: building, mortgaging, debt, deals and game saving | Pending |
 | 5. Polish | Room settings, stats, English, accessibility, TV mode | Pending |
 | 6. Release | **v1.0** | Pending |
 
 Future ideas, such as a cooperative mode against a corporation, are in [`docs/IDEAS.md`](docs/IDEAS.md) (in Spanish).
+
+## Play at home (local mode)
+
+The laptop acts as the board and as the mailbox, so neither Firebase nor the internet is needed, only a wifi network.
+The laptop needs [Node.js](https://nodejs.org/) 22 or later.
+
+1. On the laptop, from the project folder: `node tools/serve.js`. If Windows asks about the firewall, allow access on
+   private networks: the phones connect through it.
+2. Open `http://localhost:8080/public/tablero.html` on the laptop and press **Play with phones**. The room code and a
+   QR code appear.
+3. On each phone, connected to the same wifi, scan the QR code (or open the address shown next to the code) and type
+   your name.
+4. Each player chooses a token. If players are missing, the board adds bots. When everyone is in, **Start the game**.
+
+If you reload the board page in the middle of a game, the room is lost.
 
 ## Development
 

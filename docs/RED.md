@@ -7,9 +7,13 @@
 
 - **El tablero manda.** Es la «autoridad»: recibe lo que piden los celulares, lo pasa por el motor y publica el resultado.
   Los celulares nunca calculan reglas ni dinero: solo piden acciones y muestran lo que publica el tablero.
-- **Firebase solo hace de buzón.** El juego habla con un «transporte» (`escuchar`, `set`, `update`, `empujar`…). Hay uno
-  en memoria, que imita a Firebase al escribir (listas a objetos, sin valores vacíos), para probar todo sin red, y habrá
-  otro con Firebase de verdad. Cambiar de uno a otro no toca el motor ni las pantallas.
+- **Firebase solo hace de buzón.** El juego habla con un «transporte» (`escuchar`, `set`, `update`, `empujar`…). Hay tres:
+  - uno **en memoria**, que imita a Firebase al escribir (listas a objetos, sin valores vacíos), para probar todo sin red;
+  - uno **HTTP** (`src/net/http.js`), que habla con el relé del servidor local de la laptop: es el modo para jugar en casa,
+    por la wifi, sin Firebase (más abajo);
+  - y habrá otro **con Firebase** de verdad, para jugar por internet.
+
+  Cambiar de uno a otro no toca el motor ni las pantallas.
 - **Todo es público, salvo el azar.** Cualquier celular puede leer el estado de la partida (el dinero de cada uno, sus
   calles…), porque en el juego es público. Lo único que no sale son el estado del azar y el orden de los mazos: si
   salieran, se podría saber qué dado o qué carta viene.
@@ -53,6 +57,48 @@ salas/ABCD/
      sorpresa: ven el resultado cuando termina la animación.
 4. **Cerrar.** El tablero borra `salas/CODIGO`. Las salas olvidadas se limpian con una herramienta de mantenimiento.
 
+**Lo que mueve el propio tablero.** Los bots y las subastas no los mueve ningún celular: la orquesta
+(`src/net/orquesta.js`) mira el estado, programa la jugada del bot que toca (o el cierre de una subasta: enseguida si nadie
+puede pujar, a los 10 s si hay personas) y la aplica con `anfitrion.accionSi(version, accion)`, que la descarta si mientras
+tanto llegó otra acción.
+
+## Jugar en casa, sin Firebase (el relé local)
+
+`node tools/serve.js` sirve la web y, en `/red`, hace de buzón (`tools/red-local.js`): guarda la base de datos en memoria y
+responde al transporte HTTP.
+
+```
+POST /red/op          { uid, op: 'set'|'update'|'remove'|'get'|'empujar', ruta, valor, cambios }
+GET  /red/escuchar    ?uid=&tipo=valor|hijos&ruta=   conexión larga con eventos «data: …» ({k:'valor',v}, {k:'hijo',c,v}; el
+                      primero, {k:'listo'})
+GET  /red/info        { ok, direcciones }: dónde encontrar la laptop en la wifi (las páginas lo piden para saber si hay relé)
+```
+
+- El tablero se abre por `localhost` y el QR lleva la dirección de la laptop en la wifi (la primera de una red doméstica:
+  192.168…, 10…, 172.16…). Los celulares entran por ahí.
+- Escuchar es un `fetch` que se lee a trozos (sin `EventSource`, así funciona igual en el navegador y en Node); si se corta,
+  vuelve a conectar solo y recibe el valor de ahora.
+- **Detalle que costó encontrar:** con `Content-Type: text/event-stream`, Chrome no entrega la respuesta de `fetch()` hasta
+  que llega un segundo trozo (aunque haya relleno y datos), así que lo primero que se enviaba tardaba varios segundos. Con
+  `text/plain` y `X-Content-Type-Options: nosniff` llega en milisegundos; por eso el relé manda ese tipo.
+- **No tiene ninguna seguridad** (cualquiera de la red puede leer y escribir) y lo que guarda se pierde al apagarlo: es para
+  casa y para desarrollo. Si se recarga la página del tablero a media partida, la sala se pierde.
+
+## La pantalla del celular
+
+`public/jugador.html` + `src/ui/jugador/`. Entra con `?sala=ABCD` (el QR del tablero lo lleva), escribe su nombre (que
+recuerda), elige ficha y juega.
+
+- **Qué pantalla toca** sale de lo que se sabe (`pantallaActual`): conectando, sala que no existe o cerrada, nombre,
+  vestíbulo, partida o final. Solo se enseña lo que está completo: el estado y los botones de la misma publicación.
+- **Los botones son los de `vista.puede`**, que calcula el propio motor. Las cifras de cada botón (lo que cuesta construir, lo
+  que se cobra al hipotecar o al vender un edificio, el precio de un paquete de acciones) salen de las mismas funciones del
+  motor que usa el tablero al resolver la acción (`motor.costeConstruir`, `valorVentaEdificio`, `valorHipoteca`…).
+- **Una acción a la vez:** al mandar una, los botones se desactivan hasta que el tablero publica algo nuevo o contesta con un
+  error (o pasan 20 s). El error llega en la vista y se traduce con `src/ui/errores.js`.
+- **Tiene en cuenta que el tablero anima antes de publicar:** el celular no ve el resultado hasta que acaba la animación.
+- Vibra al empezar el turno, al abrirse una subasta o al llegar un trato, y pide que la pantalla no se apague.
+
 ## Las reglas de seguridad
 
 Están en [`database.rules.json`](../database.rules.json). Lo que dicen, en corto:
@@ -77,6 +123,12 @@ Están en [`database.rules.json`](../database.rules.json). Lo que dicen, en cort
 - `tests/red-base.test.js`: el codificador y la base en memoria (que escribe como Firebase).
 - `tests/red-partida.test.js`: un tablero y cuatro celulares juegan **una partida entera** por la red, también con latencia,
   y al final todos ven lo mismo que el tablero y el dinero de cada uno cuadra con sus movimientos.
+- `tests/red-http.test.js`: el transporte HTTP contra el relé, incluida una partida entera con un tablero y cuatro celulares.
+- `tests/orquesta.test.js`: los bots juegan solos y las subastas se cierran.
 - `tests/posibles.test.js`: los botones de cada jugador.
+- `tests/jugador-vista.test.js`: lo que enseña el celular. Comprueba, en cientos de estados de partidas entre bots, que cada cifra
+  de un botón es la que aplica el motor.
+- `tests/pantalla-red.test.js` y `tests/pantalla-celular.test.js`: en un Chrome de verdad, el tablero abre la sala y un celular
+  entra, elige ficha y juega (tirar, comprar, habilidad, construir, Bolsa, trato, subasta).
 - Con el proyecto de Firebase creado, `node tools/comprobar-reglas.js` (pendiente) probará las reglas contra la base de
   datos de verdad: lo que debe aceptar y lo que debe rechazar.

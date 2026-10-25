@@ -16,9 +16,11 @@ Lo que lo hace distinto es el **mercado vivo** (cada barrio cotiza en la Bolsa) 
 primero que llega a la meta y vuelve a la Salida). Todo funciona en el navegador, sin instalar nada. Es un proyecto
 **libre (MIT), gratuito y sin ánimo de lucro**, hermano de *Aldeanos vs Lobos*.
 
-**Estado:** fase 1 hecha y fase 2 en marcha. El motor, los bots y el simulador funcionan, y el tablero ya se ve y se
-anima con una partida de demostración entre bots (`public/tablero.html`). Todavía no hay celulares ni red. Las reglas están en borrador en [`docs/DISENO.md`](docs/DISENO.md) y las ideas para
-después, en [`docs/IDEAS.md`](docs/IDEAS.md).
+**Estado:** fases 0, 1 y 2 hechas, y la fase 3 en marcha. El motor, los bots y el simulador funcionan; el tablero se ve y
+se anima (`public/tablero.html`) y ya se juega con celulares **en la wifi de casa**: el servidor local hace de buzón
+(`tools/red-local.js`), el tablero abre una sala con QR y cada celular (`public/jugador.html`) entra, elige ficha y juega.
+Falta el transporte con Firebase para jugar por internet (necesita el proyecto de Firebase: `docs/FIREBASE.md`). Las reglas
+están en borrador en [`docs/DISENO.md`](docs/DISENO.md) y las ideas para después, en [`docs/IDEAS.md`](docs/IDEAS.md).
 
 ## Reglas de contenido (importante)
 
@@ -82,24 +84,34 @@ Reglas de oro:
 ## Mapa del código
 
 ```
-index.html, public/      portada (es y en/) y estilos; más adelante, las pantallas del tablero y del celular
+index.html, public/      portada (es y en/), tablero.html y jugador.html (las pantallas del tablero y del celular) y sus
+                         estilos (tema.css es la paleta compartida)
 public/visuales/         imágenes del juego (marca, tablero, fichas, tarjetas, botones, interfaz) y su CREDITOS.md
 src/data/                los datos del juego: tablero.json, economia.json, fichas.json y cartas.json, y cargar.js
 src/engine/              el motor puro: juego.js (acciones y permisos), turno, cartas, subasta, gestion, tratos,
                          quiebra, habilidades, dinero, contexto (fórmulas y patrimonio) y rng; posibles.js (qué botones
                          tiene cada jugador); bots.js y simulador.js
 src/net/                 la red: protocolo.js (qué se escribe y dónde), anfitrion.js (el tablero), cliente.js (el
-                         celular), codec.js (el estado, listo para Firebase) y memoria.js (una base en memoria que
-                         imita a Firebase, para probar sin red); docs/RED.md lo explica y database.rules.json son las
-                         reglas de seguridad
+                         celular), orquesta.js (mueve a los bots y cierra las subastas), codec.js (el estado, listo
+                         para Firebase), memoria.js (una base en memoria que imita a Firebase, para probar sin red),
+                         http.js (el transporte que habla con el relé local) y conectar.js (qué transporte usar y la
+                         identidad de cada dispositivo); docs/RED.md lo explica y database.rules.json son las reglas
+                         de seguridad
 src/i18n/                traducir.js e idioma.js (textos y formatos) y un diccionario por idioma en es/ y en/
 src/ui/                  preact.js (Preact + htm), almacen.js y usarAlmacen.js (datos que repintan la pantalla),
-                         narrador.js (de eventos a frases) y cola.js (cola de animaciones)
+                         imagen.js, qr.js, errores.js (traduce los errores del motor), narrador.js (de eventos a
+                         frases) y cola.js (cola de animaciones)
 src/ui/tablero/          la pantalla del tablero: app.js (arranque), componentes.js (panel, dados, cartas, subasta…),
                          reproductor.js (anima los eventos en orden), capas.js (fichas, dueños y edificios sobre el
                          SVG), dibujo.js (el tablero en SVG), geometria.js (dónde va cada casilla y cada ficha),
-                         vista.js (qué muestra, calculado del estado) y demo.js (partida de demostración entre bots)
-tools/                   serve.js (servidor local), construir-sitio.js (revisa y empaqueta la web para Pages),
+                         vista.js (qué muestra, calculado del estado), vestibulo.js (la sala con su QR) y demo.js
+                         (partida de demostración entre bots)
+src/ui/jugador/          la pantalla del celular: app.js (arranque y conexión), pantallas.js (nombre, vestíbulo, final),
+                         partida.js (cabecera, botones de abajo y pestañas), propiedades.js, bolsa.js, tratos.js,
+                         subasta.js y mesa.js (una pestaña o panel cada uno), comun.js y vista.js (qué muestra y con qué
+                         cifras: funciones puras que consultan al motor)
+tools/                   serve.js (servidor local) y red-local.js (el relé: el buzón de la partida por la wifi),
+                         construir-sitio.js (revisa y empaqueta la web para Pages),
                          simular.js (equilibrio con bots), relato.js (cuenta una partida), ver.js y navegador.js (abren
                          una página en Chrome sin ventana: capturas y errores), vendor.js (bibliotecas locales),
                          contraste.js, revisar-imagenes.js, optimizar-imagenes.py y hoja-de-contactos.js (con las
@@ -113,13 +125,15 @@ docs/                    DISENO.md (las reglas tal como las aplica el motor), VI
 Lo que llega en las fases 3 y 4:
 
 - el transporte con Firebase de verdad (`src/net/firebase.js`), cuando exista el proyecto (`docs/FIREBASE.md`);
-- las pantallas del celular y de la sala, en `src/ui/`.
+- guardar la partida: hoy, si se recarga el tablero a media partida, la sala se pierde (un celular que se recarga sí vuelve a
+  su sitio, porque su identidad se guarda en el navegador).
 
 ## Cómo se trabaja
 
 ```
 npm test                                 # todas las pruebas
-node tools/serve.js                      # servidor local en http://localhost:8080/public/
+node tools/serve.js                      # servidor local en http://localhost:8080/public/ (también el buzón para jugar con
+                                         # celulares por la wifi: abre tablero.html y pulsa «Jugar con celulares»)
 node tools/construir-sitio.js --revisar  # comprueba que la web no depende de servidores externos
 npm run simular -- --partidas 1000       # partidas entre bots: duración, victorias por ficha y por asiento…
                                          # (--jugadores N, --sin-habilidades, --ajuste fichas.toro.pasiva.factor=2)
