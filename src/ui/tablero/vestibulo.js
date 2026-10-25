@@ -28,6 +28,7 @@ export function Vestibulo({ sala, estado, acciones, colores }) {
       <h2>${t('sala.titulo')}</h2>
       <p class="ayuda">${t('sala.escanea', { direccion: sala.direccion })}</p>
       ${sala.sinRed ? html`<p class="aviso-local">${t('sala.sin_wifi')}</p>` : null}
+      ${sala.otras?.length ? html`<p class="ayuda otras-direcciones">${t('sala.otras', { direcciones: sala.otras.join(' · ') })}</p>` : null}
       <h3>${t('sala.jugadores', { n: jugadores.length, max: MAX_JUGADORES })}</h3>
       <ul class="lista-jugadores">
         ${jugadores.length === 0 ? html`<li class="vacio">${t('sala.esperando')}</li>` : null}

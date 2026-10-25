@@ -174,5 +174,6 @@
   "jugador.dock.cancelar": "Cancel",
   "jugador.dock.esperando_tablero": "Waiting for the board…",
   "jugador.dock.espera": "Wait: it's {jugador}'s turn.",
-  "jugador.dock.pedir": "Ask for it"
+  "jugador.dock.pedir": "Ask for it",
+  "sala.otras": "If a phone can't get in, try another address: {direcciones}"
 }

@@ -17,6 +17,20 @@ const leerCuerpo = req => new Promise((listo, ko) => {
   req.on('error', ko);
 });
 
+// Los adaptadores que no son la red de casa (máquinas virtuales, contenedores, VPN…): un celular no llega por ellos.
+const VIRTUAL = /vethernet|virtualbox|vmware|vmnet|vboxnet|hyper-v|wsl|docker|podman|veth|virbr|br-|tailscale|zerotier|hamachi|wireguard|vpn|bluetooth|loopback|utun|tun\d|tap\d/i;
+
+// Las direcciones por las que los celulares pueden llegar a esta laptop (http://IP:puerto), la más probable primero: los
+// adaptadores reales antes que los virtuales (si solo hay virtuales, esos) y, entre ellos, 192.168…, 10… y 172.16…
+// «interfaces» es lo que da os.networkInterfaces().
+export function direccionesDeLaRed(interfaces, puerto) {
+  const rango = ip => (/^192\.168\./.test(ip) ? 0 : /^10\./.test(ip) ? 1 : /^172\.(1[6-9]|2\d|3[01])\./.test(ip) ? 2 : 3);
+  const todas = Object.entries(interfaces).flatMap(([nombre, lista]) => (lista ?? [])
+    .filter(i => i.family === 'IPv4' && !i.internal).map(i => ({ ip: i.address, virtual: VIRTUAL.test(nombre) })));
+  const reales = todas.filter(d => !d.virtual);
+  return (reales.length ? reales : todas).sort((x, y) => rango(x.ip) - rango(y.ip)).map(d => `http://${d.ip}:${puerto}`);
+}
+
 export function crearRelay() {
   const base = crearBaseDeDatos();
   const transportes = new Map();
@@ -52,12 +66,7 @@ export function crearRelay() {
         return true;
       }
       if (url.pathname === '/red/info' && req.method === 'GET') {
-        const puerto = req.socket.localPort;
-        // Primero las de una red doméstica (192.168…, 10…, 172.16…), por delante de las de una VPN u otras.
-        const rango = ip => (/^192\.168\./.test(ip) ? 0 : /^10\./.test(ip) ? 1 : /^172\.(1[6-9]|2\d|3[01])\./.test(ip) ? 2 : 3);
-        const direcciones = Object.values(networkInterfaces()).flat()
-          .filter(i => i && i.family === 'IPv4' && !i.internal).map(i => i.address)
-          .sort((x, y) => rango(x) - rango(y)).map(ip => `http://${ip}:${puerto}`);
+        const direcciones = direccionesDeLaRed(networkInterfaces(), req.socket.localPort);
         res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache' }).end(JSON.stringify({ ok: true, direcciones }));
         return true;
       }

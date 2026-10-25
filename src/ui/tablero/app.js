@@ -95,9 +95,12 @@ function nuevaPartida(jugadores, semilla = numero('semilla', Date.now() % 100000
 // llega a la laptop): en ese caso, la de la laptop en la wifi que dice el servidor.
 function direccionParaCelulares(red) {
   const local = ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname);
-  if (!local) return { raiz: location.origin, sinRed: false };
-  // Abierto por «localhost»: los celulares entran por la dirección de la laptop en la wifi; si no tiene, no podrán entrar.
-  return red.direcciones.length ? { raiz: red.direcciones[0], sinRed: false } : { raiz: location.origin, sinRed: true };
+  if (!local) return { raiz: location.origin, sinRed: false, otras: [] };
+  // Abierto por «localhost»: los celulares entran por la dirección de la laptop en la wifi; si no tiene, no podrán entrar. Si
+  // hay más de una (cable y wifi a la vez), las demás se enseñan por si la primera no es la que usan los celulares.
+  return red.direcciones.length
+    ? { raiz: red.direcciones[0], sinRed: false, otras: red.direcciones.slice(1) }
+    : { raiz: location.origin, sinRed: true, otras: [] };
 }
 
 async function abrirSala() {
@@ -115,12 +118,13 @@ async function abrirSala() {
     const anfitrion = crearAnfitrion({ transporte, motor, codigo });
     await anfitrion.abrir();
     sala = { transporte, anfitrion, codigo, cerrada: false, bots: 0, fichasPedidas: new Set() };
-    const { raiz, sinRed } = direccionParaCelulares(red);
-    const url = `${raiz}${new URL('jugador.html', location.href).pathname}?sala=${codigo}`;
+    const { raiz, sinRed, otras } = direccionParaCelulares(red);
+    const ruta = new URL('jugador.html', location.href).pathname;
+    const url = `${raiz}${ruta}?sala=${codigo}`;
     const { velocidad, idioma: lang } = almacen.leer();
     almacen.cambiar({
       ...estadoInicial(), velocidad, idioma: lang, red, modo: 'sala', estado: anfitrion.estado(),
-      sala: { codigo, url, direccion: new URL(url).host + new URL(url).pathname, sinRed },
+      sala: { codigo, url, direccion: new URL(url).host + new URL(url).pathname, sinRed, otras: otras.map(o => new URL(o).host + ruta) },
     });
     montarTablero();
     atenderVestibulo(sala);
