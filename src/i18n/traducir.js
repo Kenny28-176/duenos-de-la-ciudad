@@ -61,20 +61,20 @@ function aplicarFormato(valor, formato, idioma) {
   }
 
   if (formato === 'dinero') {
-    const numStr = formatearNumero(valor, idioma);
+    const numStr = formatearNumero(Math.abs(valor), idioma);
     return idioma === 'en' ? `$${numStr}` : `${numStr}\u00A0$`;
   }
 
   if (formato === 'pct') {
-    return formatearPorcentaje(valor * 100, idioma);
+    return formatearPorcentaje(Math.abs(valor * 100), idioma);
   }
 
   if (formato === 'extra') {
-    return formatearPorcentaje((valor - 1) * 100, idioma);
+    return formatearPorcentaje(Math.abs((valor - 1) * 100), idioma);
   }
 
   // formato === 'menos'
-  return formatearPorcentaje((1 - valor) * 100, idioma);
+  return formatearPorcentaje(Math.abs((1 - valor) * 100), idioma);
 }
 
 /**
