@@ -208,6 +208,7 @@
   "jugador.movimientos.a": "to {jugador}",
   "jugador.movimientos.cerrar": "Close",
   "jugador.ultima_ronda": "Last round: the highest net worth wins",
+  "jugador.sin_conexion": "No connection to the board. Reconnecting…",
   "jugador.mesa.quebrado": "Bankrupt",
   "jugador.mesa.patrimonio": "Net worth {cantidad:dinero}",
   "jugador.mesa.propiedades.uno": "1 property",

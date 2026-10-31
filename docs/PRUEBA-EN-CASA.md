@@ -39,7 +39,8 @@ Marca cada cosa cuando salga bien. Si algo no sale, mira «Cómo anotar un fallo
    narrador que lee lo que pasa (si el equipo tiene voces). En `public/sonidos.html` se oyen todos los sonidos, uno por uno: dime cuáles
    suenan mal.
 8. **Una pantalla que se apaga.** Bloquea un celular durante un minuto y desbloquéalo: tiene que volver solo a su sitio, con lo último
-   que pasó. (Si no, anota cuánto tardó.)
+   que pasó. (Si no, anota cuánto tardó.) Si pierde la conexión más de unos segundos, arriba sale una franja ámbar «Sin conexión con el
+   tablero» que se quita sola al volver; prueba a alejarte del router o a apagar y encender la wifi del celular.
 9. **Un celular que se recarga** (tira de la página hacia abajo, o ciérrala y ábrela otra vez con el mismo enlace): vuelve a su
    jugador, sin pedir el nombre.
 10. **Alguien se ausenta.** Pulsa **BOT** en su tarjeta del tablero: un bot juega por esa persona hasta que se lo quites.

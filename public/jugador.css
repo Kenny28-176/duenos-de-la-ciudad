@@ -221,6 +221,9 @@ button.caja-dinero { background: none; border: 0; padding: 0.1rem 0; color: inhe
 /* --- Avisos ---------------------------------------------------------------------------------------------------------------------------- */
 .aviso { position: fixed; z-index: 20; top: calc(0.75rem + env(safe-area-inset-top)); left: 1rem; right: 1rem; max-width: 30rem; margin: 0 auto; padding: 0.8rem 1rem; border-radius: 0.75rem; background: var(--rojo-baja); color: var(--papel); font-weight: 600; box-shadow: 0 6px 24px rgba(0, 0, 0, 0.45); animation: entra 0.25s both; }
 @keyframes entra { from { opacity: 0; transform: translateY(-0.6rem); } }
+/* Una franja fina, arriba del todo, mientras el celular no está recibiendo nada del tablero (se quita sola al volver la conexión). */
+.sin-conexion { position: fixed; z-index: 30; top: 0; left: 0; right: 0; padding: calc(0.2rem + env(safe-area-inset-top)) 0.75rem 0.25rem; text-align: center; font-size: 0.78rem; font-weight: 600;
+  background: var(--ambar); color: #1b1710; animation: entra 0.25s both; pointer-events: none; }
 
 @media (prefers-reduced-motion: reduce) {
   .aviso, .girando { animation: none; }

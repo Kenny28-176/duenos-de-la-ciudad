@@ -31,6 +31,7 @@ const memoria = {
 const SEGUNDOS_SIN_RESPUESTA = 20; // si el tablero no contesta en este tiempo, se vuelven a activar los botones
 const SEGUNDOS_DE_AVISO = 6;
 const SEGUNDOS_DE_AVISO_DE_DINERO = 4;
+const SEGUNDOS_PARA_AVISAR_SIN_CONEXION = 3;
 
 // Un aviso sonoro cuando me toca (la vibración no existe en los iPhone): se puede apagar en la pestaña Mesa. Los navegadores no dejan
 // sonar hasta que alguien toca la pantalla, y en el celular eso pasa al escribir el nombre y elegir ficha.
@@ -42,7 +43,7 @@ const codigoDeLaDireccion = limpiarCodigo(parametros.get('sala'));
 const almacen = crearAlmacen({
   codigo: CODIGO.test(codigoDeLaDireccion) ? codigoDeLaDireccion : '',
   nombre: memoria.leer('duenos:nombre') ?? '',
-  datos: null, cerrada: false, sinRed: false, pendiente: false, aviso: null, avisoSonoro: sonido.estado().activo, avisoDeDinero: null,
+  datos: null, cerrada: false, sinRed: false, pendiente: false, aviso: null, avisoSonoro: sonido.estado().activo, avisoDeDinero: null, sinConexion: false,
 });
 
 let transporte = null;
@@ -54,6 +55,7 @@ let enviada = { atendidas: 0, error: 0 }; // cómo estaba el acuse del tablero y
 let relojAviso = null;
 let relojRespuesta = null;
 let relojDinero = null;
+let relojConexion = null;
 let puedeAntes = {};
 let movimientoVisto = null; // el último movimiento de dinero que ya se ha enseñado (null: aún no se ha visto ninguno, para no avisar de lo viejo al recargar)
 
@@ -222,10 +224,16 @@ const acciones = {
 const red = await redDisponible();
 if (red) {
   transporte = conectar(red.modo, identidad('celular'));
+  // Si se pierde la conexión con el tablero, se avisa (pasados unos segundos: una reconexión rápida no merece un aviso) y se quita sola.
+  transporte.alCambiarConexion?.(enLinea => {
+    clearTimeout(relojConexion);
+    if (enLinea) almacen.cambiar({ sinConexion: false });
+    else relojConexion = setTimeout(() => almacen.cambiar({ sinConexion: true }), SEGUNDOS_PARA_AVISAR_SIN_CONEXION * 1000);
+  });
   if (almacen.leer().codigo) entrarEnSala(almacen.leer().codigo);
 } else {
   almacen.cambiar({ sinRed: true });
 }
 
-if (parametros.get('depurar') === '1') window.duenos = { almacen, motor, t, cliente: () => cliente, sonido };
+if (parametros.get('depurar') === '1') window.duenos = { almacen, motor, t, cliente: () => cliente, sonido, transporte: () => transporte };
 render(html`<${Aplicacion} almacen=${almacen} acciones=${acciones} motor=${motor} />`, document.getElementById('app'));

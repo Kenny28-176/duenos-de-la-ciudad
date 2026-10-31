@@ -168,3 +168,39 @@ test('el servidor local solo sirve la web: ni el repositorio, ni el plan, ni el 
     await new Promise(listo => servidor.close(listo));
   }
 });
+
+test('el transporte dice si está en línea y avisa al perder y recuperar la conexión', async () => {
+  await conServidor(async ({ conectar, servidor }) => {
+    const a = conectar('a');
+    const cambios = [];
+    const dejarDeAvisar = a.alCambiarConexion(v => cambios.push(v));
+    assert.equal(a.enLinea(), false, 'sin escuchas no hay conexión');
+    a.escuchar('n', () => {});
+    a.escucharHijos('m', () => {});
+    await esperarHasta(() => a.enLinea(), 3000, 'no llegó a estar en línea');
+    servidor.closeAllConnections(); // la wifi se cae un momento
+    await esperarHasta(() => !a.enLinea(), 3000, 'no notó que se cortó');
+    await esperarHasta(() => a.enLinea(), 5000, 'no volvió a estar en línea');
+    assert.deepEqual(cambios, [true, false, true]);
+    dejarDeAvisar();
+    a.cerrar();
+    assert.equal(a.enLinea(), false, 'cerrado, ya no hay conexión');
+    assert.deepEqual(cambios, [true, false, true], 'quien dejó de avisar no se entera');
+  });
+});
+
+test('una conexión que no manda nada no cuenta como en línea, y cerrar dos veces no descuadra la cuenta', async () => {
+  const { peticion } = conexionMuda();
+  const transporte = crearTransporteHttp({ uid: 'celular', peticion, esperaReintento: 5, silencioMaximo: 1e9 });
+  const parar = transporte.escuchar('a', () => {});
+  await new Promise(listo => setTimeout(listo, 80));
+  assert.equal(transporte.enLinea(), false);
+  parar();
+  parar();
+  transporte.cerrar();
+  // Tras cerrar de más, una escucha nueva sigue contándose bien (si la cuenta se hubiera ido a negativo, se vería «en línea» sin estarlo).
+  transporte.escuchar('b', () => {});
+  await new Promise(listo => setTimeout(listo, 40));
+  assert.equal(transporte.enLinea(), false);
+  transporte.cerrar();
+});

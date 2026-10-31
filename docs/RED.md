@@ -146,6 +146,9 @@ recuerda), elige ficha y juega.
   la mía aún no se ha aplicado, y volver a ofrecer los botones con datos viejos dejaría repetirla. El error llega en la vista y se
   traduce con `src/ui/errores.js`.
 - **Tiene en cuenta que el tablero anima antes de publicar:** el celular no ve el resultado hasta que acaba la animación.
+- **Sabe si tiene conexión:** el transporte HTTP dice si está «en línea» (`enLinea()` y `alCambiarConexion()`: cuenta como viva una escucha
+  que está recibiendo datos, y está en línea cuando lo están todas). Si el celular pierde la conexión más de 3 segundos, sale una franja
+  ámbar «Sin conexión con el tablero. Reconectando…» arriba del todo, y se quita sola cuando vuelve (una reconexión rápida no avisa).
 - Vibra y suena un aviso (`src/ui/sonido.js`) al empezar el turno, al abrirse una subasta o al llegar un trato, y pide que la pantalla
   no se apague. El aviso sonoro existe porque los iPhone no vibran desde el navegador; viene encendido y se apaga en la pestaña Mesa
   (se recuerda en el celular). Los navegadores no dejan sonar hasta que alguien toca la pantalla: en el celular eso pasa solo, al

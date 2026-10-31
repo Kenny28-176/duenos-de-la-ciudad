@@ -208,6 +208,7 @@
   "jugador.movimientos.a": "a {jugador}",
   "jugador.movimientos.cerrar": "Cerrar",
   "jugador.ultima_ronda": "Última ronda: gana el mayor patrimonio",
+  "jugador.sin_conexion": "Sin conexión con el tablero. Reconectando…",
   "jugador.mesa.quebrado": "En bancarrota",
   "jugador.mesa.patrimonio": "Patrimonio {cantidad:dinero}",
   "jugador.mesa.propiedades.uno": "1 propiedad",

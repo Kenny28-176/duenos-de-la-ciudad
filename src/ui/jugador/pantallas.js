@@ -28,6 +28,7 @@ export function Aplicacion({ almacen, acciones, motor }) {
   return html`<div class="app" data-pantalla=${pantalla}>
     ${contenido}
     ${d.aviso ? html`<div class="aviso" role="alert" key=${d.aviso.n} onClick=${acciones.cerrarAviso}>${d.aviso.texto}</div>` : null}
+    ${d.sinConexion && d.codigo && !['codigo', 'sin-red'].includes(pantalla) ? html`<div class="sin-conexion" role="status">${t('jugador.sin_conexion')}</div>` : null}
   </div>`;
 }
 

@@ -290,6 +290,22 @@ test('un celular entra a la sala, elige ficha y juega con sus botones hasta cons
     await sinClavesSueltas(ana, 'mesa');
     marca('el aviso sonoro se apaga y se recuerda');
 
+    // --- Sin conexión: una franja lo avisa tras unos segundos y se quita sola al volver la red ------------------------------
+    assert.equal(await ana.eval(() => document.querySelector('.sin-conexion') === null), true, 'con red no hay franja');
+    await ana.eval(() => {
+      window.__fetch = window.fetch;
+      window.fetch = () => Promise.reject(new TypeError('sin red'));
+      window.duenos.transporte().reconectar(); // corta las conexiones largas, que ya no pueden volver a abrirse
+    });
+    await ana.esperarSelector('.sin-conexion', 10000);
+    assert.match(await texto(ana, '.sin-conexion'), /Sin conexión con el tablero/);
+    await ana.eval(() => { window.fetch = window.__fetch; });
+    const finConexion = Date.now() + 15000;
+    while (Date.now() < finConexion && (await ana.eval(() => document.querySelector('.sin-conexion') !== null))) await espera(100);
+    assert.equal(await ana.eval(() => document.querySelector('.sin-conexion') === null), true, 'al volver la red, la franja se va');
+    await alDia(ana);
+    marca('la franja de sin conexión sale y se va');
+
     // --- Se acaba el tiempo: la última ronda se avisa, la partida acaba y el tablero propone jugar otra vez --------------------
     assert.equal(await ana.eval(() => document.querySelector('.ultima-ronda') === null), true, 'antes no hay aviso de última ronda');
     anfitrion.accionPropia({ type: 'finPorTiempo' });

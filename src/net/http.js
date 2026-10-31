@@ -18,6 +18,19 @@ export function crearTransporteHttp({ uid, base = '', peticion = (...a) => fetch
   const parar = new Set();
   const cortar = new Set(); // lo que corta la conexión larga de cada escucha (la reabre el bucle de suscribir)
 
+  // Si hay conexión: «en línea» mientras todas las escuchas abiertas están recibiendo datos (cada conexión larga empieza con un aviso
+  // «listo» del relé y manda un latido cada 15 s). Sirve para decirle al jugador que su celular se quedó sin conexión con el tablero.
+  let enLinea = false;
+  let escuchas = 0; // las pedidas y no cerradas
+  let vivas = 0; // las que ahora mismo están conectadas
+  const oyentesDeConexion = new Set();
+  function revisarConexion() {
+    const ahora = escuchas > 0 && vivas === escuchas;
+    if (ahora === enLinea) return;
+    enLinea = ahora;
+    for (const oyente of oyentesDeConexion) oyente(enLinea);
+  }
+
   async function llamar(cuerpo) {
     const respuesta = await peticion(`${base}/red/op`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ uid, ...cuerpo }) });
     const datos = await respuesta.json();
@@ -29,10 +42,23 @@ export function crearTransporteHttp({ uid, base = '', peticion = (...a) => fetch
   function suscribir(tipo, ruta, cb) {
     let activa = true;
     let control = null;
+    let viva = false;
     const interrumpir = () => control?.abort();
-    const cerrar = () => { activa = false; interrumpir(); parar.delete(cerrar); cortar.delete(interrumpir); };
+    const noViva = () => { if (viva) { viva = false; vivas--; } };
+    const cerrar = () => {
+      if (!activa) return;
+      activa = false;
+      interrumpir();
+      parar.delete(cerrar);
+      cortar.delete(interrumpir);
+      noViva();
+      escuchas--;
+      revisarConexion();
+    };
     parar.add(cerrar);
     cortar.add(interrumpir);
+    escuchas++;
+    revisarConexion();
 
     async function conectar() {
       while (activa) {
@@ -49,6 +75,11 @@ export function crearTransporteHttp({ uid, base = '', peticion = (...a) => fetch
             const { done, value } = await lector.read();
             ultimoDato = Date.now();
             if (done) break;
+            if (!viva) {
+              viva = true;
+              vivas++;
+              revisarConexion();
+            }
             pendiente += decodificador.decode(value, { stream: true });
             let corte;
             while ((corte = pendiente.indexOf('\n\n')) >= 0) {
@@ -66,6 +97,8 @@ export function crearTransporteHttp({ uid, base = '', peticion = (...a) => fetch
           if (!activa) return;
         } finally {
           clearInterval(vigilante);
+          noViva();
+          revisarConexion();
         }
         if (activa) await new Promise(listo => setTimeout(listo, esperaReintento));
       }
@@ -83,6 +116,12 @@ export function crearTransporteHttp({ uid, base = '', peticion = (...a) => fetch
     empujar: async (ruta, valor) => (await llamar({ op: 'empujar', ruta, valor })).clave,
     escuchar: (ruta, cb) => suscribir('valor', ruta, cb),
     escucharHijos: (ruta, cb) => suscribir('hijos', ruta, cb),
+    // ¿Hay conexión? (todas las escuchas abiertas están recibiendo) y aviso de cada cambio; devuelve cómo dejar de avisar.
+    enLinea: () => enLinea,
+    alCambiarConexion(oyente) {
+      oyentesDeConexion.add(oyente);
+      return () => oyentesDeConexion.delete(oyente);
+    },
     // Corta las conexiones largas para que se vuelvan a abrir y traigan lo último (al volver a la página o recuperar la red).
     reconectar: () => [...cortar].forEach(interrumpir => interrumpir()),
     // Deja de escuchar todo (al cerrar la pantalla).
