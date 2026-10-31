@@ -73,10 +73,20 @@ test('con límite de tiempo, el tablero avisa de la última ronda, acaba por tie
     assert.deepEqual(await pestana.eval(() => [...document.querySelectorAll('.botones-final button')].map(b => b.textContent)), ['Jugar otra vez', 'Cerrar la sala']);
     assert.equal(await pestana.eval(() => window.duenos.almacen.leer().estado.opciones.partidaRapida), true);
     assert.equal(await pestana.eval(() => window.duenos.almacen.leer().registro.filter(l => /reparto inicial/.test(l.texto)).length), 6, 'dos calles para cada uno de los 3');
-    // Los premios de la partida, con quién se los lleva y su cifra.
-    const premios = await pestana.eval(() => [...document.querySelectorAll('.final .premios li')].map(li => li.innerText));
-    assert.ok(premios.length >= 1 && premios.length <= 4, JSON.stringify(premios));
-    assert.ok(premios.every(p => nombres.some(n => p.includes(n)) && /\d/.test(p)), JSON.stringify(premios));
+    // Los premios de la partida: los que se calcularon (en una partida tan corta puede no haber ninguno: los cuenta tests/premios.test.js)…
+    const premios = () => pestana.eval(() => [...document.querySelectorAll('.final .premios li')].map(li => li.innerText.replace(/\s+/g, ' ').trim()));
+    assert.equal((await premios()).length, await pestana.eval(() => window.duenos.almacen.leer().premios.length));
+    // …y cómo se ven, con unos premios conocidos: el nombre del premio, quién se lo lleva y su cifra.
+    await pestana.eval(() => {
+      const [a, b] = window.duenos.almacen.leer().estado.orden;
+      window.duenos.almacen.cambiar({ premios: [{ id: 'casero', jugador: a, cifra: 1234, dinero: true }, { id: 'constructor', jugador: b, cifra: 1, dinero: false }] });
+    });
+    const hasta = Date.now() + 3000;
+    while (Date.now() < hasta && (await premios()).length !== 2) await new Promise(listo => setTimeout(listo, 50));
+    const vistos = await premios();
+    assert.match(vistos[0], /^LLAVE DE ORO .+ 1\.234 \$ cobrados de alquiler$/i, vistos[0]);
+    assert.match(vistos[1], /^GRÚA DE ORO .+ 1 edificio levantado$/i, vistos[1]);
+    assert.ok(vistos.every(p => nombres.some(n => p.includes(n))), JSON.stringify(vistos));
     assert.deepEqual(await revisarAccesibilidad(pestana), [], 'accesibilidad en la pantalla final');
 
     // Jugar otra vez: el tablero vuelve a la sala con los mismos jugadores y con los 45 minutos elegidos.
