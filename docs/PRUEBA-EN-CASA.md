@@ -50,6 +50,22 @@ Marca cada cosa cuando salga bien. Si algo no sale, mira «Cómo anotar un fallo
     quien más patrimonio tenga.
 13. **Jugar otra vez.** Al terminar, **Jugar otra vez** devuelve a todos a la sala sin escanear nada.
 
+## En la tele
+
+Con la laptop conectada a la tele (cable HDMI), pulsa **TV** en el panel del tablero (o la tecla T): pone la pantalla completa, agranda
+la letra del panel y esconde los controles hasta que mueves el ratón. Más teclas: la barra espaciadora pausa, F pone o quita la pantalla
+completa y M el sonido. Prueba a leer el panel desde el sofá y anota si algo se ve pequeño o se sale de la pantalla.
+
+## Cuando esté el proyecto de Firebase: probar por internet
+
+Sin servidor en la laptop y sin compartir wifi (es lo que hace falta para jugar en cualquier sitio):
+
+1. En la laptop, abre la web publicada: `https://kenny28-176.github.io/duenos-de-la-ciudad/public/tablero.html` y pulsa **Jugar con
+   celulares**. No hace falta `node tools/serve.js`.
+2. En los celulares, **con los datos móviles** (la wifi apagada, para comprobar que va por internet), escanea el QR.
+3. Juega unas rondas y prueba lo mismo que arriba: sobre todo **bloquear un celular un minuto**, **recargar el tablero** y **un iPhone**.
+4. Si algo falla, anota lo de siempre (abajo) y di que era **por internet**.
+
 ## Si algo no va
 
 - **El celular no entra:** comprueba que está en **la misma wifi** que la laptop (no en datos móviles). Algunos routers, las redes de
