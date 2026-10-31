@@ -11,23 +11,27 @@
 //     await animar(paso.eventos);                      // (el reproductor del tablero)
 //     await anfitrion.publicar();                      // ahora sí lo ven los celulares
 //   }
+//
+// Si la página del tablero se recarga a media partida, anfitrion.instantanea() (que se guarda tras cada jugada) y la opción
+// «recuperar» devuelven la sala a como estaba: el estado entero (con el azar y los mazos, que no se publican), quién es cada celular
+// y las cuentas con las que los celulares saben qué se ha publicado y qué se ha atendido.
 import { codificar, diferencias, reconstruir, sinSecretos } from './codec.js';
 import { ACCIONES_DE_CELULAR, rutas } from './protocolo.js';
 
-export function crearAnfitrion({ transporte, motor, codigo, semilla = Date.now() }) {
+export function crearAnfitrion({ transporte, motor, codigo, semilla = Date.now(), recuperar = null }) {
   const r = rutas(codigo);
-  let estado = motor.nuevaPartida({ sala: codigo, semilla });
-  const jugadorDe = new Map(); // uid del celular → id del jugador
+  let estado = recuperar ? JSON.parse(JSON.stringify(recuperar.estado)) : motor.nuevaPartida({ sala: codigo, semilla });
+  const jugadorDe = new Map(recuperar?.jugadores ?? []); // uid del celular → id del jugador
   const cola = [];
   let despertar = null;
   let cerrada = false;
-  let publicaciones = 0;
-  let version = 0; // cuántas acciones se han aplicado (para saber si el estado ha cambiado desde que algo se programó)
+  let publicaciones = recuperar?.publicaciones ?? 0;
+  let version = recuperar?.version ?? 0; // cuántas acciones se han aplicado (para saber si el estado ha cambiado desde que algo se programó)
   let arbolPublicado = {};
   const vistasPublicadas = new Map(); // uid → árbol de su vista
   const errores = new Map(); // uid → su último error, con un número para saber si es uno nuevo
-  const atendidas = new Map(); // uid → cuántas acciones suyas ha atendido el tablero (aplicadas o rechazadas): es su acuse de recibo
-  let numeroDeError = 0;
+  const atendidas = new Map(recuperar?.atendidas ?? []); // uid → cuántas acciones suyas ha atendido el tablero (aplicadas o rechazadas): es su acuse de recibo
+  let numeroDeError = recuperar?.numeroDeError ?? 0;
   let parar = null;
 
   const despertarAlQueEspera = () => { const f = despertar; despertar = null; f?.(); };
@@ -89,6 +93,10 @@ export function crearAnfitrion({ transporte, motor, codigo, semilla = Date.now()
     version: () => version,
     // Quién es cada celular (uid → id de jugador).
     jugadores: () => new Map(jugadorDe),
+    // Todo lo que hace falta para seguir esta sala tras recargar la página del tablero (se pasa a «recuperar»): solo JSON.
+    instantanea: () => ({
+      estado, jugadores: [...jugadorDe], publicaciones, version, atendidas: [...atendidas], numeroDeError,
+    }),
 
     // Abre la sala: la crea en la base y se pone a escuchar las acciones de los celulares.
     async abrir() {
