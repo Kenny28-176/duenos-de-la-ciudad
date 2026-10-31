@@ -155,6 +155,7 @@ Aquí se anotan los cambios de cada versión. Las versiones siguen el esquema ma
   prueba el modo por internet de punta a punta, también en Chrome, sin el proyecto de verdad. `node tools/comprobar-reglas.js` comprueba
   las reglas contra el proyecto real (27 cosas que deben permitirse o rechazarse).
 - El tablero borra las salas que dejó abiertas al cerrar la página (pasadas 12 horas) y la de una partida guardada que se descarta.
+- **Partida rápida** en las opciones de la sala (cada jugador empieza con 2 calles al azar); se conserva al jugar otra vez.
 
 ### Arreglado
 

@@ -97,6 +97,7 @@
   "sala.mercado": "Living market",
   "sala.habilidades": "Token abilities",
   "sala.subastas": "Auctions",
+  "sala.rapida": "Quick game: each player starts with 2 random streets",
   "sala.sin_red": "To play with phones, open the board from the laptop server (node tools/serve.js).",
   "sala.error": "The room could not be opened: {motivo}",
   "sala.eligiendo": "choosing a token…",

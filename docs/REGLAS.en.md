@@ -177,7 +177,7 @@ If you owe rent, taxes, or card penalties exceeding your cash balance:
 When setting up a room on the shared board, the host can customize game parameters:
 
 - **Net worth goal:** $7,000 (short game), $10,000 (the usual one), $14,000 (long game), or no goal (until only one player is left).
-- **Quick Game:** each player starts with 2 random unmortgaged streets dealed.
+- **Quick Game:** each player starts with 2 random streets, already dealt.
 - **Time Limit:** 45, 60, or 90-minute timer; the board shows what is left. When it runs out, a gong sounds and the **last round** is played: when it closes, the highest net worth wins (ties go to whoever plays first).
 - **Play again:** when a game ends, the board offers another one with the same players and options; the phones go back to the room by themselves.
 - **Classic Mode:** disable character abilities, auctions, or the stock market for a purist experience.

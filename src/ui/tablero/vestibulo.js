@@ -12,9 +12,9 @@ const METAS = [['corta', 7000], ['normal', 10000], ['larga', 14000], ['ninguna',
 const TIEMPOS = [null, 45, 60, 90]; // minutos de la partida (null = sin límite)
 
 // Las opciones que se eligen aquí, con lo que tenía la sala (si es una revancha, las de la partida anterior) o, si no, lo normal.
-const CLAVES = ['meta', 'mercado', 'habilidades', 'subastas', 'limiteMinutos'];
+const CLAVES = ['meta', 'mercado', 'habilidades', 'subastas', 'partidaRapida', 'limiteMinutos'];
 const iniciales = previas => ({
-  meta: 10000, mercado: true, habilidades: true, subastas: true, limiteMinutos: null,
+  meta: 10000, mercado: true, habilidades: true, subastas: true, partidaRapida: false, limiteMinutos: null,
   ...Object.fromEntries(CLAVES.filter(k => previas && k in previas).map(k => [k, previas[k]])),
 });
 
@@ -64,6 +64,7 @@ export function Vestibulo({ sala, estado, acciones, colores }) {
         ${interruptor('mercado', t('sala.mercado'))}
         ${interruptor('habilidades', t('sala.habilidades'))}
         ${interruptor('subastas', t('sala.subastas'))}
+        ${interruptor('partidaRapida', t('sala.rapida'))}
       </div>
       <div class="botones-vestibulo">
         <button class="boton" disabled=${jugadores.length >= MAX_JUGADORES} onClick=${acciones.anadirBot}>${t('sala.anadir_bot')}</button>

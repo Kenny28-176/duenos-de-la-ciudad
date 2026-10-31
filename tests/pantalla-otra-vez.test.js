@@ -52,6 +52,11 @@ test('con límite de tiempo, el tablero avisa de la última ronda, acaba por tie
     assert.equal(await selectorDeTiempo(), '45');
     const nombres = await pestana.eval(() => [...document.querySelectorAll('.vestibulo .lista-jugadores .nombre')].map(e => e.textContent));
     assert.equal(nombres.length, 3);
+    // Y partida rápida: cada jugador empieza con 2 calles al azar.
+    const rapida = () => pestana.eval(() => [...document.querySelectorAll('.opciones label.interruptor')].find(l => l.textContent.includes('Partida rápida')).querySelector('input').checked);
+    assert.equal(await rapida(), false, 'por defecto, no');
+    await pestana.eval(() => [...document.querySelectorAll('.opciones label.interruptor')].find(l => l.textContent.includes('Partida rápida')).querySelector('input').click());
+    assert.equal(await rapida(), true);
 
     // Empieza: la cabecera dice cuánto queda, el reloj se agota enseguida y se anuncia la última ronda; la partida acaba por tiempo.
     await pestana.eval(() => [...document.querySelectorAll('.vestibulo button')].find(b => b.textContent.includes('Empezar')).click());
@@ -64,6 +69,8 @@ test('con límite de tiempo, el tablero avisa de la última ronda, acaba por tie
     assert.equal(await pestana.eval(() => window.duenos.almacen.leer().estado.motivoFin), 'tiempo');
     assert.match(await pestana.eval(() => document.querySelector('.final .etiqueta').textContent), /Se acabó el tiempo/);
     assert.deepEqual(await pestana.eval(() => [...document.querySelectorAll('.botones-final button')].map(b => b.textContent)), ['Jugar otra vez', 'Cerrar la sala']);
+    assert.equal(await pestana.eval(() => window.duenos.almacen.leer().estado.opciones.partidaRapida), true);
+    assert.equal(await pestana.eval(() => window.duenos.almacen.leer().registro.filter(l => /reparto inicial/.test(l.texto)).length), 6, 'dos calles para cada uno de los 3');
 
     // Jugar otra vez: el tablero vuelve a la sala con los mismos jugadores y con los 45 minutos elegidos.
     await pestana.eval(() => [...document.querySelectorAll('.botones-final button')].find(b => b.textContent === 'Jugar otra vez').click());
@@ -71,6 +78,7 @@ test('con límite de tiempo, el tablero avisa de la última ronda, acaba por tie
     assert.equal(await pestana.eval(() => document.querySelector('.final') === null), true, 'ya no está la pantalla final');
     assert.deepEqual(await pestana.eval(() => [...document.querySelectorAll('.vestibulo .lista-jugadores .nombre')].map(e => e.textContent)), nombres);
     assert.equal(await selectorDeTiempo(), '45', 'las mismas opciones');
+    assert.equal(await rapida(), true, 'también la partida rápida');
     assert.equal(await pestana.eval(() => window.duenos.almacen.leer().modo), 'sala');
     assert.equal(await pestana.eval(() => window.duenos.sala().anfitrion.estado().fase), 'sala');
     assert.equal(await pestana.eval(() => window.duenos.almacen.leer().registro.length), 0, 'el registro empieza de cero');

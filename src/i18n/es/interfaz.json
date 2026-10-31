@@ -97,6 +97,7 @@
   "sala.mercado": "Mercado vivo",
   "sala.habilidades": "Habilidades de las fichas",
   "sala.subastas": "Subastas",
+  "sala.rapida": "Partida rápida: cada jugador empieza con 2 calles al azar",
   "sala.sin_red": "Para jugar con celulares, abre el tablero desde el servidor de la laptop (node tools/serve.js).",
   "sala.error": "No se pudo abrir la sala: {motivo}",
   "sala.eligiendo": "eligiendo ficha…",
