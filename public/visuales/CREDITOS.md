@@ -26,6 +26,8 @@ se puede usar un `*` para todos los archivos de una carpeta (por ejemplo `fichas
 | `tarjetas/dorsos/*.webp` | Antigravity (Google Imagen 3) | CC0 | 25 de octubre de 2026 | Dorsos de cartas según docs/VISUALES.md sección 7.8 |
 | `tarjetas/efectos/*.webp` | Antigravity (Google Imagen 3) | CC0 | 25 de octubre de 2026 | Bodegones de cartas según docs/VISUALES.md sección 7.9 |
 | `tarjetas/cabeceras/*.webp` | Antigravity (Google Imagen 3) | CC0 | 25 de octubre de 2026 | Cabeceras de propiedades según docs/VISUALES.md sección 7.10 |
+| `interfaz/ilustraciones/*.webp` | Antigravity (Google Imagen 3) | CC0 | 31 de octubre de 2026 | Ilustraciones de interfaz en pintura gouache según docs/VISUALES.md sección 7.11 |
+| `marca/*` | Antigravity (Google Imagen 3) | CC0 | 31 de octubre de 2026 | Elementos de marca e identidad según docs/VISUALES.md sección 7.12 |
 
 | `botones/acciones/*.svg` | Código propio | CC0 | 24 de octubre de 2026 | Pictogramas vectoriales según docs/VISUALES.md sección 7.13 |
 | `interfaz/iconos/*.svg` | Código propio | CC0 | 24 de octubre de 2026 | Pictogramas vectoriales según docs/VISUALES.md sección 7.13 |
