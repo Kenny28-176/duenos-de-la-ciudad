@@ -156,6 +156,9 @@ Aquí se anotan los cambios de cada versión. Las versiones siguen el esquema ma
   las reglas contra el proyecto real (27 cosas que deben permitirse o rechazarse).
 - El tablero borra las salas que dejó abiertas al cerrar la página (pasadas 12 horas) y la de una partida guardada que se descarta.
 - **Partida rápida** en las opciones de la sala (cada jugador empieza con 2 calles al azar); se conserva al jugar otra vez.
+- **Premios de la partida** en la pantalla final del tablero: hasta cuatro, repartidos entre los jugadores (Llave de oro, Grúa de oro,
+  Olfato para la Bolsa, Martillo de oro, Apretón de manos, Bolsillo agujereado, Abono del Calabozo y Mano de la suerte). Salen de los
+  eventos de la partida (`src/ui/tablero/premios.js`) y se guardan con la partida, por si se recarga el tablero.
 
 ### Arreglado
 

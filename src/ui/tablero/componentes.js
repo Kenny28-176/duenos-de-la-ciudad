@@ -111,14 +111,20 @@ function Aviso({ aviso }) {
 }
 
 // «botones»: lo que se puede hacer al acabar, [{ texto, alPulsar, principal }]: en la demostración, otra partida; en una sala,
-// jugar otra vez con los mismos jugadores o cerrarla.
-function Final({ fin, filas, botones }) {
+// jugar otra vez con los mismos jugadores o cerrarla. «premios»: los de src/ui/tablero/premios.js ([{ id, jugador, cifra, dinero }]).
+function Final({ fin, filas, botones, premios = [] }) {
   if (!fin) return null;
   const ganador = filas.find(f => f.id === fin.ganador);
-  return html`<div class="final">
+  const fila = id => filas.find(f => f.id === id);
+  return html`<div class="final" role="dialog" aria-labelledby="final-titulo">
     <p class="etiqueta">${t(`fin.${fin.motivo}`)}</p>
-    <h2>${t('fin.titulo', { jugador: ganador?.nombre ?? '' })}</h2>
+    <h2 id="final-titulo">${t('fin.titulo', { jugador: ganador?.nombre ?? '' })}</h2>
     <ol>${[...filas].sort((a, b) => b.patrimonio - a.patrimonio).map(f => html`<li><span>${f.nombre}</span><b>${dinero(f.patrimonio)}</b></li>`)}</ol>
+    ${premios.length ? html`<ul class="premios" aria-label=${t('fin.premios')}>${premios.map(p => html`<li key=${p.id} style=${{ '--color': fila(p.jugador)?.color }}>
+      <span class="premio">${t(`premio.${p.id}`)}</span>
+      <span class="quien">${fila(p.jugador)?.nombre ?? ''}</span>
+      <span class="detalle">${p.dinero ? t(`premio.${p.id}.detalle`, { cifra: p.cifra }) : tn(`premio.${p.id}.detalle`, p.cifra)}</span>
+    </li>`)}</ul>` : null}
     <div class="botones-final">${botones.map(b => html`<button class=${`boton ${b.principal ? 'principal' : ''}`.trim()} onClick=${b.alPulsar}>${b.texto}</button>`)}</div>
   </div>`;
 }
@@ -220,7 +226,7 @@ export function Pantalla({ almacen, motor, alMontar, acciones }) {
         <${Carta} carta=${d.carta} n=${d.cartaN} />
         <${Subasta} subasta=${d.subasta} nombres=${nombres} cuenta=${d.modo === 'partida' ? SEGUNDOS_DE_SUBASTA / d.velocidad : 0} reinicio=${d.publicadas} />
         <${Aviso} aviso=${d.aviso} />
-        <${Final} fin=${d.fin} filas=${filas} botones=${d.modo === 'demo'
+        <${Final} fin=${d.fin} filas=${filas} premios=${d.premios} botones=${d.modo === 'demo'
           ? [{ texto: t('controles.nueva'), alPulsar: () => acciones.nueva(d.jugadores), principal: true }]
           : [{ texto: t('fin.otra_vez'), alPulsar: acciones.jugarOtraVez, principal: true }, { texto: t('controles.cerrar_sala'), alPulsar: acciones.cerrarSala }]} />
         ${d.modo === 'sala' ? html`<${Vestibulo} sala=${d.sala} estado=${d.estado} acciones=${acciones} colores=${f => motor.ctx.fichas[f].color} />` : null}

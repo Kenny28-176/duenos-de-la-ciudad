@@ -71,6 +71,10 @@ test('con límite de tiempo, el tablero avisa de la última ronda, acaba por tie
     assert.deepEqual(await pestana.eval(() => [...document.querySelectorAll('.botones-final button')].map(b => b.textContent)), ['Jugar otra vez', 'Cerrar la sala']);
     assert.equal(await pestana.eval(() => window.duenos.almacen.leer().estado.opciones.partidaRapida), true);
     assert.equal(await pestana.eval(() => window.duenos.almacen.leer().registro.filter(l => /reparto inicial/.test(l.texto)).length), 6, 'dos calles para cada uno de los 3');
+    // Los premios de la partida, con quién se los lleva y su cifra.
+    const premios = await pestana.eval(() => [...document.querySelectorAll('.final .premios li')].map(li => li.innerText));
+    assert.ok(premios.length >= 1 && premios.length <= 4, JSON.stringify(premios));
+    assert.ok(premios.every(p => nombres.some(n => p.includes(n)) && /\d/.test(p)), JSON.stringify(premios));
 
     // Jugar otra vez: el tablero vuelve a la sala con los mismos jugadores y con los 45 minutos elegidos.
     await pestana.eval(() => [...document.querySelectorAll('.botones-final button')].find(b => b.textContent === 'Jugar otra vez').click());

@@ -24,6 +24,7 @@ import { crearDemo } from './demo.js';
 import { dibujarTablero } from './dibujo.js';
 import { geometriaTablero } from './geometria.js';
 import { crearReloj } from './reloj.js';
+import { anotar, premios as calcularPremios } from './premios.js';
 import { crearReproductor } from './reproductor.js';
 import { datosDeCarta, nombreMostrado } from './vista.js';
 
@@ -47,7 +48,7 @@ const dibujar = () => dibujarTablero(motor.ctx, geo, {
 
 const estadoInicial = () => ({
   estado: null, dinero: {}, precios: {}, preciosPrevios: {}, registro: [], flotantes: [], turnoDe: null,
-  dados: null, carta: null, cartaN: 0, subasta: null, aviso: null, fin: null, error: null,
+  dados: null, carta: null, cartaN: 0, subasta: null, aviso: null, fin: null, premios: [], error: null,
   pausado: false, velocidad: numero('velocidad', 1, 1, 100), idioma, jugadores: numero('jugadores', 4, 2, 8),
   modo: 'demo', sala: null, red: null, delegados: [], publicadas: 0, tiempo: { limite: null, minutos: null },
 });
@@ -96,9 +97,16 @@ function textoDeCarta(e) {
   return t(`carta.${carta.id}`, carta.datos);
 }
 
+// Las cuentas de los premios del final (src/ui/tablero/premios.js): empiezan de cero con cada partida y van con la partida guardada.
+let cuentas = {};
+function anotarPaso(eventos, s) {
+  anotar(cuentas, eventos);
+  if (eventos.some(e => e.type === 'fin')) almacen.cambiar({ premios: calcularPremios(cuentas, s.orden) });
+}
+
 const nuevoReproductor = (fuente, extra = {}) => crearReproductor({
   motor, demo: fuente, almacen, capas: () => capas, narrador: narradorActual, nombreBarrio: b => t(`barrio.${b}`),
-  sonido, voz, textoDeCarta, idioma: () => almacen.leer().idioma, ...extra,
+  sonido, voz, textoDeCarta, idioma: () => almacen.leer().idioma, alPresentar: anotarPaso, ...extra,
 });
 
 // --- Demostración ----------------------------------------------------------------------------------------------------
@@ -110,6 +118,7 @@ function nuevaPartida(jugadores, semilla = numero('semilla', Date.now() % 100000
   const fichas = fichasParaPartida(motor, semilla, jugadores);
   const demo = crearDemo(motor, { semilla, fichas });
   const estado = demo.estado();
+  cuentas = {};
   // El dinero empieza en cero: sube al repartirse el inicial.
   almacen.cambiar({ ...estadoInicial(), velocidad, idioma: lang, jugadores, red, estado, dinero: Object.fromEntries(estado.orden.map(id => [id, 0])) });
   montarTablero();
@@ -271,7 +280,7 @@ function guardarPartida(esta) {
     // Una partida que ha acabado ya no hay que recuperarla.
     if (esta.anfitrion.estado().fase !== 'juego') { olvidarSiEsDe(esta.codigo); return; }
     localStorage.setItem(CLAVE_PARTIDA, JSON.stringify({
-      version: 1, guardada: Date.now(), codigo: esta.codigo, bots: esta.bots, delegados: [...esta.delegados], jugadoMs: reloj?.jugado() ?? 0,
+      version: 1, guardada: Date.now(), codigo: esta.codigo, bots: esta.bots, delegados: [...esta.delegados], jugadoMs: reloj?.jugado() ?? 0, cuentas,
       instantanea: esta.anfitrion.instantanea(),
     }));
   } catch { /* sin sitio o sin almacenamiento: la partida sigue, pero no se podrá recuperar */ }
@@ -326,6 +335,7 @@ async function recuperarSala() {
       delegados: new Set(guardada.delegados ?? []), orquesta: null, jugadoMs: guardada.jugadoMs ?? 0,
     };
     almacen.cambiar({ red, recuperable: null, sala: datosDeSala(red, guardada.codigo) });
+    cuentas = guardada.cuentas ?? {};
     empezarPartida(sala, null);
   } catch (error) {
     sala = null;
@@ -367,6 +377,7 @@ function empezarPartida(esta, primerPaso) {
     },
   };
   const estado = esta.anfitrion.estado();
+  if (primerPaso) cuentas = {}; // una partida nueva (si se retoma una guardada, sus cuentas ya están puestas)
   const { velocidad, idioma: lang, red, sala: datosSala } = almacen.leer();
   almacen.cambiar({
     ...estadoInicial(), velocidad, idioma: lang, red, modo: 'partida', sala: datosSala, estado, delegados: [...esta.delegados],

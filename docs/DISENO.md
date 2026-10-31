@@ -403,7 +403,7 @@ mercado vivo. Estos son los tipos de efecto:
 
 | Pantalla | Qué muestra |
 |---|---|
-| **Tablero** | La ciudad, las fichas, los dados y la pizarra de la Bolsa. El patrimonio de cada jugador y lo que le falta para la meta. Las habilidades de cada ficha y su enfriamiento. La carta robada, la subasta, los tratos y el registro de lo que ha pasado. |
+| **Tablero** | La ciudad, las fichas, los dados y la pizarra de la Bolsa. El patrimonio de cada jugador y lo que le falta para la meta. Las habilidades de cada ficha y su enfriamiento. La carta robada, la subasta, los tratos y el registro de lo que ha pasado. Al final, la clasificación por patrimonio y hasta cuatro premios de la partida, repartidos entre los jugadores: Llave de oro (más alquiler cobrado), Grúa de oro (más edificios levantados), Olfato para la Bolsa (más dividendos), Martillo de oro (más subastas ganadas), Apretón de manos (más tratos cerrados), Bolsillo agujereado (más alquiler pagado), Abono del Calabozo (más visitas al Calabozo) y Mano de la suerte (más dobles). Un empate no se lleva premio. |
 | **Celular** | Tu dinero y tu patrimonio, y el botón que toca en cada momento. El botón de tu habilidad activa, con los turnos que le faltan. Tus calles (con su tabla de alquileres) y tus acciones. Los tratos, la subasta y tus movimientos. |
 
 **Qué información es pública:** todo, incluido el dinero de cada uno. Solo es privado lo que estás preparando, como un

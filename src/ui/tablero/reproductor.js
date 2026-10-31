@@ -22,7 +22,7 @@ const AVISOS = {
 // sonido y voz (src/ui/sonido.js y src/ui/voz.js), si se dan, suenan con cada evento: el sonido arranca a la vez que su animación
 // y la voz lee la frase del narrador (y, en una carta, la carta: textoDeCarta(e)); el siguiente evento espera a que acabe lo que dure más.
 // idioma(): el de ahora, para elegir la voz.
-export function crearReproductor({ motor, demo, almacen, capas, narrador, nombreBarrio, despuesDePaso = null, sonido = null, voz = null, textoDeCarta = null, idioma = () => 'es' }) {
+export function crearReproductor({ motor, demo, almacen, capas, narrador, nombreBarrio, despuesDePaso = null, sonido = null, voz = null, textoDeCarta = null, idioma = () => 'es', alPresentar = null }) {
   let contador = 0;
   let parado = false;
   let reanudar = null;
@@ -108,6 +108,7 @@ export function crearReproductor({ motor, demo, almacen, capas, narrador, nombre
   async function presentar(paso) {
     const { eventos } = paso;
     const s = demo.estado();
+    alPresentar?.(eventos, s); // las cuentas de los premios del final
     for (const e of eventos) {
       const texto = narrador().frase(e, s);
       if (texto !== null) {
