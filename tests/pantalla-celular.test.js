@@ -156,6 +156,7 @@ test('un celular entra a la sala, elige ficha y juega con sus botones hasta cons
     await alDia(ana);
     await esperarTexto(ana, '.situacion', /tu turno/i);
     assert.equal(cifras(await texto(ana, '.dinero-grande')), anfitrion.estado().jugadores.j1.dinero, 'el dinero de la cabecera es el del tablero');
+    assert.ok((await ana.eval(() => window.duenos.sonido.estado().sonaron)) >= 1, 'el celular avisa con un sonido cuando le toca');
 
     // --- La habilidad: Rally, con su barrio ------------------------------------------------------------------------------
     await pulsarCuandoEste(ana, 'Rally', '.dock button');
@@ -256,6 +257,19 @@ test('un celular entra a la sala, elige ficha y juega con sus botones hasta cons
     assert.equal(cifras(await texto(ana, '.dinero-grande')), dineroAntesDeRecargar);
     assert.equal(anfitrion.estado().ids.length, 3, 'no entró un jugador nuevo');
     marca('Ana recargó y volvió a su sitio');
+
+    // --- El aviso sonoro de «te toca»: viene encendido, se apaga en la pestaña Mesa y se recuerda -------------------------
+    await ana.eval(() => [...document.querySelectorAll('.pestanas button')].find(b => b.textContent.includes('Mesa')).click());
+    await ana.esperarSelector('.chip.ajuste', 8000);
+    const aviso = () => ana.eval(() => ({
+      pulsado: document.querySelector('.chip.ajuste').getAttribute('aria-pressed'), guardado: localStorage.getItem('duenos:aviso-sonoro'), activo: window.duenos.sonido.estado().activo,
+    }));
+    assert.deepEqual(await aviso(), { pulsado: 'true', guardado: null, activo: true });
+    await ana.eval(() => document.querySelector('.chip.ajuste').click());
+    await espera(100);
+    assert.deepEqual(await aviso(), { pulsado: 'false', guardado: 'no', activo: false });
+    await sinClavesSueltas(ana, 'mesa');
+    marca('el aviso sonoro se apaga y se recuerda');
 
     // Nunca hubo un error de JavaScript en el celular.
     assert.deepEqual(nav.errores, []);

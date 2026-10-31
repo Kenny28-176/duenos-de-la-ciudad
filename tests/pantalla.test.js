@@ -101,3 +101,52 @@ test('sin parámetro, la pantalla usa el idioma del navegador', { skip: motivo, 
     servidor.close();
   }
 });
+
+test('el sonido arranca con el primer toque, suena durante la partida, se apaga y se recuerda', { skip: motivo, timeout: 120000 }, async () => {
+  const servidor = crearServidor();
+  await new Promise(listo => servidor.listen(0, '127.0.0.1', listo));
+  const nav = await iniciarNavegador({ puerto: 9400 + Math.floor(Math.random() * 400) });
+  try {
+    const url = `http://127.0.0.1:${servidor.address().port}/public/tablero.html?velocidad=2&semilla=3&jugadores=4&depurar=1`;
+    const pestana = await nav.abrir(url, { ancho: 1366, alto: 768 });
+    await pestana.esperarSelector('.sonido button', 30000);
+    const sonaron = () => pestana.eval(() => window.duenos.sonido.estado().sonaron);
+    // Antes de que alguien toque la pantalla no hay audio, y la partida es muda.
+    assert.deepEqual(await pestana.eval(() => ({ listo: window.duenos.sonido.estado().listo, pulsado: document.querySelector('.sonido button').getAttribute('aria-pressed') })), { listo: false, pulsado: 'true' });
+    assert.equal(await sonaron(), 0);
+
+    // El primer toque crea el audio (el Chrome de prueba no pide gesto) y desde ahí suenan los dados, los pasos, las monedas…
+    await pestana.eval(() => document.dispatchEvent(new Event('pointerdown')));
+    const fin = Date.now() + 30000;
+    while (Date.now() < fin && (await sonaron()) < 12) await new Promise(listo => setTimeout(listo, 250));
+    assert.ok((await sonaron()) >= 12, 'durante la partida suenan cosas');
+    assert.equal(await pestana.eval(() => window.duenos.sonido.estado().listo), true);
+
+    // Apagarlo: no suena nada más, el botón lo dice y se recuerda en el navegador.
+    await pestana.eval(() => document.querySelector('.sonido button').click());
+    await new Promise(listo => setTimeout(listo, 300));
+    const apagado = await sonaron();
+    await new Promise(listo => setTimeout(listo, 1500));
+    assert.equal(await sonaron(), apagado, 'apagado, no suena');
+    assert.equal(await pestana.eval(() => document.querySelector('.sonido button').getAttribute('aria-pressed')), 'false');
+    assert.deepEqual(await pestana.eval(() => JSON.parse(localStorage.getItem('duenos:sonido'))), { efectos: false, voz: false });
+
+    // Y al abrir la página otra vez, sigue apagado.
+    await pestana.eval(() => location.reload());
+    await pestana.esperarSelector('.sonido button', 30000);
+    assert.equal(await pestana.eval(() => document.querySelector('.sonido button').getAttribute('aria-pressed')), 'false');
+    assert.equal(await pestana.eval(() => window.duenos.sonido.estado().activo), false);
+
+    // La voz del narrador se puede encender y apagar (si este navegador tiene síntesis de voz) y nunca da errores.
+    if (await pestana.eval(() => window.duenos.voz.disponible)) {
+      await pestana.eval(() => document.querySelectorAll('.sonido button')[1].click());
+      assert.equal(await pestana.eval(() => window.duenos.voz.activa()), true);
+      await pestana.eval(() => document.querySelectorAll('.sonido button')[1].click());
+      assert.equal(await pestana.eval(() => window.duenos.voz.activa()), false);
+    }
+    assert.deepEqual(nav.errores, []);
+  } finally {
+    nav.cerrar();
+    servidor.close();
+  }
+});

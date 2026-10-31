@@ -26,7 +26,7 @@ async function diccionario(idioma) {
 const es = await diccionario('es');
 
 // Todo lo que hace falta para reproducir una partida, con unas capas que solo cuentan lo que se les pide.
-function montar({ semilla = 5, jugadores = 4, velocidad = 4000 } = {}) {
+function montar({ semilla = 5, jugadores = 4, velocidad = 4000, extra = {} } = {}) {
   const demo = crearDemo(motor, { semilla, fichas: fichasParaPartida(motor, semilla, jugadores) });
   const estado = demo.estado();
   const almacen = crearAlmacen({
@@ -41,7 +41,7 @@ function montar({ semilla = 5, jugadores = 4, velocidad = 4000 } = {}) {
     actualizar: s => { llamadas.actualizar++; llamadas.pasos.add(s.turnos); },
   };
   const narrador = () => crearNarrador({ dic: es, idioma: 'es', nombreJugador: (s, id) => nombreMostrado(s.jugadores[id], f => es[`ficha.${f}`]) });
-  const reproductor = crearReproductor({ motor, demo, almacen, capas: () => capas, narrador, nombreBarrio: b => es[`barrio.${b}`] });
+  const reproductor = crearReproductor({ motor, demo, almacen, capas: () => capas, narrador, nombreBarrio: b => es[`barrio.${b}`], ...extra });
   return { demo, almacen, capas, llamadas, reproductor };
 }
 
@@ -108,4 +108,49 @@ test('se puede pausar y seguir, y parar', async () => {
   const parados = demo.estado().turnos;
   await new Promise(listo => setTimeout(listo, 100));
   assert.equal(demo.estado().turnos, parados, 'parada la partida, no avanza más');
+});
+
+test('cada evento pasa por el sonido, con la velocidad de la pantalla, y la partida no cambia', async () => {
+  const oidos = [];
+  const sonido = { evento: (e, { velocidad }) => { oidos.push([e.type, velocidad]); } };
+  const { demo, reproductor } = montar({ semilla: 7, extra: { sonido } });
+  await reproductor.correr();
+  assert.equal(demo.estado().fase, 'fin');
+  assert.ok(oidos.length > 500, `${oidos.length} eventos`);
+  assert.ok(oidos.every(([, velocidad]) => velocidad === 4000));
+  const tipos = new Set(oidos.map(([tipo]) => tipo));
+  for (const tipo of ['dados', 'mover', 'dinero', 'compra', 'turno', 'carta', 'fin']) assert.ok(tipos.has(tipo), `llega «${tipo}» al sonido`);
+});
+
+test('la voz lee lo que cuenta, la carta con su texto, y el reproductor espera a que acabe cada frase', async () => {
+  const dichas = [];
+  let enCurso = 0;
+  let solapadas = 0;
+  const voz = {
+    parar() {},
+    alEvento(e, texto, { idioma, textoDeCarta }) {
+      if ((e.type !== 'compra' && e.type !== 'carta') || dichas.length >= 25) return undefined;
+      dichas.push({ tipo: e.type, texto, idioma, textoDeCarta });
+      if (++enCurso > 1) solapadas++;
+      return new Promise(listo => setTimeout(() => { enCurso--; listo(); }, 1));
+    },
+  };
+  const { demo, reproductor } = montar({ semilla: 7, extra: { voz, textoDeCarta: e => `texto de ${e.carta}`, idioma: () => 'es' } });
+  await reproductor.correr();
+  assert.equal(demo.estado().fase, 'fin');
+  assert.equal(dichas.length, 25);
+  assert.ok(dichas.some(d => d.tipo === 'compra') && dichas.some(d => d.tipo === 'carta'));
+  assert.ok(dichas.every(d => d.texto && d.idioma === 'es'));
+  assert.ok(dichas.filter(d => d.tipo === 'carta').every(d => /^texto de [nf]-/.test(d.textoDeCarta)), 'en una carta se pasa su texto');
+  assert.ok(dichas.filter(d => d.tipo === 'compra').every(d => d.textoDeCarta === null));
+  assert.equal(solapadas, 0, 'nunca se empieza una frase encima de otra');
+});
+
+test('al pausar o al parar, la voz se calla', () => {
+  let callo = 0;
+  const { reproductor } = montar({ extra: { voz: { parar: () => { callo++; }, alEvento: () => undefined } } });
+  reproductor.pausar(); // pausa: calla
+  reproductor.pausar(); // seguir: no
+  reproductor.parar(); // parar: calla
+  assert.equal(callo, 2);
 });

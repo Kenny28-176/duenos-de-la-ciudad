@@ -11,6 +11,7 @@ import { CODIGO, limpiarCodigo } from '../../net/protocolo.js';
 import { crearAlmacen } from '../almacen.js';
 import { textoDeError } from '../errores.js';
 import { html, render } from '../preact.js';
+import { crearSonido } from '../sonido.js';
 import { Aplicacion } from './pantallas.js';
 
 const parametros = new URLSearchParams(location.search);
@@ -28,11 +29,17 @@ const memoria = {
 const SEGUNDOS_SIN_RESPUESTA = 20; // si el tablero no contesta en este tiempo, se vuelven a activar los botones
 const SEGUNDOS_DE_AVISO = 6;
 
+// Un aviso sonoro cuando me toca (la vibración no existe en los iPhone): se puede apagar en la pestaña Mesa. Los navegadores no dejan
+// sonar hasta que alguien toca la pantalla, y en el celular eso pasa al escribir el nombre y elegir ficha.
+const CLAVE_AVISO = 'duenos:aviso-sonoro';
+const sonido = crearSonido({ activo: memoria.leer(CLAVE_AVISO) !== 'no' });
+for (const tipo of ['pointerdown', 'keydown', 'touchend', 'click']) document.addEventListener(tipo, () => sonido.desbloquear(), { passive: true });
+
 const codigoDeLaDireccion = limpiarCodigo(parametros.get('sala'));
 const almacen = crearAlmacen({
   codigo: CODIGO.test(codigoDeLaDireccion) ? codigoDeLaDireccion : '',
   nombre: memoria.leer('duenos:nombre') ?? '',
-  datos: null, cerrada: false, sinRed: false, pendiente: false, aviso: null,
+  datos: null, cerrada: false, sinRed: false, pendiente: false, aviso: null, avisoSonoro: sonido.estado().activo,
 });
 
 let transporte = null;
@@ -98,11 +105,16 @@ function alCambiar() {
     parche.pendiente = false;
   }
 
-  // Un toque de vibración cuando me toca a mí (tirar, pujar) o me llega un trato.
+  // Un toque de vibración y un aviso sonoro cuando me toca a mí (tirar, pujar) o me llega un trato.
   if (d.alDia && d.miId) {
     const puede = d.vista.puede ?? {};
-    if ((puede.tirar && !puedeAntes.tirar) || (puede.pujar && !puedeAntes.pujar) || (puede.aceptarTrato && !puedeAntes.aceptarTrato)) vibrar([120, 60, 120]);
-    puedeAntes = { tirar: puede.tirar, pujar: puede.pujar, aceptarTrato: puede.aceptarTrato };
+    const ahora = { tirar: puede.tirar, pujar: puede.pujar, aceptarTrato: puede.aceptarTrato };
+    const nuevo = clave => ahora[clave] && !puedeAntes[clave];
+    if (nuevo('tirar') || nuevo('pujar') || nuevo('aceptarTrato')) {
+      vibrar([120, 60, 120]);
+      sonido.reproducir(nuevo('tirar') ? 'miTurno' : nuevo('pujar') ? 'subasta' : 'mensaje');
+    }
+    puedeAntes = ahora;
   }
   almacen.cambiar(parche);
 }
@@ -170,6 +182,15 @@ const acciones = {
     otraSala();
   },
   cerrarAviso: () => almacen.cambiar({ aviso: null }),
+  // Encender o apagar el aviso sonoro; al encenderlo suena, para saber cómo es.
+  alternarAviso() {
+    const activo = !sonido.estado().activo;
+    sonido.poner(activo);
+    sonido.desbloquear();
+    memoria.guardar(CLAVE_AVISO, activo ? 'si' : 'no');
+    almacen.cambiar({ avisoSonoro: activo });
+    if (activo) setTimeout(() => sonido.reproducir('miTurno'), 150);
+  },
 };
 
 // --- Arranque ---------------------------------------------------------------------------------------------------------------
@@ -182,5 +203,5 @@ if (red) {
   almacen.cambiar({ sinRed: true });
 }
 
-if (parametros.get('depurar') === '1') window.duenos = { almacen, motor, t, cliente: () => cliente };
+if (parametros.get('depurar') === '1') window.duenos = { almacen, motor, t, cliente: () => cliente, sonido };
 render(html`<${Aplicacion} almacen=${almacen} acciones=${acciones} motor=${motor} />`, document.getElementById('app'));

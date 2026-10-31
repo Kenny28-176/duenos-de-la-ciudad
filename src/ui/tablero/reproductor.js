@@ -19,7 +19,10 @@ const AVISOS = {
 // traduce un barrio.
 // despuesDePaso(paso, estado), si se da, se llama al terminar de animar cada paso: la partida con celulares publica ahí el
 // resultado, para que los celulares lo vean cuando acaba la animación y no antes.
-export function crearReproductor({ motor, demo, almacen, capas, narrador, nombreBarrio, despuesDePaso = null }) {
+// sonido y voz (src/ui/sonido.js y src/ui/voz.js), si se dan, suenan con cada evento: el sonido arranca a la vez que su animación
+// y la voz lee la frase del narrador (y, en una carta, la carta: textoDeCarta(e)); el siguiente evento espera a que acabe lo que dure más.
+// idioma(): el de ahora, para elegir la voz.
+export function crearReproductor({ motor, demo, almacen, capas, narrador, nombreBarrio, despuesDePaso = null, sonido = null, voz = null, textoDeCarta = null, idioma = () => 'es' }) {
   let contador = 0;
   let parado = false;
   let reanudar = null;
@@ -114,7 +117,9 @@ export function crearReproductor({ motor, demo, almacen, capas, narrador, nombre
           return { registro: [...d.registro, { n: ++contador, texto, veces: 1 }].slice(-60) };
         });
       }
-      await (animadores[e.type]?.(e, texto) ?? pausa(texto === null ? 0 : 140));
+      sonido?.evento(e, { velocidad: velocidad() });
+      const dicho = voz?.alEvento(e, texto, { idioma: idioma(), velocidad: velocidad(), textoDeCarta: e.type === 'carta' ? textoDeCarta?.(e) : null });
+      await Promise.all([animadores[e.type]?.(e, texto) ?? pausa(texto === null ? 0 : 140), dicho]);
       if (parado) return;
     }
     const nuevos = preciosActuales(motor, s);
@@ -152,9 +157,11 @@ export function crearReproductor({ motor, demo, almacen, capas, narrador, nombre
     pausar() {
       almacen.cambiar(d => ({ pausado: !d.pausado }));
       if (!almacen.leer().pausado) reanudar?.();
+      else voz?.parar();
     },
     parar() {
       parado = true;
+      voz?.parar();
       reanudar?.();
     },
   };

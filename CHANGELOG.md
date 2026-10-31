@@ -124,6 +124,14 @@ Aquí se anotan los cambios de cada versión. Las versiones siguen el esquema ma
 - **Recuperar la partida si se recarga el tablero**: tras cada jugada se guarda una instantánea de la sala en el navegador; al
   volver a abrir el tablero sale «Recuperar la partida», que retoma la misma sala (con el azar y los mazos, que no se publican) y los
   celulares siguen donde estaban. Se puede descartar, y no se ofrece si es de hace más de 12 horas, ya acabó o está rota.
+- **Sonido en el tablero**, sintetizado por el navegador (sin archivos de audio): dados que rebotan, pasos de la ficha, monedas que
+  entran y salen según la cantidad, sello de compra, martillazos al construir, cartas, Calabozo, campanilla y martillo de la subasta,
+  cinta de la Bolsa, tratos, habilidades, quiebra y fanfarria final. Suena con el primer toque de pantalla, se acorta con la velocidad y
+  se apaga con el botón **Sonido**.
+- **Voz del narrador** (opcional, apagada de serie): lee en voz alta las frases del narrador y el texto de las cartas con la mejor voz del
+  idioma que tenga el equipo, y el reproductor espera a que acabe cada frase.
+- **Aviso sonoro en el celular** cuando le toca (además de la vibración, que los iPhone no tienen), que se apaga en la pestaña Mesa.
+- **Banco de sonidos** (`public/sonidos.html`): un botón por sonido para oírlos y ajustarlos sin jugar una partida.
 - Si la conexión de un celular se queda muerta (se le apagó la pantalla), se recupera sola.
 - Pruebas de punta a punta en un Chrome de verdad: el celular entra, elige ficha y juega (`tests/pantalla-celular.test.js`), y
   el tablero abre una sala con celulares (`tests/pantalla-red.test.js`).

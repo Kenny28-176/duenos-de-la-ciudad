@@ -207,7 +207,7 @@
 .boton.activo { background: var(--oro-viejo); border-color: var(--oro-viejo); color: var(--tinta); }
 .nueva { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.8rem; color: var(--piedra); }
 .nueva select { font: 0.85rem "Inter", sans-serif; color: var(--papel); background: #2b333c; border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 6px; padding: 0.3rem 0.3rem; }
-.velocidad, .idioma { display: inline-flex; gap: 0.2rem; }
+.velocidad, .idioma, .sonido { display: inline-flex; gap: 0.2rem; }
 
 /* Imágenes que aún no han cargado (o que todavía no existen): no se ven. */
 .por-cargar { display: none; }

@@ -123,7 +123,28 @@ recuerda), elige ficha y juega.
   la mía aún no se ha aplicado, y volver a ofrecer los botones con datos viejos dejaría repetirla. El error llega en la vista y se
   traduce con `src/ui/errores.js`.
 - **Tiene en cuenta que el tablero anima antes de publicar:** el celular no ve el resultado hasta que acaba la animación.
-- Vibra al empezar el turno, al abrirse una subasta o al llegar un trato, y pide que la pantalla no se apague.
+- Vibra y suena un aviso (`src/ui/sonido.js`) al empezar el turno, al abrirse una subasta o al llegar un trato, y pide que la pantalla
+  no se apague. El aviso sonoro existe porque los iPhone no vibran desde el navegador; viene encendido y se apaga en la pestaña Mesa
+  (se recuerda en el celular). Los navegadores no dejan sonar hasta que alguien toca la pantalla: en el celular eso pasa solo, al
+  escribir el nombre y elegir ficha.
+
+## El sonido y la voz del tablero
+
+No hay archivos de audio: todo se sintetiza con WebAudio en el navegador (`src/ui/sonido.js`), así no pesa nada, no hay derechos de
+nadie y suena igual en los dos idiomas.
+
+- **Qué suena con cada evento** lo dice `sonidoDeEvento(e)`, una función pura. El dinero que ya suena con su propio evento (la compra, la
+  obra, el sueldo…) no suena dos veces. Cada sonido es una receta del catálogo `SONIDOS` (notas, golpes de ruido filtrado y
+  campanitas metálicas); `tests/sonido.test.js` revisa cada receta con un audio de mentira y `tests/sonido-navegador.test.js` las
+  «graba» con el audio de Chrome para medir que se oigan, no se recorten y no se alarguen.
+- **El reproductor** (`src/ui/tablero/reproductor.js`) lanza el sonido de cada evento a la vez que su animación. Con el tablero a ×4 o más
+  solo suena lo principal; los sonidos se acortan con la velocidad y no suena nada hasta el primer toque de pantalla.
+- **La voz** (`src/ui/voz.js`, `speechSynthesis`) es opcional y viene apagada. Lee las frases del narrador de los eventos que cuentan
+  (compras, alquileres, cartas con su texto, subastas, quiebras…), elige la mejor voz del idioma que tenga el equipo y el reproductor
+  espera a que acabe cada frase antes de seguir, como un comentarista. A ×4 o más no habla. Si el navegador no tiene voz, el botón no sale.
+- **Los botones «Sonido» y «Voz»** del panel del tablero se recuerdan en el navegador (`duenos:sonido`).
+- **El banco de sonidos** (`public/sonidos.html`, también con `?idioma=en`) tiene un botón por cada sonido y uno para oírlos todos: sirve
+  para ajustarlos sin jugar una partida.
 
 ## Las reglas de seguridad
 

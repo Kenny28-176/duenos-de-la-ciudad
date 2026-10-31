@@ -62,6 +62,7 @@ están en borrador en [`docs/DISENO.md`](docs/DISENO.md) y las ideas para despu�
 | Red | Aislada en un módulo (`src/net/`) con un «transporte» intercambiable (en memoria para las pruebas, Firebase para jugar). Así se puede añadir después un modo de red local o de navegador a navegador sin tocar el motor. Ver `docs/RED.md`. |
 | Stack | JS modular (módulos ES) sin paso de compilación. Pantallas con Preact + htm, copiados en `public/vendor/`. Nada se carga de servidores externos. |
 | Tablero visual | **2D**: SVG generado desde los datos, animaciones con la API del navegador y dados en CSS 3D. El dibujo va separado del motor. |
+| Sonido | **Sintetizado en el navegador** (WebAudio), sin archivos de audio: sin peso, sin derechos de nadie. El reproductor lo lanza con cada evento; la voz del narrador (`speechSynthesis`) es opcional y viene apagada. Nada suena hasta el primer toque de pantalla (regla de los navegadores). Ver `docs/RED.md`. |
 | Idiomas | Ningún texto visible va escrito en el código: sale de los diccionarios de `src/i18n/`, como en *Aldeanos vs Lobos*. Hay una carpeta por idioma (`es/` y `en/`), con cuatro partes: `juego`, `narrador`, `errores` e `interfaz`. |
 
 Reglas de oro:
@@ -84,8 +85,8 @@ Reglas de oro:
 ## Mapa del código
 
 ```
-index.html, public/      portada (es y en/), tablero.html y jugador.html (las pantallas del tablero y del celular) y sus
-                         estilos (tema.css es la paleta compartida)
+index.html, public/      portada (es y en/), tablero.html y jugador.html (las pantallas del tablero y del celular), sonidos.html
+                         (el banco de sonidos: un botón por sonido) y sus estilos (tema.css es la paleta compartida)
 public/visuales/         imágenes del juego (marca, tablero, fichas, tarjetas, botones, interfaz) y su CREDITOS.md
 src/data/                los datos del juego: tablero.json, economia.json, fichas.json y cartas.json, y cargar.js
 src/engine/              el motor puro: juego.js (acciones y permisos), turno, cartas, subasta, gestion, tratos,
@@ -100,7 +101,9 @@ src/net/                 la red: protocolo.js (qué se escribe y dónde), anfitr
 src/i18n/                traducir.js e idioma.js (textos y formatos) y un diccionario por idioma en es/ y en/
 src/ui/                  preact.js (Preact + htm), almacen.js y usarAlmacen.js (datos que repintan la pantalla),
                          imagen.js, qr.js, errores.js (traduce los errores del motor), narrador.js (de eventos a
-                         frases) y cola.js (cola de animaciones)
+                         frases), cola.js (cola de animaciones), sonido.js (el sonido, sintetizado con WebAudio: qué suena con
+                         cada evento y las recetas de cada sonido; sin archivos de audio), voz.js (el narrador en voz alta, con
+                         speechSynthesis) y sonidos.js (la página del banco de sonidos)
 src/ui/tablero/          la pantalla del tablero: app.js (arranque), componentes.js (panel, dados, cartas, subasta…),
                          reproductor.js (anima los eventos en orden), capas.js (fichas, dueños y edificios sobre el
                          SVG), dibujo.js (el tablero en SVG), geometria.js (dónde va cada casilla y cada ficha),

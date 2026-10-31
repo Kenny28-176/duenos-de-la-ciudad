@@ -20,5 +20,6 @@ export function PestanaMesa({ c }) {
       </div>
       <span class="dinero">${f.quebrado ? '' : dinero(f.dinero)}</span>
     </li>`)}
-  </ol>`;
+  </ol>
+  <button type="button" class=${`chip ajuste ${c.avisoSonoro ? 'elegida' : ''}`.trim()} aria-pressed=${Boolean(c.avisoSonoro)} onClick=${c.alternarAviso}>${t('jugador.mesa.aviso_sonoro')}</button>`;
 }

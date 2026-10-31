@@ -191,6 +191,10 @@ function Controles({ d, acciones }) {
     <button class="boton" onClick=${() => acciones.nueva(jugadores)}>${t('controles.nueva')}</button>
     ${d.red ? html`<button class="boton principal" onClick=${acciones.abrirSala}>${t('controles.sala')}</button>` : null}` : html`<button class="boton" onClick=${acciones.cerrarSala}>${t('controles.cerrar_sala')}</button>`}
     <span class="idioma" role="group">${['es', 'en'].map(l => html`<button class=${`boton chico ${d.idioma === l ? 'activo' : ''}`} onClick=${() => acciones.idioma(l)}>${l.toUpperCase()}</button>`)}</span>
+    <span class="sonido" role="group">
+      <button class=${`boton chico ${d.sonido.efectos ? 'activo' : ''}`} aria-pressed=${d.sonido.efectos} title=${t('controles.sonido.ayuda')} onClick=${acciones.alternarSonido}>${t('controles.sonido')}</button>
+      ${d.sonido.hayVoz ? html`<button class=${`boton chico ${d.sonido.voz ? 'activo' : ''}`} aria-pressed=${d.sonido.voz} title=${t('controles.voz.ayuda')} onClick=${acciones.alternarVoz}>${t('controles.voz')}</button>` : null}
+    </span>
   </section>`;
 }
 

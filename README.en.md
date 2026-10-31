@@ -71,6 +71,11 @@ you take it off (so the game doesn't stall). A phone that reloads goes back to i
 reloaded or closed by accident, opening it again (in the same browser) shows **Resume the game**: it picks up the same room
 and the phones carry on where they were. A saved game is valid for 12 hours.
 
+**Sound:** the board plays sounds (dice, steps, coins, auctions, cards…) as soon as someone taps the screen, because browsers do not
+allow sound before that. There are no audio files: the browser synthesises everything. In the panel, **Sound** turns it off and **Voice**
+turns on a narrator that reads out what happens (off by default, and only shown if the device has voices). Each phone chimes, and
+vibrates if it can, when it is that player's turn; turn it off in the **Table** tab. `public/sonidos.html` plays every sound one by one.
+
 ## Development
 
 Requires [Node.js](https://nodejs.org/) 22 or later. There are no dependencies to install.

@@ -16,13 +16,15 @@ import { codigoDeSala } from '../../net/protocolo.js';
 import { crearAlmacen } from '../almacen.js';
 import { crearNarrador } from '../narrador.js';
 import { html, render } from '../preact.js';
+import { crearSonido } from '../sonido.js';
+import { crearVoz } from '../voz.js';
 import { crearCapas } from './capas.js';
 import { Pantalla } from './componentes.js';
 import { crearDemo } from './demo.js';
 import { dibujarTablero } from './dibujo.js';
 import { geometriaTablero } from './geometria.js';
 import { crearReproductor } from './reproductor.js';
-import { nombreMostrado } from './vista.js';
+import { datosDeCarta, nombreMostrado } from './vista.js';
 
 const parametros = new URLSearchParams(location.search);
 const numero = (nombre, porDefecto, min, max) => Math.min(max, Math.max(min, Number(parametros.get(nombre)) || porDefecto));
@@ -48,7 +50,25 @@ const estadoInicial = () => ({
   pausado: false, velocidad: numero('velocidad', 1, 1, 100), idioma, jugadores: numero('jugadores', 4, 2, 8),
   modo: 'demo', sala: null, red: null, delegados: [], publicadas: 0,
 });
-const almacen = crearAlmacen(estadoInicial());
+
+// --- Sonido y voz -------------------------------------------------------------------------------------------------------
+// El sonido está encendido y la voz del narrador apagada; lo que se elige se recuerda en este navegador. Los navegadores no dejan
+// sonar hasta que alguien toca la pantalla: el primer toque (o tecla) crea el audio, y hasta entonces la partida es muda.
+const CLAVE_SONIDO = 'duenos:sonido';
+const leerPreferenciasDeSonido = () => {
+  try { return JSON.parse(localStorage.getItem(CLAVE_SONIDO) ?? '{}') ?? {}; } catch { return {}; }
+};
+const guardarPreferenciasDeSonido = () => {
+  try { localStorage.setItem(CLAVE_SONIDO, JSON.stringify({ efectos: sonido.estado().activo, voz: voz.activa() })); } catch { /* sin almacenamiento */ }
+};
+const preferencias = leerPreferenciasDeSonido();
+const sonido = crearSonido({ activo: preferencias.efectos !== false });
+const voz = crearVoz();
+voz.poner(preferencias.voz === true);
+const estadoDeSonido = () => ({ efectos: sonido.estado().activo, voz: voz.activa(), hayVoz: voz.disponible });
+for (const tipo of ['pointerdown', 'keydown', 'touchend', 'click']) document.addEventListener(tipo, () => sonido.desbloquear(), { passive: true });
+
+const almacen = crearAlmacen({ ...estadoInicial(), sonido: estadoDeSonido() });
 
 let capas = null;
 let reproductor = null;
@@ -69,8 +89,15 @@ function montarTablero() {
   if (estado) capas.actualizar(estado);
 }
 
+// El texto de una carta tal como se ve en pantalla, para que la voz lo lea.
+function textoDeCarta(e) {
+  const carta = datosDeCarta(motor.ctx, e, b => t(`barrio.${b}`));
+  return t(`carta.${carta.id}`, carta.datos);
+}
+
 const nuevoReproductor = (fuente, extra = {}) => crearReproductor({
-  motor, demo: fuente, almacen, capas: () => capas, narrador: narradorActual, nombreBarrio: b => t(`barrio.${b}`), ...extra,
+  motor, demo: fuente, almacen, capas: () => capas, narrador: narradorActual, nombreBarrio: b => t(`barrio.${b}`),
+  sonido, voz, textoDeCarta, idioma: () => almacen.leer().idioma, ...extra,
 });
 
 // --- Demostración ----------------------------------------------------------------------------------------------------
@@ -321,10 +348,24 @@ function empezar(opciones) {
 // --- La pantalla -------------------------------------------------------------------------------------------------------
 
 // Con ?depurar=1, la pantalla enseña su almacén en window.duenos (para probarla desde fuera, p. ej. tools/ver.js).
-if (parametros.has('depurar')) window.duenos = { almacen, motor, t, sala: () => sala };
+if (parametros.has('depurar')) window.duenos = { almacen, motor, t, sala: () => sala, sonido, voz };
 
 const acciones = {
   pausar: () => reproductor?.pausar(),
+  // Encender o apagar el sonido; al encenderlo suena una muestra, para saber que funciona.
+  alternarSonido: () => {
+    sonido.poner(!sonido.estado().activo);
+    sonido.desbloquear();
+    guardarPreferenciasDeSonido();
+    almacen.cambiar({ sonido: estadoDeSonido() });
+    setTimeout(() => sonido.probar(), 150);
+  },
+  alternarVoz: () => {
+    voz.poner(!voz.activa());
+    guardarPreferenciasDeSonido();
+    almacen.cambiar({ sonido: estadoDeSonido() });
+    if (voz.activa()) voz.decir(t('voz.activada'), { idioma: almacen.leer().idioma });
+  },
   velocidad: v => almacen.cambiar({ velocidad: v }),
   nueva: jugadores => nuevaPartida(jugadores, Date.now() % 100000),
   idioma: async lang => {

@@ -71,6 +71,11 @@ se lo quites (así la partida no se queda parada). Un celular que se recarga vue
 por accidente la página del tablero, al volver a abrirla (en el mismo navegador) sale **Recuperar la partida**: retoma la misma
 sala y los celulares siguen donde estaban. La partida guardada vale 12 horas.
 
+**El sonido:** el tablero suena (dados, pasos, monedas, subastas, cartas…) en cuanto alguien toca la pantalla, porque los navegadores no
+dejan sonar antes. No hay archivos de audio: lo sintetiza el navegador. En el panel, **Sonido** lo apaga y **Voz** enciende un narrador que
+lee en voz alta lo que pasa (viene apagado y solo sale si el equipo tiene voces). Cada celular avisa con un sonido, y vibra si puede,
+cuando le toca; se apaga en la pestaña **Mesa**. Con `public/sonidos.html` se oyen uno a uno todos los sonidos.
+
 ## Desarrollo
 
 Hace falta [Node.js](https://nodejs.org/) 22 o posterior. No hay dependencias que instalar.

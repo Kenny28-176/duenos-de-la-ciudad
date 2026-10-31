@@ -185,6 +185,7 @@ small { color: var(--piedra); }
 .fila-mesa.yo { background: var(--noche-3); }
 .fila-mesa.turno { outline: 2px solid var(--ambar); }
 .fila-mesa.quebrado { opacity: 0.55; }
+.chip.ajuste { align-self: flex-start; margin-top: 0.3rem; }
 .fila-mesa .puesto { width: 1.2rem; text-align: center; color: var(--piedra); font-variant-numeric: tabular-nums; }
 .fila-mesa .info { flex: 1; display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; }
 .fila-mesa .nombre { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
