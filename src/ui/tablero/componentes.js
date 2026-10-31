@@ -121,6 +121,20 @@ function Final({ fin, filas, alNueva, texto }) {
   </div>`;
 }
 
+// El aviso de que hay una partida guardada, al abrir el tablero tras una recarga: recuperarla o descartarla.
+function Recuperar({ guardada, acciones }) {
+  const minutos = Math.max(0, Math.round((Date.now() - guardada.guardada) / 60000));
+  return html`<div class="recuperar" role="alertdialog" aria-labelledby="recuperar-titulo">
+    <h2 id="recuperar-titulo">${t('recuperar.titulo')}</h2>
+    <p>${t('recuperar.texto', { codigo: guardada.codigo, ronda: guardada.ronda, n: guardada.jugadores })}</p>
+    <p class="detalle">${minutos < 1 ? t('recuperar.ahora') : tn('recuperar.hace', minutos)}</p>
+    <div class="botones-vestibulo">
+      <button type="button" class="boton principal" onClick=${acciones.recuperarSala}>${t('recuperar.recuperar')}</button>
+      <button type="button" class="boton" onClick=${acciones.descartarPartida}>${t('recuperar.descartar')}</button>
+    </div>
+  </div>`;
+}
+
 // --- El panel de la derecha -------------------------------------------------------------------------------------------
 
 // «delegable»: se puede poner un bot a jugar por esta persona (solo en una partida con celulares). «delegado»: ya lo tiene.
@@ -199,6 +213,7 @@ export function Pantalla({ almacen, motor, alMontar, acciones }) {
         <${Aviso} aviso=${d.aviso} />
         <${Final} fin=${d.fin} filas=${filas} alNueva=${() => (d.modo === 'demo' ? acciones.nueva(d.jugadores) : acciones.cerrarSala())} texto=${t(d.modo === 'demo' ? 'controles.nueva' : 'controles.cerrar_sala')} />
         ${d.modo === 'sala' ? html`<${Vestibulo} sala=${d.sala} estado=${d.estado} acciones=${acciones} colores=${f => motor.ctx.fichas[f].color} />` : null}
+        ${d.modo === 'demo' && d.recuperable ? html`<${Recuperar} guardada=${d.recuperable} acciones=${acciones} />` : null}
         ${d.error ? html`<div class="error-sala" role="alert">${d.error}</div>` : null}
       </div>
     </section>

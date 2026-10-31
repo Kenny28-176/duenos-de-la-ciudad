@@ -179,5 +179,13 @@
   "panel.poner_bot": "Let a bot play for {jugador} (if they step away)",
   "panel.quitar_bot": "Give control back to {jugador}",
   "jugador.subasta.cuenta": "The auction closes if nobody bids within {n} s.",
-  "sala.quitar": "Remove {jugador} from the room"
+  "sala.quitar": "Remove {jugador} from the room",
+  "recuperar.titulo": "There is an unfinished game",
+  "recuperar.texto": "Room {codigo} was left at round {ronda}, with {n} players. If the phones are still open, they come back by themselves.",
+  "recuperar.hace.uno": "Saved {n} minute ago.",
+  "recuperar.hace.otros": "Saved {n} minutes ago.",
+  "recuperar.ahora": "Saved a moment ago.",
+  "recuperar.recuperar": "Resume the game",
+  "recuperar.descartar": "Discard it and start over",
+  "recuperar.ocupada": "Room {codigo} is being run by another board."
 }

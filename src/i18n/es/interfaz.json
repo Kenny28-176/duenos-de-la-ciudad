@@ -179,5 +179,13 @@
   "panel.poner_bot": "Que un bot juegue por {jugador} (si se ausenta)",
   "panel.quitar_bot": "Devolver el control a {jugador}",
   "jugador.subasta.cuenta": "La subasta se cierra si nadie puja en {n} s.",
-  "sala.quitar": "Quitar a {jugador} de la sala"
+  "sala.quitar": "Quitar a {jugador} de la sala",
+  "recuperar.titulo": "Hay una partida sin terminar",
+  "recuperar.texto": "La sala {codigo} se quedó en la ronda {ronda}, con {n} jugadores. Si los celulares siguen abiertos, vuelven solos.",
+  "recuperar.hace.uno": "Guardada hace {n} minuto.",
+  "recuperar.hace.otros": "Guardada hace {n} minutos.",
+  "recuperar.ahora": "Guardada hace un momento.",
+  "recuperar.recuperar": "Recuperar la partida",
+  "recuperar.descartar": "Descartarla y empezar de nuevo",
+  "recuperar.ocupada": "La sala {codigo} la está llevando otro tablero."
 }

@@ -67,8 +67,9 @@ La laptop hace de tablero y de buzón, así que no hace falta Firebase ni intern
 4. Cada jugador elige su ficha. Si faltan jugadores, el tablero añade bots. Cuando estén todos, **Empezar la partida**.
 
 Si alguien se ausenta o se le cae el celular, pulsa **BOT** en su tarjeta del tablero: un bot juega por esa persona hasta que
-se lo quites (así la partida no se queda parada). Un celular que se recarga vuelve solo a su sitio. Si recargas la página del
-tablero a media partida, la sala se pierde.
+se lo quites (así la partida no se queda parada). Un celular que se recarga vuelve solo a su sitio. Si se recarga o se cierra
+por accidente la página del tablero, al volver a abrirla (en el mismo navegador) sale **Recuperar la partida**: retoma la misma
+sala y los celulares siguen donde estaban. La partida guardada vale 12 horas.
 
 ## Desarrollo
 

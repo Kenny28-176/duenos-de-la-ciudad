@@ -89,7 +89,23 @@ GET  /red/info        { ok, direcciones }: dónde encontrar la laptop en la wifi
   que llega un segundo trozo (aunque haya relleno y datos), así que lo primero que se enviaba tardaba varios segundos. Con
   `text/plain` y `X-Content-Type-Options: nosniff` llega en milisegundos; por eso el relé manda ese tipo.
 - **No tiene ninguna seguridad** (cualquiera de la red puede leer y escribir) y lo que guarda se pierde al apagarlo: es para
-  casa y para desarrollo. Si se recarga la página del tablero a media partida, la sala se pierde.
+  casa y para desarrollo.
+
+## Recuperar la partida si se recarga el tablero
+
+La partida vive en el tablero (la «autoridad»): si su página se recarga o se cierra, se perdería. Para evitarlo:
+
+- **Se guarda** tras cada jugada, ya publicada, en el `localStorage` del navegador del tablero (`duenos:partida`): la
+  instantánea del anfitrión (`anfitrion.instantanea()`), que lleva el estado entero **con el azar y los mazos** (que no se
+  publican), quién es cada celular y las cuentas de publicaciones y acuses (`atendidas`), más los bots y los delegados. Pesa
+  unas decenas de KB. Se borra al cerrar la sala o al acabar la partida, y se da por abandonada a las 12 horas.
+- **Al volver a abrir** el tablero se ofrece «Recuperar la partida» (o descartarla). Recuperar crea un anfitrión con la opción
+  `recuperar` sobre **la misma sala**: reescribe lo publicado, sigue contando las publicaciones desde donde iban y retoma las
+  acciones que los celulares hubieran mandado mientras tanto (siguen en el buzón). Los celulares no se enteran: su conexión se
+  recupera sola y vuelven a ver su estado.
+- **Límites:** la jugada que se estuviera animando en ese momento (aplicada pero aún sin publicar) se pierde, y el celular que la
+  mandó puede repetirla; solo funciona en el mismo navegador (es donde está lo guardado); y si otro tablero ha cogido esa sala, no
+  se le quita.
 
 ## La pantalla del celular
 
@@ -139,6 +155,8 @@ Están en [`database.rules.json`](../database.rules.json). Lo que dicen, en cort
 - `tests/jugador-vista.test.js`: lo que enseña el celular. Comprueba, en cientos de estados de partidas entre bots, que cada cifra
   de un botón es la que aplica el motor.
 - `tests/red-atendidas.test.js`: el acuse de recibo (`atendidas`), también con publicaciones ajenas por medio.
+- `tests/red-recuperar.test.js`: la instantánea del anfitrión; restaurada, devuelve el estado entero (con el azar y los mazos), la
+  partida sigue idéntica, y los celulares siguen jugando con el tablero nuevo como si no hubiera pasado nada.
 - `tests/partida-celulares.test.js`: partidas enteras por la interfaz de celulares de Chrome con un jugador al azar, con un anfitrión
   en Node y con la página del tablero (`tools/jugar-con-celulares.js`).
 - `tests/pantalla-red.test.js` y `tests/pantalla-celular.test.js`: en un Chrome de verdad, el tablero abre la sala y un celular

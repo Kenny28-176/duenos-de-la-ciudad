@@ -103,6 +103,63 @@ function direccionParaCelulares(red) {
     : { raiz: location.origin, sinRed: true, otras: [] };
 }
 
+// Lo que enseña el vestíbulo y la partida para entrar: el código, la dirección y el enlace del QR.
+function datosDeSala(red, codigo) {
+  const { raiz, sinRed, otras } = direccionParaCelulares(red);
+  const ruta = new URL('jugador.html', location.href).pathname;
+  const url = `${raiz}${ruta}?sala=${codigo}`;
+  return { codigo, url, direccion: new URL(url).host + ruta, sinRed, otras: otras.map(o => new URL(o).host + ruta) };
+}
+
+// --- Guardar la partida, para poder recuperarla -------------------------------------------------------------------------
+
+// Tras cada jugada se guarda en el navegador una instantánea de la sala. Si la página del tablero se recarga o se cierra por accidente,
+// al volver se ofrece «Recuperar la partida»: el tablero retoma la misma sala y los celulares siguen donde estaban.
+const CLAVE_PARTIDA = 'duenos:partida';
+const HORAS_DE_VIGENCIA = 12; // pasado este tiempo, una partida guardada se da por abandonada
+
+function leerPartidaGuardada() {
+  try {
+    const guardada = JSON.parse(localStorage.getItem(CLAVE_PARTIDA) ?? 'null');
+    if (guardada?.version !== 1 || guardada.instantanea?.estado?.fase !== 'juego') return null;
+    return Date.now() - guardada.guardada < HORAS_DE_VIGENCIA * 3600 * 1000 ? guardada : null;
+  } catch {
+    return null;
+  }
+}
+
+// Lo poco que enseña el aviso de recuperar.
+function resumenDeGuardada() {
+  const guardada = leerPartidaGuardada();
+  if (!guardada) return null;
+  const { estado } = guardada.instantanea;
+  return { codigo: guardada.codigo, guardada: guardada.guardada, ronda: estado.ronda, jugadores: estado.ids.length };
+}
+
+function olvidarPartidaGuardada() {
+  try { localStorage.removeItem(CLAVE_PARTIDA); } catch { /* sin almacenamiento */ }
+}
+
+// Borra lo guardado solo si es de esa sala (si hay otra partida guardada, no se toca).
+function olvidarSiEsDe(codigo) {
+  try {
+    const guardada = JSON.parse(localStorage.getItem(CLAVE_PARTIDA) ?? 'null');
+    if (!guardada || guardada.codigo === codigo) olvidarPartidaGuardada();
+  } catch {
+    olvidarPartidaGuardada();
+  }
+}
+
+function guardarPartida(esta) {
+  try {
+    // Una partida que ha acabado ya no hay que recuperarla.
+    if (esta.anfitrion.estado().fase !== 'juego') { olvidarSiEsDe(esta.codigo); return; }
+    localStorage.setItem(CLAVE_PARTIDA, JSON.stringify({
+      version: 1, guardada: Date.now(), codigo: esta.codigo, bots: esta.bots, delegados: [...esta.delegados], instantanea: esta.anfitrion.instantanea(),
+    }));
+  } catch { /* sin sitio o sin almacenamiento: la partida sigue, pero no se podrá recuperar */ }
+}
+
 async function abrirSala() {
   const { red } = almacen.leer();
   if (!red || sala) return;
@@ -118,16 +175,37 @@ async function abrirSala() {
     const anfitrion = crearAnfitrion({ transporte, motor, codigo });
     await anfitrion.abrir();
     sala = { transporte, anfitrion, codigo, cerrada: false, bots: 0, fichasPedidas: new Set(), delegados: new Set(), orquesta: null };
-    const { raiz, sinRed, otras } = direccionParaCelulares(red);
-    const ruta = new URL('jugador.html', location.href).pathname;
-    const url = `${raiz}${ruta}?sala=${codigo}`;
     const { velocidad, idioma: lang } = almacen.leer();
-    almacen.cambiar({
-      ...estadoInicial(), velocidad, idioma: lang, red, modo: 'sala', estado: anfitrion.estado(),
-      sala: { codigo, url, direccion: new URL(url).host + new URL(url).pathname, sinRed, otras: otras.map(o => new URL(o).host + ruta) },
-    });
+    almacen.cambiar({ ...estadoInicial(), velocidad, idioma: lang, red, modo: 'sala', estado: anfitrion.estado(), sala: datosDeSala(red, codigo) });
     montarTablero();
     atenderVestibulo(sala);
+  } catch (error) {
+    sala = null;
+    almacen.cambiar({ error: t('sala.error', { motivo: error.message }) });
+    nuevaPartida(almacen.leer().jugadores);
+  }
+}
+
+// Retoma la sala de la partida guardada tras recargar la página: el mismo código, el mismo estado y los mismos celulares, que no se
+// enteran de nada (si siguen abiertos, vuelven solos a su sitio).
+async function recuperarSala() {
+  const { red } = almacen.leer();
+  const guardada = leerPartidaGuardada();
+  if (!red || sala || !guardada) return;
+  reproductor?.parar();
+  try {
+    const transporte = conectar(red.modo, identidad('tablero', 'duenos:uid-tablero'));
+    // Si esa sala la lleva otro tablero, no se le quita.
+    const meta = await transporte.get(`salas/${guardada.codigo}/meta`);
+    if (meta && meta.anfitrion !== transporte.uid) throw new Error(t('recuperar.ocupada', { codigo: guardada.codigo }));
+    const anfitrion = crearAnfitrion({ transporte, motor, codigo: guardada.codigo, recuperar: guardada.instantanea });
+    await anfitrion.abrir();
+    sala = {
+      transporte, anfitrion, codigo: guardada.codigo, cerrada: false, bots: guardada.bots ?? 0, fichasPedidas: new Set(),
+      delegados: new Set(guardada.delegados ?? []), orquesta: null,
+    };
+    almacen.cambiar({ red, recuperable: null, sala: datosDeSala(red, guardada.codigo) });
+    empezarPartida(sala, null);
   } catch (error) {
     sala = null;
     almacen.cambiar({ error: t('sala.error', { motivo: error.message }) });
@@ -150,7 +228,8 @@ async function atenderVestibulo(esta) {
 }
 
 // Pasa del vestíbulo a la partida: el primer paso (el reparto del dinero inicial) se anima como los demás y, al acabar cada
-// paso, se publica para que los celulares lo vean cuando termina la animación.
+// paso, se publica para que los celulares lo vean cuando termina la animación. Sin primer paso (primerPaso = null), la partida se
+// retoma donde estaba (tras recargar la página): no hay nada que repartir.
 function empezarPartida(esta, primerPaso) {
   const orquesta = crearOrquesta({ anfitrion: esta.anfitrion, motor, velocidad: () => almacen.leer().velocidad, delegados: () => esta.delegados });
   esta.orquesta = orquesta;
@@ -169,13 +248,14 @@ function empezarPartida(esta, primerPaso) {
   const estado = esta.anfitrion.estado();
   const { velocidad, idioma: lang, red, sala: datosSala } = almacen.leer();
   almacen.cambiar({
-    ...estadoInicial(), velocidad, idioma: lang, red, modo: 'partida', sala: datosSala, estado,
-    dinero: Object.fromEntries(estado.orden.map(id => [id, 0])),
+    ...estadoInicial(), velocidad, idioma: lang, red, modo: 'partida', sala: datosSala, estado, delegados: [...esta.delegados],
+    dinero: Object.fromEntries(estado.orden.map(id => [id, primerPaso ? 0 : estado.jugadores[id].dinero])),
   });
   montarTablero();
   // Al publicar se cuenta una publicación más: la cuenta atrás de la subasta vuelve a empezar (la orquesta también cuenta desde ahí).
   const despuesDePaso = async () => {
     await esta.anfitrion.publicar();
+    guardarPartida(esta);
     almacen.cambiar(d => ({ publicadas: d.publicadas + 1 }));
   };
   reproductor = nuevoReproductor(fuente, { despuesDePaso });
@@ -188,12 +268,14 @@ async function cerrarSala() {
   sala = null;
   esta.cerrada = true;
   reproductor?.parar();
+  olvidarSiEsDe(esta.codigo);
   try {
     await esta.anfitrion.cerrar();
   } finally {
     esta.transporte.cerrar?.();
   }
   nuevaPartida(almacen.leer().jugadores);
+  almacen.cambiar({ recuperable: resumenDeGuardada() }); // por si hay otra partida guardada
 }
 
 // Un bot para completar la mesa: elige una ficha libre al azar.
@@ -250,7 +332,8 @@ const acciones = {
     almacen.cambiar({ idioma: lang });
     montarTablero();
   },
-  abrirSala, cerrarSala, anadirBot, quitarJugador, empezar, delegar,
+  abrirSala, cerrarSala, anadirBot, quitarJugador, empezar, delegar, recuperarSala,
+  descartarPartida: () => { olvidarPartidaGuardada(); almacen.cambiar({ recuperable: null }); },
 };
 
 alCambiarIdioma(lang => {
@@ -259,7 +342,8 @@ alCambiarIdioma(lang => {
 });
 
 // ¿Se puede jugar con celulares desde esta página? Solo si el servidor de la laptop (tools/serve.js) está detrás.
-almacen.cambiar({ red: await redDisponible() });
+const redLocal = await redDisponible();
+almacen.cambiar({ red: redLocal, recuperable: redLocal ? resumenDeGuardada() : null });
 
 // El contenedor del tablero está vacío para Preact: el SVG lo pone esta función y lo mueve capas.js.
 render(html`<${Pantalla} almacen=${almacen} motor=${motor} acciones=${acciones} alMontar=${el => {

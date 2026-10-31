@@ -126,8 +126,8 @@ docs/                    DISENO.md (las reglas tal como las aplica el motor), VI
 Lo que llega en las fases 3 y 4:
 
 - el transporte con Firebase de verdad (`src/net/firebase.js`), cuando exista el proyecto (`docs/FIREBASE.md`);
-- guardar la partida: hoy, si se recarga el tablero a media partida, la sala se pierde (un celular que se recarga sí vuelve a
-  su sitio, porque su identidad se guarda en el navegador).
+- guardar la partida **ya está hecho en el navegador del tablero** (`localStorage`, «Recuperar la partida»; ver `docs/RED.md`):
+  falta guardarla también fuera del navegador (en Firebase) para poder retomar una partida en otro dispositivo.
 
 ## Cómo se trabaja
 

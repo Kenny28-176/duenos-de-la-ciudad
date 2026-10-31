@@ -234,6 +234,13 @@
 /* --- El vestíbulo: antes de empezar una partida con celulares ---------------------------------------------------------- */
 .vestibulo { position: absolute; inset: 11cqw; display: grid; grid-template-columns: minmax(0, 15rem) minmax(0, 1fr); gap: 1.4rem; padding: 1.4rem;
   background: rgba(30, 36, 43, 0.97); border: 1px solid var(--oro-viejo); border-radius: 10px; overflow: auto; box-shadow: 0 1.2cqw 2.6cqw rgba(0, 0, 0, 0.55); animation: aparece 0.4s both; --tx: 0px; --ty: 0px; }
+/* El aviso de «Recuperar la partida»: sobre el tablero, al volver tras recargar la página. */
+.recuperar { position: absolute; left: 50%; top: 50%; width: min(34rem, 82%); transform: translate(-50%, -50%); padding: 1.4rem 1.6rem; text-align: center; z-index: 5;
+  background: rgba(30, 36, 43, 0.98); border: 1px solid var(--oro-viejo); border-radius: 10px; box-shadow: 0 1.2cqw 2.6cqw rgba(0, 0, 0, 0.55); animation: aparece 0.4s both; --tx: -50%; --ty: -50%; }
+.recuperar h2 { margin: 0 0 0.6rem; font: 600 1.5rem "Fraunces", Georgia, serif; color: var(--oro-viejo); }
+.recuperar p { margin: 0.3rem 0; }
+.recuperar .detalle { color: var(--piedra); font-size: 0.9rem; }
+.recuperar .botones-vestibulo { justify-content: center; }
 .vestibulo-izquierda { display: grid; align-content: start; justify-items: center; gap: 0.5rem; }
 .vestibulo .qr { width: 100%; background: #fff; padding: 0.4rem; border-radius: 8px; }
 .vestibulo .qr svg { display: block; width: 100%; height: auto; }

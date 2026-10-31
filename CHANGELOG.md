@@ -121,6 +121,9 @@ Aquí se anotan los cambios de cada versión. Las versiones siguen el esquema ma
 - **Partidas enteras por la interfaz del celular** (`tools/jugar-con-celulares.js`, y dos de ellas en `npm test`): celulares de Chrome
   con un jugador al azar que pulsa lo que ve (tirar, comprar, subastar, construir, Bolsa, tratos, habilidades, deudas, bancarrota),
   junto a bots. Busca atascos, errores de JavaScript y acciones que el tablero rechaza; en diez partidas (algunas largas, con quiebras) no encontró ninguno.
+- **Recuperar la partida si se recarga el tablero**: tras cada jugada se guarda una instantánea de la sala en el navegador; al
+  volver a abrir el tablero sale «Recuperar la partida», que retoma la misma sala (con el azar y los mazos, que no se publican) y los
+  celulares siguen donde estaban. Se puede descartar, y no se ofrece si es de hace más de 12 horas, ya acabó o está rota.
 - Si la conexión de un celular se queda muerta (se le apagó la pantalla), se recupera sola.
 - Pruebas de punta a punta en un Chrome de verdad: el celular entra, elige ficha y juega (`tests/pantalla-celular.test.js`), y
   el tablero abre una sala con celulares (`tests/pantalla-red.test.js`).
