@@ -89,8 +89,11 @@ export function creadorDeClaves({ reloj = () => Date.now(), azar = globalThis.cr
       if (k >= 0) ultimoAzar[k]++;
     } else {
       const bytes = new Uint8Array(12);
-      if (typeof azar?.getRandomValues === 'function') azar.getRandomValues(bytes);
-      else for (let k = 0; k < 12; k++) bytes[k] = Math.floor(Math.random() * 256);
+      const fuente = [azar, globalThis.crypto].find(c => typeof c?.getRandomValues === 'function');
+      // Sin crypto (ningún navegador de los que admite el juego lo está), la hora basta: la parte al azar solo evita que dos claves del
+      // mismo milisegundo choquen, y en el mismo milisegundo ya se suma uno a la anterior.
+      if (fuente) fuente.getRandomValues(bytes);
+      else for (let k = 0; k < 12; k++) bytes[k] = (ultimaHora * (k + 7)) & 255;
       ultimoAzar = [...bytes].map(b => b % 64);
     }
     return prefijo + ultimoAzar.map(n => ALFABETO[n]).join('');

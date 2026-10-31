@@ -7,11 +7,18 @@ import { crearTransporteHttp } from './http.js';
 
 // Un identificador al azar. crypto.randomUUID solo existe en páginas seguras (https o localhost), y los celulares entran por
 // http://192.168.…, así que si falta se usan bytes al azar (getRandomValues sí está en todas partes).
+let identidadesSinAzar = 0;
 function identificadorAlAzar(azar) {
   if (typeof azar?.randomUUID === 'function') return azar.randomUUID();
   const bytes = new Uint8Array(16);
-  if (typeof azar?.getRandomValues === 'function') azar.getRandomValues(bytes);
-  else for (let k = 0; k < bytes.length; k++) bytes[k] = Math.floor(Math.random() * 256);
+  const fuente = [azar, globalThis.crypto].find(c => typeof c?.getRandomValues === 'function');
+  if (fuente) fuente.getRandomValues(bytes);
+  else {
+    // Sin crypto (ningún navegador de los que admite el juego lo está): la hora y un contador. Para el relé de casa, que no tiene
+    // seguridad, basta con que no se repita.
+    const texto = `${Date.now()}-${++identidadesSinAzar}-${globalThis.performance?.now?.() ?? 0}`;
+    for (let k = 0; k < texto.length; k++) bytes[k % 16] = (bytes[k % 16] * 31 + texto.charCodeAt(k)) & 255;
+  }
   return [...bytes].map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
