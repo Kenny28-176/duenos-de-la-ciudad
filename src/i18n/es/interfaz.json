@@ -114,6 +114,7 @@
   "jugador.conectando": "Conectando con el tablero…",
   "jugador.conectando_lento": "Está tardando. ¿Tu celular está en la misma wifi que el tablero?",
   "jugador.sin_red": "No encuentro el tablero. Abre esta página desde la dirección que muestra el tablero, con tu celular en la misma wifi.",
+  "jugador.sin_servidor": "No he podido conectar con el servidor del juego. Mira que el celular tenga internet y vuelve a cargar la página.",
   "jugador.sin_sala": "No hay ninguna sala con el código {codigo}.",
   "jugador.cerrada": "El tablero cerró la sala.",
   "jugador.empezada": "La partida ya empezó y no se puede entrar a mitad.",

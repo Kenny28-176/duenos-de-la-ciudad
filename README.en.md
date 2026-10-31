@@ -10,7 +10,7 @@
 
 > 🚧 **Under construction.** A test game can already be played at home, with the laptop as the board and the phones on
 > the same wifi (see [“Play at home”](#play-at-home-local-mode)). Playing over the internet without installing anything
-> is not ready yet. The draft rules are in [`docs/DISENO.md`](docs/DISENO.md) (in Spanish).
+> is already built and tested: only the Firebase project is missing. The draft rules are in [`docs/DISENO.md`](docs/DISENO.md) (in Spanish).
 
 > A **free, open-source, non-profit** project under the [MIT](LICENSE) license. Sibling of
 > [Villagers vs Wolves](https://github.com/Kenny28-176/aldeanos-vs-lobos). Not affiliated with any commercial game
@@ -46,10 +46,10 @@
 | 0. Foundation | Repository, content guidelines, tests and publishing | Done |
 | 1. Engine | All rules, bots and a simulator to balance the economy | Done |
 | 2. Board | Animated board with a bot demo match | Done (see the [demo](public/tablero.html)) |
-| 3. Phones | The network between the board and the phones, and the phone screen | Done for playing at home (wifi); Firebase is still needed to play over the internet |
+| 3. Phones | The network between the board and the phones, and the phone screen | Done for playing at home (wifi); the online mode (Firebase) is built and tested, the project is still to be created |
 | 4. Management & trading | **v0.1**: building, mortgaging, debt, deals and game saving | Done (the game is saved in the board's browser; saving it elsewhere is missing) |
 | 5. Polish | Room settings, stats, English, accessibility, TV mode | **In progress**: English, sound and voice, the time limit, “play again” and the money log are done; stats, accessibility and TV mode are missing |
-| 6. Release | **v1.0** | Pending: Firebase, the brand icon and a test with real phones are missing |
+| 6. Release | **v1.0** | Pending: the Firebase project, the brand icon and a test with real phones are missing |
 
 Future ideas, such as a cooperative mode against a corporation, are in [`docs/IDEAS.md`](docs/IDEAS.md) (in Spanish).
 

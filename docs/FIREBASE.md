@@ -1,7 +1,8 @@
 # Crear el proyecto de Firebase
 
-> **Para el dueño del proyecto** (o para quien monte su propia copia del juego). Hay que hacerlo antes de la fase 3,
-> cuando los celulares empiecen a conectarse con el tablero. Son unos 15 minutos y no hace falta saber programar.
+> **Para el dueño del proyecto** (o para quien monte su propia copia del juego). El código ya está listo
+> (`src/net/firebase.js`): con este proyecto, el juego se juega por internet desde la web publicada, sin instalar nada. Son
+> unos 15 minutos y no hace falta saber programar.
 
 **Por qué hace falta.** El tablero (la laptop o tablet) y los celulares se hablan a través de una pequeña base de
 datos en internet: Firebase Realtime Database, de Google.
@@ -70,7 +71,7 @@ decir «solo tú puedes mandar tus jugadas», y nadie puede hacerse pasar por ot
 
 ## Paso 5 · Pasa los datos al proyecto
 
-Pégale estos datos a Claude en el chat (o, si montas tu copia, ponlos en `src/net/`, cuando exista):
+Pégale estos datos a Claude en el chat (o, si montas tu copia, pon el bloque en `src/net/firebase-config.js`):
 
 1. el bloque `firebaseConfig` del paso 4;
 2. el identificador del proyecto, si no quedó como `duenos-de-la-ciudad`;
@@ -79,27 +80,40 @@ Pégale estos datos a Claude en el chat (o, si montas tu copia, ponlos en `src/n
 **¿Es seguro compartir ese bloque?** Sí. La `apiKey` de una app web no es un secreto: la ve cualquiera que abra la web
 del juego. Lo que protege los datos son las reglas de la base de datos y el inicio de sesión anónimo.
 
+> Cuando la clave llegue al repositorio, puede que GitHub te mande un aviso de «Google API Key» encontrada. Es esta clave y
+> es pública por diseño: el aviso se puede cerrar como «falso positivo». Lo que sí sería grave es una clave privada de
+> cuenta de servicio (abajo).
+
 **Lo que nunca debes compartir con nadie**, tampoco con una IA:
 
 - la contraseña de tu cuenta de Google ni los códigos de verificación que te lleguen;
 - una **clave privada de cuenta de servicio**, que es un archivo `.json` que se descarga en Configuración del proyecto
   → Cuentas de servicio. No la generes: el juego no la necesita.
 
-## Más adelante (en la fase 3)
+## Paso 6 · Publica las reglas de seguridad
 
-Cuando el código de la red esté listo, quedarán dos pasos más. Se explicarán con detalle en su momento:
+Sin este paso, la base de datos sigue bloqueada (el modo del paso 2) y el juego no conecta.
 
-1. **Publicar las reglas de seguridad.** El proyecto traerá un archivo `database.rules.json`. Se copia en
-   **Realtime Database → Reglas** y se pulsa **Publicar**.
-2. **Restringir la clave de API** (unos 3 minutos). Así nadie puede usar la clave desde otras webs.
-   - Se hace en [Google Cloud](https://console.cloud.google.com/apis/credentials), en la clave «Browser key (auto
-     created by Firebase)».
-   - En **Restricciones de aplicaciones → Sitios web** se añaden `https://kenny28-176.github.io/*` y
-     `http://localhost:8080/*`.
-   - En **Restricciones de API** se dejan solo las que usa el juego (la lista exacta llegará con la fase 3).
+1. Abre el archivo [`database.rules.json`](../database.rules.json) del proyecto y copia todo su contenido.
+2. En la consola: **Realtime Database** → pestaña **Reglas**. Borra lo que haya, pega lo copiado y pulsa **Publicar**.
+3. Dile a Claude que ya están publicadas. Claude ejecuta `node tools/comprobar-reglas.js`, que prueba contra tu base de
+   datos 27 cosas que deben permitirse o rechazarse (con una sala de prueba que borra al acabar) y dice si alguna falla.
 
-   Conviene hacerlo **después** de la primera prueba: si una restricción está mal, el juego no conecta y cuesta saber
-   por qué.
+Si un día cambian las reglas del repositorio, hay que volver a publicarlas igual.
+
+## Paso 7 · Restringe la clave de API (después de la primera partida)
+
+Unos 3 minutos. Así nadie puede usar la clave desde otras webs. Conviene hacerlo **después** de la primera partida por
+internet: si una restricción está mal, el juego no conecta y cuesta saber por qué.
+
+1. Entra en [Google Cloud → Credenciales](https://console.cloud.google.com/apis/credentials) con la misma cuenta y elige
+   el proyecto. Abre la clave «Browser key (auto created by Firebase)».
+2. En **Restricciones de aplicaciones**, elige **Sitios web** y añade `https://kenny28-176.github.io/*` y
+   `http://localhost:8080/*`.
+3. En **Restricciones de API**, elige **Restringir clave** y deja solo **Identity Toolkit API** y **Token Service API**:
+   son las del inicio de sesión anónimo. La base de datos no usa la clave (usa el token de la sesión), así que no hace
+   falta añadirla.
+4. Pulsa **Guardar**. Los cambios tardan unos minutos en aplicarse.
 
 ## La cuota gratuita
 
@@ -107,9 +121,9 @@ El plan Spark da para mucho más de lo que usa un grupo de amigos:
 
 | Qué | Límite gratuito | Qué significa en el juego |
 |---|---|---|
-| Conexiones a la vez | 100 | Cada dispositivo cuenta una: el tablero y hasta 8 celulares. Caben unas 11 partidas a la vez. |
-| Datos guardados | 1 GB | Una partida ocupa muy poco y se borra al terminar. |
-| Descargas al mes | 10 GB | Una partida gasta unos pocos MB, porque solo se envía lo que cambia. |
+| Conexiones a la vez | 100 | El tablero usa 1 y cada celular 3. Una partida de 4 jugadores usa 13 y una de 8, 25: caben unas 7 partidas de 4 a la vez. |
+| Datos guardados | 1 GB | Una sala ocupa unos 5 KB y se borra al cerrarla (o, si se olvida, al volver a abrir el tablero). |
+| Descargas al mes | 10 GB | Una partida de 4 jugadores descarga menos de 1 MB, porque solo se envía lo que cambia. |
 
 - **Para ver el consumo:** **Realtime Database** → pestaña **Uso**.
 - **Si Firebase te ofrece pasar al plan Blaze (de pago), di que no.** Con Blaze hay que dar una tarjeta y podría

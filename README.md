@@ -9,8 +9,8 @@
   compra, puja, construye, hipoteca, invierte y negocia.
 
 > 🚧 **En construcción.** Ya se puede jugar una partida de prueba en casa, con la laptop de tablero y los celulares en
-> la misma wifi (mira [«Jugar en casa»](#jugar-en-casa-modo-local)). Todavía falta lo que permitirá jugar por internet sin
-> instalar nada. Las reglas están en borrador en [`docs/DISENO.md`](docs/DISENO.md).
+> la misma wifi (mira [«Jugar en casa»](#jugar-en-casa-modo-local)). Jugar por internet sin instalar nada ya está programado y
+> probado: solo falta crear el proyecto de Firebase. Las reglas están en borrador en [`docs/DISENO.md`](docs/DISENO.md).
 
 > Proyecto **libre, gratuito y sin ánimo de lucro**, bajo licencia [MIT](LICENSE). Es hermano de
 > [Aldeanos vs Lobos](https://github.com/Kenny28-176/aldeanos-vs-lobos). No está afiliado a ningún editor de juegos
@@ -46,10 +46,10 @@
 | 0. Base | Repositorio, normas de contenido, pruebas y publicación | Hecha |
 | 1. Motor | Todas las reglas, bots y un simulador para equilibrar la economía | Hecha |
 | 2. Tablero | Tablero animado con una partida de bots | Hecha (mira la [demostración](public/tablero.html)) |
-| 3. Celulares | La red entre el tablero y los celulares, y la pantalla del celular | Hecha para jugar en casa (wifi); falta conectar Firebase para jugar por internet |
+| 3. Celulares | La red entre el tablero y los celulares, y la pantalla del celular | Hecha para jugar en casa (wifi); el modo por internet (Firebase) está programado y probado, falta crear el proyecto |
 | 4. Gestión y tratos | **v0.1**: construir, hipotecar, deudas, tratos y guardar la partida | Hecha (la partida se guarda en el navegador del tablero; falta guardarla fuera) |
 | 5. Pulido | Reglas de la sala, estadísticas, inglés, accesibilidad, modo TV | **En marcha**: hechos el inglés, el sonido y la voz, el límite de tiempo, «jugar otra vez» y los movimientos de dinero; faltan las estadísticas, la accesibilidad y el modo TV |
-| 6. Publicación | **v1.0** | Pendiente: faltan Firebase, el icono de la marca y la prueba con celulares de verdad |
+| 6. Publicación | **v1.0** | Pendiente: faltan el proyecto de Firebase, el icono de la marca y la prueba con celulares de verdad |
 
 Las ideas para más adelante, como un modo cooperativo contra una corporación, están en [`docs/IDEAS.md`](docs/IDEAS.md).
 

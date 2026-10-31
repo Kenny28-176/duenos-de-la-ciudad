@@ -114,6 +114,7 @@
   "jugador.conectando": "Connecting to the board…",
   "jugador.conectando_lento": "This is taking a while. Is your phone on the same wifi as the board?",
   "jugador.sin_red": "I can't find the board. Open this page from the address the board shows, with your phone on the same wifi.",
+  "jugador.sin_servidor": "I couldn't connect to the game server. Check that your phone is online and reload the page.",
   "jugador.sin_sala": "There is no room with the code {codigo}.",
   "jugador.cerrada": "The board closed the room.",
   "jugador.empezada": "The game has already started and you can't join halfway through.",

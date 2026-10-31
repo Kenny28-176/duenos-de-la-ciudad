@@ -6,7 +6,7 @@ import { cargarDatos } from '../../data/cargar.js';
 import { crearMotor } from '../../engine/index.js';
 import { diccionariosActivos, iniciarIdioma, t } from '../../i18n/idioma.js';
 import { crearCliente } from '../../net/cliente.js';
-import { conectar, identidad, redDisponible } from '../../net/conectar.js';
+import { conectar, redDisponible } from '../../net/conectar.js';
 import { CODIGO, limpiarCodigo } from '../../net/protocolo.js';
 import { crearAlmacen } from '../almacen.js';
 import { textoDeError } from '../errores.js';
@@ -222,8 +222,13 @@ const acciones = {
 // --- Arranque ---------------------------------------------------------------------------------------------------------------
 
 const red = await redDisponible();
-if (red) {
-  transporte = conectar(red.modo, identidad('celular'));
+try {
+  if (red) transporte = await conectar(red, 'celular');
+} catch {
+  // Con Firebase hay que iniciar la sesión antes de nada: sin conexión (o si Firebase no contesta), no se puede entrar.
+  transporte = null;
+}
+if (transporte) {
   // Si se pierde la conexión con el tablero, se avisa (pasados unos segundos: una reconexión rápida no merece un aviso) y se quita sola.
   transporte.alCambiarConexion?.(enLinea => {
     clearTimeout(relojConexion);
@@ -232,7 +237,7 @@ if (red) {
   });
   if (almacen.leer().codigo) entrarEnSala(almacen.leer().codigo);
 } else {
-  almacen.cambiar({ sinRed: true });
+  almacen.cambiar({ sinRed: red ? 'conexion' : true });
 }
 
 if (parametros.get('depurar') === '1') window.duenos = { almacen, motor, t, cliente: () => cliente, sonido, transporte: () => transporte };

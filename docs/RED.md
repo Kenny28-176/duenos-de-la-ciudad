@@ -11,7 +11,7 @@
   - uno **en memoria**, que imita a Firebase al escribir (listas a objetos, sin valores vacíos), para probar todo sin red;
   - uno **HTTP** (`src/net/http.js`), que habla con el relé del servidor local de la laptop: es el modo para jugar en casa,
     por la wifi, sin Firebase (más abajo);
-  - y habrá otro **con Firebase** de verdad, para jugar por internet.
+  - y otro **con Firebase** (`src/net/firebase.js`), para jugar por internet desde la web publicada (más abajo).
 
   Cambiar de uno a otro no toca el motor ni las pantallas.
 - **Todo es público, salvo el azar.** Cualquier celular puede leer el estado de la partida (el dinero de cada uno, sus
@@ -62,7 +62,9 @@ salas/ABCD/
    - reconstruye las listas que Firebase convirtió en objetos (las propiedades de un trato);
    - la pasa por el motor, anima el resultado en la pantalla y **después** la publica. Así los celulares no destripan la
      sorpresa: ven el resultado cuando termina la animación.
-4. **Cerrar.** El tablero borra `salas/CODIGO`. Las salas olvidadas se limpian con una herramienta de mantenimiento.
+4. **Cerrar.** El tablero borra `salas/CODIGO`. Si la página se cierra sin cerrar la sala (al acabar, o en el vestíbulo), la sala se
+   queda: el tablero apunta las que abre (`duenos:salas`, en su navegador) y, al volver a abrirse, borra las suyas que tengan más de 12
+   horas (así nunca toca una partida en marcha en otra pestaña). Descartar una partida guardada borra su sala al momento.
 
 **Lo que mueve el propio tablero.** Los bots y las subastas no los mueve ningún celular: la orquesta
 (`src/net/orquesta.js`) mira el estado, programa la jugada del bot que toca (o el cierre de una subasta: enseguida si nadie
@@ -97,6 +99,37 @@ GET  /red/info        { ok, direcciones }: dónde encontrar la laptop en la wifi
   `text/plain` y `X-Content-Type-Options: nosniff` llega en milisegundos; por eso el relé manda ese tipo.
 - **No tiene ninguna seguridad** (cualquiera de la red puede leer y escribir) y lo que guarda se pierde al apagarlo: es para
   casa y para desarrollo.
+
+## Jugar por internet: Firebase
+
+`src/net/firebase.js` habla con Firebase Realtime Database por su **API web** (REST y eventos del servidor), sin la biblioteca de
+Firebase: no hay código de terceros que descargar ni que mantener al día, y pesa unos pocos KB.
+
+- **Cuándo se usa.** `redDisponible()` (`src/net/conectar.js`) elige: si la página la sirve la laptop (`node tools/serve.js`), el relé
+  local; si no (la web publicada), Firebase, en cuanto esté la configuración del proyecto en `src/net/firebase-config.js` (el bloque
+  `firebaseConfig` de la consola: `apiKey` y `databaseURL`; no es secreto). Con `?red=firebase` se usa Firebase aunque haya relé. El
+  enlace del QR lleva a los celulares a la misma red que el tablero.
+- **Quién es cada uno.** El inicio de sesión anónimo (`accounts:signUp`) da el `uid` con el que trabajan las reglas. El token dura una hora
+  y se renueva solo (antes de caducar, y si Firebase contesta 401 o manda `auth_revoked`). La sesión se guarda en el navegador
+  (`duenos:firebase-tablero` y `duenos:firebase-celular`): al recargar, el celular sigue siendo el mismo jugador y el tablero, el dueño de
+  su sala. Si lo que falla es la red, no se crea otra cuenta.
+- **Escribir.** `set` es un PUT, `update` un PATCH de varias rutas en la raíz y `remove` un DELETE, todos con `print=silent` (Firebase no
+  devuelve lo escrito: no gasta descarga). Las escrituras salen de una en una y en orden, y se repiten con esperas crecientes si falla la
+  red o Firebase (5xx). Todas se pueden repetir sin riesgo: `empujar` inventa aquí la clave (ordenada por la hora, como las de Firebase) y
+  escribe con PUT; las reglas dejan que un celular repita su propia acción, y el tablero no atiende dos veces la misma clave.
+- **Escuchar.** Con `EventSource`: Firebase manda un `put` con lo que hay, y luego `put` y `patch` con cada cambio (un `update` de varias
+  rutas llega en un solo `patch`), `keep-alive` cada 30 s, `cancel` si se pierde el permiso y `auth_revoked` al caducar el token. Cada
+  escucha guarda una copia de su ruta, le aplica los cambios y entrega lo que llega seguido de una vez. Si la conexión se calla más de 75 s
+  (ni el `keep-alive`), se abre otra.
+- **Listas.** Firebase devuelve como lista un objeto con claves numéricas «casi seguidas» (los movimientos `{ 1: …, 2: … }` llegan como
+  `[null, …, …]`): el transporte lo deshace, para que todo llegue igual que desde la base en memoria.
+- **Lo que gasta.** El estado publicado pesa de 3,5 a 5 KB y una partida entera manda a cada celular unos 150 KB de cambios: la descarga
+  gratuita da para miles de partidas al mes. Cada escucha abierta cuenta como una conexión: el tablero usa 1 y cada celular 3 (el estado,
+  su vista y la meta), así que una partida de 4 usa 13 de las 100 conexiones a la vez del plan gratuito.
+- **La imitación de Firebase** (`tools/firebase-falso.js`) se porta como Firebase en todo lo anterior y aplica las reglas de
+  `database.rules.json` con el evaluador de `tools/reglas-firebase.js`. Se abre a mano con `node tools/firebase-falso.js` y el tablero con
+  `?red=firebase&firebase=http://127.0.0.1:9100` (ese parámetro solo vale en una página abierta desde la propia laptop: en la web
+  publicada, un enlace no puede llevar a los celulares a otro servidor).
 
 ## Recuperar la partida si se recarga el tablero
 
@@ -178,11 +211,11 @@ Están en [`database.rules.json`](../database.rules.json). Lo que dicen, en cort
 
 | Ruta | Quién lee | Quién escribe |
 |---|---|---|
-| `salas/$sala` | nadie (solo se leen las rutas de abajo) | nadie, salvo lo de abajo |
+| `salas/$sala` | nadie (solo se leen las rutas de abajo) | el anfitrión, solo para borrarla entera (cerrar la sala); lo demás, abajo |
 | `meta` | todos | quien crea la sala (si no existe) y, después, solo el anfitrión |
 | `estado` | todos | solo el anfitrión |
 | `vistas/$uid` | solo ese `uid` | solo el anfitrión |
-| `acciones/$clave` | solo el anfitrión | cualquiera, para crear una con su propio `uid` (no se puede cambiar); el anfitrión, para borrarla |
+| `acciones/$clave` | solo el anfitrión | cualquiera, para crear una con su propio `uid` o repetir la suya (un reintento; la de otro no se puede pisar); el anfitrión, para borrarla |
 
 - El código de la sala tiene que ser de cuatro consonantes.
 - Cada acción solo puede llevar los campos que existen, con su tipo y un tamaño máximo.
@@ -208,5 +241,12 @@ Están en [`database.rules.json`](../database.rules.json). Lo que dicen, en cort
   en Node y con la página del tablero (`tools/jugar-con-celulares.js`).
 - `tests/pantalla-red.test.js` y `tests/pantalla-celular.test.js`: en un Chrome de verdad, el tablero abre la sala y un celular
   entra, elige ficha y juega (tirar, comprar, habilidad, construir, Bolsa, trato, subasta).
-- Con el proyecto de Firebase creado, `node tools/comprobar-reglas.js` (pendiente) probará las reglas contra la base de
-  datos de verdad: lo que debe aceptar y lo que debe rechazar.
+- `tests/reglas-firebase.test.js`: las reglas de seguridad con el evaluador de `tools/reglas-firebase.js`: lo que hacen el tablero y los
+  celulares está permitido (con una acción de cada tipo, con todos sus campos) y lo que no les toca, prohibido.
+- `tests/red-firebase.test.js`: el transporte de Firebase contra la imitación (con las reglas): la sesión anónima, escribir y leer por
+  partes, las listas que devuelve Firebase, los cortes de red, los tokens que caducan, las acciones repetidas y una partida entera.
+- `tests/pantalla-firebase.test.js`: en un Chrome de verdad y por la imitación de Firebase, el tablero abre la sala, un celular entra por el
+  enlace del QR y juega, nada se rechaza, y al cerrar la sala (o al volver a abrir el tablero, con las salas viejas) no queda nada.
+- **Con el proyecto de Firebase creado**, `node tools/comprobar-reglas.js` prueba las reglas y el transporte contra la base de datos de
+  verdad: 27 cosas que deben permitirse o rechazarse, y enseña los eventos tal como los manda Firebase (con `--eventos`). Usa una sala de
+  prueba con un código al azar y la borra al acabar. `tests/comprobar-reglas.test.js` la prueba contra la imitación.

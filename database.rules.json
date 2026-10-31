@@ -4,6 +4,7 @@
     ".write": false,
     "salas": {
       "$sala": {
+        ".write": "auth != null && !newData.exists() && data.child('meta').child('anfitrion').val() === auth.uid",
         ".validate": "$sala.matches(/^[BCDFGHJKLMNPRSTVWXZ]{4}$/)",
         "meta": {
           ".read": true,
@@ -27,7 +28,7 @@
         "acciones": {
           ".read": "auth != null && root.child('salas').child($sala).child('meta').child('anfitrion').val() === auth.uid",
           "$clave": {
-            ".write": "auth != null && ((!data.exists() && newData.child('uid').val() === auth.uid && root.child('salas').child($sala).child('meta').exists()) || root.child('salas').child($sala).child('meta').child('anfitrion').val() === auth.uid)",
+            ".write": "auth != null && ((newData.child('uid').val() === auth.uid && (!data.exists() || data.child('uid').val() === auth.uid) && root.child('salas').child($sala).child('meta').exists()) || root.child('salas').child($sala).child('meta').child('anfitrion').val() === auth.uid)",
             ".validate": "newData.hasChildren(['uid', 'accion']) && newData.child('uid').val() === auth.uid",
             "uid": { ".validate": "newData.isString() && newData.val().length < 64" },
             "accion": {

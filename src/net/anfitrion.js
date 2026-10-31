@@ -23,6 +23,7 @@ export function crearAnfitrion({ transporte, motor, codigo, semilla = Date.now()
   let estado = recuperar ? JSON.parse(JSON.stringify(recuperar.estado)) : motor.nuevaPartida({ sala: codigo, semilla });
   const jugadorDe = new Map(recuperar?.jugadores ?? []); // uid del celular → id del jugador
   const cola = [];
+  const recibidas = new Set(); // las claves de las últimas acciones recibidas
   let despertar = null;
   let cerrada = false;
   let publicaciones = recuperar?.publicaciones ?? 0;
@@ -41,9 +42,13 @@ export function crearAnfitrion({ transporte, motor, codigo, semilla = Date.now()
 
   const despertarAlQueEspera = () => { const f = despertar; despertar = null; f?.(); };
 
-  // Un celular pide algo: se guarda en la cola y se borra de la base (cada acción se procesa una sola vez).
+  // Un celular pide algo: se guarda en la cola y se borra de la base (cada acción se procesa una sola vez). Si la misma clave vuelve a
+  // aparecer (un celular al que le falló la red y repitió el envío cuando la primera ya había llegado), no se atiende otra vez.
   function recibir(clave, mensaje) {
-    transporte.remove(`${r.acciones}/${clave}`);
+    transporte.remove(`${r.acciones}/${clave}`)?.catch?.(() => {});
+    if (recibidas.has(clave)) return;
+    recibidas.add(clave);
+    if (recibidas.size > 1000) recibidas.delete(recibidas.values().next().value);
     if (mensaje && typeof mensaje.uid === 'string') {
       cola.push(mensaje);
       despertarAlQueEspera();

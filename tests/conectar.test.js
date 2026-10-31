@@ -2,7 +2,7 @@
 // por qué dirección de la wifi llegan los celulares al tablero.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { identidad, redDisponible } from '../src/net/conectar.js';
+import { identidad, parametrosDeRed, redDisponible } from '../src/net/conectar.js';
 import { direccionesDeLaRed } from '../tools/red-local.js';
 
 // Un almacenamiento falso con la forma de localStorage.
@@ -41,10 +41,34 @@ test('si el navegador no deja guardar nada, la identidad existe pero no se recue
 
 test('redDisponible dice si hay relé local detrás de esta página', async () => {
   const responde = (ok, cuerpo) => async () => ({ ok, json: async () => cuerpo });
-  assert.deepEqual(await redDisponible({ peticion: responde(true, { ok: true, direcciones: ['http://192.168.1.5:8080'] }) }), { modo: 'local', direcciones: ['http://192.168.1.5:8080'] });
-  assert.deepEqual(await redDisponible({ peticion: responde(true, { ok: true }) }), { modo: 'local', direcciones: [] });
-  assert.equal(await redDisponible({ peticion: responde(false, {}) }), null, 'un 404 (la web publicada, sin relé)');
-  assert.equal(await redDisponible({ peticion: async () => { throw new Error('sin red'); } }), null);
+  const sinFirebase = { config: null, parametros: new URLSearchParams() };
+  assert.deepEqual(await redDisponible({ ...sinFirebase, peticion: responde(true, { ok: true, direcciones: ['http://192.168.1.5:8080'] }) }), { modo: 'local', direcciones: ['http://192.168.1.5:8080'] });
+  assert.deepEqual(await redDisponible({ ...sinFirebase, peticion: responde(true, { ok: true }) }), { modo: 'local', direcciones: [] });
+  assert.equal(await redDisponible({ ...sinFirebase, peticion: responde(false, {}) }), null, 'un 404 (la web publicada, sin relé)');
+  assert.equal(await redDisponible({ ...sinFirebase, peticion: async () => { throw new Error('sin red'); } }), null);
+});
+
+test('sin relé y con el proyecto de Firebase configurado (la web publicada), se juega por Firebase', async () => {
+  const sinRele = async () => ({ ok: false, json: async () => ({}) });
+  const conRele = async () => ({ ok: true, json: async () => ({ ok: true, direcciones: ['http://192.168.1.5:8080'] }) });
+  const config = { apiKey: 'AIza-de-prueba', databaseURL: 'https://juego-default-rtdb.firebaseio.com', projectId: 'juego' };
+  const sinParametros = new URLSearchParams();
+  assert.deepEqual(await redDisponible({ peticion: sinRele, config, parametros: sinParametros }), { modo: 'firebase', config, direcciones: [] });
+  assert.equal(await redDisponible({ peticion: sinRele, config: { apiKey: 'x' }, parametros: sinParametros }), null, 'una configuración a medias no vale');
+  // Con el relé delante gana el relé (jugar en casa no gasta Firebase), salvo que se pida Firebase.
+  assert.equal((await redDisponible({ peticion: conRele, config, parametros: sinParametros })).modo, 'local');
+  const pedida = await redDisponible({ peticion: conRele, config, parametros: new URLSearchParams('red=firebase') });
+  assert.deepEqual(pedida, { modo: 'firebase', config, direcciones: ['http://192.168.1.5:8080'] }, 'y sabe por dónde entran los celulares');
+  // La imitación de Firebase (tools/firebase-falso.js), solo desde la propia laptop.
+  const falso = new URLSearchParams('red=firebase&firebase=http://127.0.0.1:9100');
+  const enLaLaptop = await redDisponible({ peticion: conRele, config: null, parametros: falso, servidor: 'localhost' });
+  assert.equal(enLaLaptop.modo, 'firebase');
+  assert.equal(enLaLaptop.config.databaseURL, 'http://127.0.0.1:9100');
+  assert.equal(enLaLaptop.config.urlCuentas, 'http://127.0.0.1:9100/v1');
+  const desdeFuera = await redDisponible({ peticion: sinRele, config, parametros: falso, servidor: 'kenny28-176.github.io' });
+  assert.equal(desdeFuera.config, config, 'en la web publicada, un enlace no puede llevar a los celulares a otro servidor');
+  assert.equal(parametrosDeRed(falso), 'red=firebase&firebase=http%3A%2F%2F127.0.0.1%3A9100');
+  assert.equal(parametrosDeRed(new URLSearchParams('sala=1&velocidad=3')), '', 'en la web publicada, el enlace no lleva nada más');
 });
 
 test('las direcciones para los celulares son las de la wifi, no las de máquinas virtuales ni VPN', () => {

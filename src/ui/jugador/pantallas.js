@@ -16,7 +16,7 @@ export function Aplicacion({ almacen, acciones, motor }) {
   switch (pantalla) {
     case 'codigo': contenido = html`<${PideCodigo} d=${d} acciones=${acciones} />`; break;
     case 'conectando': contenido = html`<${Conectando} />`; break;
-    case 'sin-red': contenido = html`<${Aparte} titulo=${t('jugador.sin_red')} />`; break;
+    case 'sin-red': contenido = html`<${Aparte} titulo=${t(d.sinRed === 'conexion' ? 'jugador.sin_servidor' : 'jugador.sin_red')} />`; break;
     case 'sin-sala': contenido = html`<${Aparte} titulo=${t('jugador.sin_sala', { codigo: d.codigo })} acciones=${acciones} />`; break;
     case 'cerrada': contenido = html`<${Aparte} titulo=${t('jugador.cerrada')} acciones=${acciones} />`; break;
     case 'empezada': contenido = html`<${Aparte} titulo=${t('jugador.empezada')} acciones=${acciones} />`; break;

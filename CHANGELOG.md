@@ -147,6 +147,19 @@ Aquí se anotan los cambios de cada versión. Las versiones siguen el esquema ma
 - Si la conexión de un celular se queda muerta (se le apagó la pantalla), se recupera sola.
 - Pruebas de punta a punta en un Chrome de verdad: el celular entra, elige ficha y juega (`tests/pantalla-celular.test.js`), y
   el tablero abre una sala con celulares (`tests/pantalla-red.test.js`).
+- **Jugar por internet, con Firebase** (`src/net/firebase.js`): el transporte habla con Realtime Database por su API web (REST y eventos del
+  servidor), sin la biblioteca de Firebase. Inicio de sesión anónimo que se recuerda al recargar la página, token que se renueva solo,
+  escrituras en orden y reintentadas si falla la red, y escuchas que se recuperan solas tras un corte. En la web publicada se usa en cuanto
+  esté la configuración del proyecto (`src/net/firebase-config.js`); con el servidor de la laptop delante, se sigue jugando por la wifi.
+- **Una imitación de Firebase** (`tools/firebase-falso.js`) que aplica las reglas de seguridad (`tools/reglas-firebase.js`): con ella se
+  prueba el modo por internet de punta a punta, también en Chrome, sin el proyecto de verdad. `node tools/comprobar-reglas.js` comprueba
+  las reglas contra el proyecto real (27 cosas que deben permitirse o rechazarse).
+- El tablero borra las salas que dejó abiertas al cerrar la página (pasadas 12 horas) y la de una partida guardada que se descarta.
+
+### Arreglado
+
+- Las reglas de seguridad no dejaban al tablero borrar la sala al cerrarla, y un celular al que le fallaba la red no podía repetir su
+  acción; el tablero tampoco atiende dos veces una acción repetida.
 
 ### Cambiado
 

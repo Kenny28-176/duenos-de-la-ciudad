@@ -20,8 +20,9 @@ primero que llega a la meta y vuelve a la Salida). Todo funciona en el navegador
 funcionan; el tablero se ve y se anima (`public/tablero.html`) y se juega con celulares **en la wifi de casa**: el servidor
 local hace de buzón (`tools/red-local.js`), el tablero abre una sala con QR y cada celular (`public/jugador.html`) entra,
 elige ficha y juega, con sonido, voz opcional, límite de tiempo, «jugar otra vez» y recuperación de la partida si se recarga el
-tablero. Falta el transporte con Firebase para jugar por internet sin servidor local (necesita el proyecto de Firebase:
-`docs/FIREBASE.md`), probar con celulares de verdad ([`docs/PRUEBA-EN-CASA.md`](docs/PRUEBA-EN-CASA.md)) y 31 imágenes. Las
+tablero. El transporte con Firebase para jugar por internet (`src/net/firebase.js`) está hecho y probado contra una imitación
+de Firebase con sus reglas; falta el proyecto de verdad (`docs/FIREBASE.md`: su configuración va en `src/net/firebase-config.js`),
+probar con celulares de verdad ([`docs/PRUEBA-EN-CASA.md`](docs/PRUEBA-EN-CASA.md)) y 31 imágenes. Las
 reglas están en [`docs/DISENO.md`](docs/DISENO.md) (con sus preguntas abiertas) y las ideas para después, en
 [`docs/IDEAS.md`](docs/IDEAS.md).
 
@@ -98,9 +99,10 @@ src/engine/              el motor puro: juego.js (acciones y permisos), turno, c
 src/net/                 la red: protocolo.js (qué se escribe y dónde), anfitrion.js (el tablero), cliente.js (el
                          celular), orquesta.js (mueve a los bots y cierra las subastas), codec.js (el estado, listo
                          para Firebase), memoria.js (una base en memoria que imita a Firebase, para probar sin red),
-                         http.js (el transporte que habla con el relé local) y conectar.js (qué transporte usar y la
-                         identidad de cada dispositivo); docs/RED.md lo explica y database.rules.json son las reglas
-                         de seguridad
+                         http.js (el transporte que habla con el relé local), firebase.js (el transporte de Firebase, por
+                         su API REST y eventos del servidor, con la sesión anónima), firebase-config.js (la configuración
+                         web del proyecto, o null) y conectar.js (qué transporte usar y la identidad de cada dispositivo);
+                         docs/RED.md lo explica y database.rules.json son las reglas de seguridad
 src/i18n/                traducir.js e idioma.js (textos y formatos) y un diccionario por idioma en es/ y en/
 src/ui/                  preact.js (Preact + htm), almacen.js y usarAlmacen.js (datos que repintan la pantalla),
                          imagen.js, qr.js, errores.js (traduce los errores del motor), narrador.js (de eventos a
@@ -117,6 +119,8 @@ src/ui/jugador/          la pantalla del celular: app.js (arranque y conexión),
                          subasta.js, mesa.js y movimientos.js (una pestaña o panel cada uno; «Mis movimientos» es la hoja de
                          dinero), comun.js y vista.js (qué muestra y con qué cifras: funciones puras que consultan al motor)
 tools/                   serve.js (servidor local) y red-local.js (el relé: el buzón de la partida por la wifi),
+                         firebase-falso.js (una imitación de Firebase con sus reglas, que evalúa reglas-firebase.js),
+                         fuente-de-eventos.js (EventSource para Node), comprobar-reglas.js (las reglas contra el Firebase real),
                          construir-sitio.js (revisa y empaqueta la web para Pages),
                          simular.js (equilibrio con bots), jugar-con-celulares.js (partidas enteras por la interfaz real,
                          con un jugador al azar: busca atascos), relato.js (cuenta una partida), ver.js y navegador.js (abren
@@ -132,7 +136,8 @@ docs/                    DISENO.md (las reglas tal como las aplica el motor), VI
 
 Lo que llega en las fases 3 y 4:
 
-- el transporte con Firebase de verdad (`src/net/firebase.js`), cuando exista el proyecto (`docs/FIREBASE.md`);
+- el proyecto de Firebase de verdad (`docs/FIREBASE.md`): el transporte ya está; falta poner su configuración en
+  `src/net/firebase-config.js`, publicar las reglas y pasar `node tools/comprobar-reglas.js`;
 - guardar la partida **ya está hecho en el navegador del tablero** (`localStorage`, «Recuperar la partida»; ver `docs/RED.md`):
   falta guardarla también fuera del navegador (en Firebase) para poder retomar una partida en otro dispositivo.
 
@@ -144,6 +149,9 @@ node tools/serve.js                      # servidor local en http://localhost:80
                                          # celulares por la wifi: abre tablero.html y pulsa «Jugar con celulares»)
 node tools/construir-sitio.js --revisar  # comprueba que la web no depende de servidores externos
 node tools/jugar-con-celulares.js         # partidas enteras por la interfaz del celular (Chrome): --partidas 6 --meta 14000
+node tools/firebase-falso.js             # una imitación de Firebase en http://127.0.0.1:9100 (el tablero, con
+                                         # ?red=firebase&firebase=http://127.0.0.1:9100)
+node tools/comprobar-reglas.js           # las reglas de seguridad contra el proyecto de Firebase de verdad (--falso: contra la imitación)
 npm run simular -- --partidas 1000       # partidas entre bots: duración, victorias por ficha y por asiento…
                                          # (--jugadores N, --sin-habilidades, --ajuste fichas.toro.pasiva.factor=2)
 node tools/relato.js --semilla 7         # cuenta una partida entre bots con las frases del narrador (--idioma en)

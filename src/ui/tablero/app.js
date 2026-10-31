@@ -10,7 +10,7 @@ import { crearMotor } from '../../engine/index.js';
 import { fichasParaPartida } from '../../engine/simulador.js';
 import { alCambiarIdioma, diccionariosActivos, iniciarIdioma, t, usarIdioma } from '../../i18n/idioma.js';
 import { crearAnfitrion } from '../../net/anfitrion.js';
-import { conectar, identidad, redDisponible } from '../../net/conectar.js';
+import { conectar, parametrosDeRed, redDisponible } from '../../net/conectar.js';
 import { crearOrquesta } from '../../net/orquesta.js';
 import { codigoDeSala } from '../../net/protocolo.js';
 import { crearAlmacen } from '../almacen.js';
@@ -135,7 +135,9 @@ function direccionParaCelulares(red) {
 function datosDeSala(red, codigo) {
   const { raiz, sinRed, otras } = direccionParaCelulares(red);
   const ruta = new URL('jugador.html', location.href).pathname;
-  const url = `${raiz}${ruta}?sala=${codigo}`;
+  // Con Firebase probado desde la laptop, el celular tiene que usar la misma red que el tablero (en la web publicada no se añade nada).
+  const extra = red.modo === 'firebase' ? parametrosDeRed() : '';
+  const url = `${raiz}${ruta}?sala=${codigo}${extra ? `&${extra}` : ''}`;
   return { codigo, url, direccion: new URL(url).host + ruta, sinRed, otras: otras.map(o => new URL(o).host + ruta) };
 }
 
@@ -219,6 +221,51 @@ function olvidarSiEsDe(codigo) {
   }
 }
 
+// --- Las salas que deja este tablero ------------------------------------------------------------------------------------------
+// Una sala se borra de la red al cerrarla, pero si se cierra la página sin más (al acabar, o en el vestíbulo) se queda en la base de
+// datos. El tablero apunta las salas que abre y, al arrancar, borra las suyas que ya tienen más de 12 horas (una partida no dura
+// tanto, y así nunca toca una que esté en marcha en otra pestaña). Una partida guardada que se descarta borra su sala al momento.
+const CLAVE_SALAS = 'duenos:salas';
+
+function salasApuntadas() {
+  try { return JSON.parse(localStorage.getItem(CLAVE_SALAS) ?? '[]'); } catch { return []; }
+}
+
+function apuntarSala(codigo, abierta) {
+  try {
+    const lista = salasApuntadas().filter(c => c !== codigo);
+    if (abierta) lista.push(codigo);
+    localStorage.setItem(CLAVE_SALAS, JSON.stringify(lista.slice(-20)));
+  } catch { /* sin almacenamiento: las salas se quedarán (pesan unos KB) */ }
+}
+
+// Borra de la red las salas de esta lista que siguen siendo de este tablero (y que cumplan «vieja», si se da).
+async function borrarSalas(codigos, vieja = () => true) {
+  const { red } = almacen.leer();
+  if (!red || !codigos.length) return;
+  let transporte = null;
+  try {
+    transporte = await conectar(red, 'tablero');
+    for (const codigo of codigos) {
+      const meta = await transporte.get(`salas/${codigo}/meta`);
+      if (meta && meta.anfitrion !== transporte.uid) { apuntarSala(codigo, false); continue; }
+      if (meta && !vieja(meta)) continue;
+      if (meta) await transporte.remove(`salas/${codigo}`);
+      apuntarSala(codigo, false);
+    }
+  } catch { /* sin red: se intentará la próxima vez */ } finally {
+    transporte?.cerrar?.();
+  }
+}
+
+const limpiarSalasViejas = () => borrarSalas(
+  salasApuntadas().filter(c => c !== leerPartidaGuardada()?.codigo),
+  meta => Date.now() - (meta.creada ?? 0) > HORAS_DE_VIGENCIA * 3600 * 1000,
+);
+// La limpieza va en fila con la apertura de las salas: con Firebase, dos sesiones que empiezan a la vez en un navegador nuevo serían
+// dos cuentas distintas, y el tablero dejaría de ser el dueño de su sala.
+let limpieza = Promise.resolve();
+
 function guardarPartida(esta) {
   try {
     // Una partida que ha acabado ya no hay que recuperarla.
@@ -235,7 +282,8 @@ async function abrirSala() {
   if (!red || sala) return;
   reproductor?.parar();
   try {
-    const transporte = conectar(red.modo, identidad('tablero', 'duenos:uid-tablero'));
+    await limpieza;
+    const transporte = await conectar(red, 'tablero');
     let codigo = null;
     for (let intento = 0; intento < 30 && !codigo; intento++) {
       const candidato = codigoDeSala();
@@ -244,6 +292,7 @@ async function abrirSala() {
     if (!codigo) throw new Error('no hay códigos libres');
     const anfitrion = crearAnfitrion({ transporte, motor, codigo });
     await anfitrion.abrir();
+    apuntarSala(codigo, true);
     sala = { transporte, anfitrion, codigo, cerrada: false, bots: 0, fichasPedidas: new Set(), delegados: new Set(), orquesta: null };
     const { velocidad, idioma: lang } = almacen.leer();
     almacen.cambiar({ ...estadoInicial(), velocidad, idioma: lang, red, modo: 'sala', estado: anfitrion.estado(), sala: datosDeSala(red, codigo) });
@@ -264,12 +313,14 @@ async function recuperarSala() {
   if (!red || sala || !guardada) return;
   reproductor?.parar();
   try {
-    const transporte = conectar(red.modo, identidad('tablero', 'duenos:uid-tablero'));
+    await limpieza;
+    const transporte = await conectar(red, 'tablero');
     // Si esa sala la lleva otro tablero, no se le quita.
     const meta = await transporte.get(`salas/${guardada.codigo}/meta`);
     if (meta && meta.anfitrion !== transporte.uid) throw new Error(t('recuperar.ocupada', { codigo: guardada.codigo }));
     const anfitrion = crearAnfitrion({ transporte, motor, codigo: guardada.codigo, recuperar: guardada.instantanea });
     await anfitrion.abrir();
+    apuntarSala(guardada.codigo, true);
     sala = {
       transporte, anfitrion, codigo: guardada.codigo, cerrada: false, bots: guardada.bots ?? 0, fichasPedidas: new Set(),
       delegados: new Set(guardada.delegados ?? []), orquesta: null, jugadoMs: guardada.jugadoMs ?? 0,
@@ -371,6 +422,7 @@ async function cerrarSala() {
   olvidarSiEsDe(esta.codigo);
   try {
     await esta.anfitrion.cerrar();
+    apuntarSala(esta.codigo, false);
   } finally {
     esta.transporte.cerrar?.();
   }
@@ -447,7 +499,12 @@ const acciones = {
     montarTablero();
   },
   abrirSala, cerrarSala, jugarOtraVez, anadirBot, quitarJugador, empezar, delegar, recuperarSala,
-  descartarPartida: () => { olvidarPartidaGuardada(); almacen.cambiar({ recuperable: null }); },
+  descartarPartida: () => {
+    const vieja = leerPartidaGuardada();
+    olvidarPartidaGuardada();
+    almacen.cambiar({ recuperable: null });
+    if (vieja) limpieza = limpieza.then(() => borrarSalas([vieja.codigo]));
+  },
 };
 
 alCambiarIdioma(lang => {
@@ -458,6 +515,7 @@ alCambiarIdioma(lang => {
 // ¿Se puede jugar con celulares desde esta página? Solo si el servidor de la laptop (tools/serve.js) está detrás.
 const redLocal = await redDisponible();
 almacen.cambiar({ red: redLocal, recuperable: redLocal ? resumenDeGuardada() : null });
+if (redLocal) limpieza = limpiarSalasViejas();
 
 // El contenedor del tablero está vacío para Preact: el SVG lo pone esta función y lo mueve capas.js.
 render(html`<${Pantalla} almacen=${almacen} motor=${motor} acciones=${acciones} alMontar=${el => {
