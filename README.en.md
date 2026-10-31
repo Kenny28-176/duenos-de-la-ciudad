@@ -46,10 +46,10 @@
 | 0. Foundation | Repository, content guidelines, tests and publishing | Done |
 | 1. Engine | All rules, bots and a simulator to balance the economy | Done |
 | 2. Board | Animated board with a bot demo match | Done (see the [demo](public/tablero.html)) |
-| 3. Phones | The network between the board and the phones, and the phone screen | **In progress**: playable on the home wifi; Firebase is still needed to play over the internet |
-| 4. Management & trading | **v0.1**: building, mortgaging, debt, deals and game saving | Pending |
-| 5. Polish | Room settings, stats, English, accessibility, TV mode | Pending |
-| 6. Release | **v1.0** | Pending |
+| 3. Phones | The network between the board and the phones, and the phone screen | Done for playing at home (wifi); Firebase is still needed to play over the internet |
+| 4. Management & trading | **v0.1**: building, mortgaging, debt, deals and game saving | Done (the game is saved in the board's browser; saving it elsewhere is missing) |
+| 5. Polish | Room settings, stats, English, accessibility, TV mode | **In progress**: English, sound and voice, the time limit, “play again” and the money log are done; stats, accessibility and TV mode are missing |
+| 6. Release | **v1.0** | Pending: Firebase, the brand icon and a test with real phones are missing |
 
 Future ideas, such as a cooperative mode against a corporation, are in [`docs/IDEAS.md`](docs/IDEAS.md) (in Spanish).
 

@@ -16,11 +16,14 @@ Lo que lo hace distinto es el **mercado vivo** (cada barrio cotiza en la Bolsa) 
 primero que llega a la meta y vuelve a la Salida). Todo funciona en el navegador, sin instalar nada. Es un proyecto
 **libre (MIT), gratuito y sin ánimo de lucro**, hermano de *Aldeanos vs Lobos*.
 
-**Estado:** fases 0, 1 y 2 hechas, y la fase 3 en marcha. El motor, los bots y el simulador funcionan; el tablero se ve y
-se anima (`public/tablero.html`) y ya se juega con celulares **en la wifi de casa**: el servidor local hace de buzón
-(`tools/red-local.js`), el tablero abre una sala con QR y cada celular (`public/jugador.html`) entra, elige ficha y juega.
-Falta el transporte con Firebase para jugar por internet (necesita el proyecto de Firebase: `docs/FIREBASE.md`). Las reglas
-están en borrador en [`docs/DISENO.md`](docs/DISENO.md) y las ideas para después, en [`docs/IDEAS.md`](docs/IDEAS.md).
+**Estado:** fases 0 a 4 hechas **para jugar en casa**, y la fase 5 (pulido) en marcha. El motor, los bots y el simulador
+funcionan; el tablero se ve y se anima (`public/tablero.html`) y se juega con celulares **en la wifi de casa**: el servidor
+local hace de buzón (`tools/red-local.js`), el tablero abre una sala con QR y cada celular (`public/jugador.html`) entra,
+elige ficha y juega, con sonido, voz opcional, límite de tiempo, «jugar otra vez» y recuperación de la partida si se recarga el
+tablero. Falta el transporte con Firebase para jugar por internet sin servidor local (necesita el proyecto de Firebase:
+`docs/FIREBASE.md`), probar con celulares de verdad ([`docs/PRUEBA-EN-CASA.md`](docs/PRUEBA-EN-CASA.md)) y 31 imágenes. Las
+reglas están en [`docs/DISENO.md`](docs/DISENO.md) (con sus preguntas abiertas) y las ideas para después, en
+[`docs/IDEAS.md`](docs/IDEAS.md).
 
 ## Reglas de contenido (importante)
 
