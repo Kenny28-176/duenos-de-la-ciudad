@@ -5,8 +5,9 @@
 //     meta              { anfitrion: uid, creada: ms, version: 1 }                      lo escribe el tablero
 //     estado/…          el estado de la partida, sin secretos, por partes               lo escribe el tablero; lo leen todos
 //                       (con «publicacion»: el número de la publicación, que sube cada vez)
-//     vistas/<uid>/     { id, n, puede: {…}, atendidas, error?: {…} }  lo que le toca a ese celular lo escribe el tablero; lo lee ese uid
-//                       («atendidas»: cuántas acciones suyas ha atendido el tablero; el celular sabe así que la suya ya se resolvió)
+//     vistas/<uid>/     { id, n, puede: {…}, atendidas, movimientos?: {…}, error?: {…} }  lo que le toca a ese celular lo escribe el tablero; lo lee ese uid
+//                       («atendidas»: cuántas acciones suyas ha atendido el tablero; el celular sabe así que la suya ya se resolvió;
+//                       «movimientos»: sus últimos movimientos de dinero, por número: { 17: { de, a, cantidad, motivo }, 18: … })
 //     acciones/<clave>  { uid, accion: {…} }                                            lo escriben los celulares; el tablero las lee y las borra
 //
 // Los celulares nunca escriben el estado: solo piden acciones, y el tablero decide. Quien manda una acción no dice quién es:
@@ -19,6 +20,9 @@ export const ACCIONES_DE_CELULAR = new Set([
   'construir', 'venderEdificio', 'hipotecar', 'deshipotecar', 'comprarAcciones', 'venderAcciones',
   'pujar', 'retirarse', 'proponerTrato', 'aceptarTrato', 'rechazarTrato', 'declararBancarrota',
 ]);
+
+// Cuántos movimientos de dinero recuerda el tablero de cada jugador (los últimos).
+export const MAX_MOVIMIENTOS = 12;
 
 export const rutas = codigo => ({
   raiz: `salas/${codigo}`,

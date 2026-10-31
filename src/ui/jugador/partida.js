@@ -5,10 +5,11 @@ import { html, useState } from '../preact.js';
 import { PestanaBolsa } from './bolsa.js';
 import { Barra, Boton, Icono, Retrato, dinero, nombreBarrio, nombreCasilla, nombreDe, nombreFicha } from './comun.js';
 import { PestanaMesa } from './mesa.js';
+import { AvisoDeDinero, PanelMovimientos } from './movimientos.js';
 import { PestanaCalles } from './propiedades.js';
 import { PanelSubasta } from './subasta.js';
 import { PestanaTratos } from './tratos.js';
-import { accionDeHabilidad, cartera, habilidadActiva, situacion, tratos } from './vista.js';
+import { accionDeHabilidad, cartera, habilidadActiva, movimientos, situacion, tratos } from './vista.js';
 
 const PESTANAS = [
   ['calles', 'construir', 'botones/acciones'],
@@ -21,7 +22,11 @@ export function Partida({ d, motor, acciones }) {
   const { estado: s, vista, miId: id } = d.datos;
   const puede = vista.puede ?? {};
   const [pestana, setPestana] = useState('calles');
-  const c = { motor, s, id, puede, enviar: acciones.enviar, ocupado: d.pendiente, n: d.datos.n, avisoSonoro: d.avisoSonoro, alternarAviso: acciones.alternarAviso };
+  const [verMovimientos, setVerMovimientos] = useState(false);
+  const c = {
+    motor, s, id, puede, enviar: acciones.enviar, ocupado: d.pendiente, n: d.datos.n, avisoSonoro: d.avisoSonoro, alternarAviso: acciones.alternarAviso,
+    abrirMovimientos: () => setVerMovimientos(true), avisoDeDinero: d.avisoDeDinero,
+  };
   const recibidos = tratos(s, id, puede).filter(tr => tr.recibido).length;
   const contenido = { calles: PestanaCalles, bolsa: PestanaBolsa, tratos: PestanaTratos, mesa: PestanaMesa }[pestana];
   return html`<div class="partida" style=${{ '--color': motor.ctx.fichas[s.jugadores[id].ficha].color }}>
@@ -37,6 +42,7 @@ export function Partida({ d, motor, acciones }) {
         ${clave === 'tratos' && recibidos ? html`<b class="globo">${recibidos}</b>` : null}
       </button>`)}
     </nav>`}
+    ${verMovimientos ? html`<${PanelMovimientos} s=${s} lista=${movimientos(vista, id)} cerrar=${() => setVerMovimientos(false)} />` : null}
   </div>`;
 }
 
@@ -53,10 +59,11 @@ function Cabecera({ c }) {
       <small>${nombreFicha(yo.ficha)} · ${t('jugador.estas_en', { casilla: nombreCasilla(yo.casilla) })}</small>
       ${estados.length ? html`<small class="estados">${estados.map(e => t(`estado.${e}`)).join(' · ')}</small>` : null}
     </div>
-    <div class="caja-dinero">
+    <button type="button" class="caja-dinero" title=${t('jugador.movimientos.ver')} aria-label=${`${dinero(cartera_.dinero)}. ${t('jugador.movimientos.ver')}`} onClick=${c.abrirMovimientos}>
       <b class="dinero-grande">${dinero(cartera_.dinero)}</b>
       <small>${t('jugador.patrimonio', { cantidad: cartera_.patrimonio })}</small>
-    </div>
+    </button>
+    <${AvisoDeDinero} aviso=${c.avisoDeDinero} />
     ${cartera_.avance !== null ? html`<div class="avance">
       <${Barra} valor=${cartera_.avance} etiqueta=${t('panel.avance')} />
       <small>${t('jugador.meta', { porcentaje: Math.round(cartera_.avance * 100), meta: cartera_.meta })}</small>

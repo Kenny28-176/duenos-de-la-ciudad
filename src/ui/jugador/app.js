@@ -12,7 +12,9 @@ import { crearAlmacen } from '../almacen.js';
 import { textoDeError } from '../errores.js';
 import { html, render } from '../preact.js';
 import { crearSonido } from '../sonido.js';
+import { textoDeMovimiento } from './movimientos.js';
 import { Aplicacion } from './pantallas.js';
+import { movimientos } from './vista.js';
 
 const parametros = new URLSearchParams(location.search);
 const motor = crearMotor(await cargarDatos());
@@ -28,6 +30,7 @@ const memoria = {
 
 const SEGUNDOS_SIN_RESPUESTA = 20; // si el tablero no contesta en este tiempo, se vuelven a activar los botones
 const SEGUNDOS_DE_AVISO = 6;
+const SEGUNDOS_DE_AVISO_DE_DINERO = 4;
 
 // Un aviso sonoro cuando me toca (la vibración no existe en los iPhone): se puede apagar en la pestaña Mesa. Los navegadores no dejan
 // sonar hasta que alguien toca la pantalla, y en el celular eso pasa al escribir el nombre y elegir ficha.
@@ -39,7 +42,7 @@ const codigoDeLaDireccion = limpiarCodigo(parametros.get('sala'));
 const almacen = crearAlmacen({
   codigo: CODIGO.test(codigoDeLaDireccion) ? codigoDeLaDireccion : '',
   nombre: memoria.leer('duenos:nombre') ?? '',
-  datos: null, cerrada: false, sinRed: false, pendiente: false, aviso: null, avisoSonoro: sonido.estado().activo,
+  datos: null, cerrada: false, sinRed: false, pendiente: false, aviso: null, avisoSonoro: sonido.estado().activo, avisoDeDinero: null,
 });
 
 let transporte = null;
@@ -50,7 +53,9 @@ let salaVista = false; // la sala existió: si deja de existir, es que el tabler
 let enviada = { atendidas: 0, error: 0 }; // cómo estaba el acuse del tablero y el último error cuando se mandó la acción pendiente
 let relojAviso = null;
 let relojRespuesta = null;
+let relojDinero = null;
 let puedeAntes = {};
+let movimientoVisto = null; // el último movimiento de dinero que ya se ha enseñado (null: aún no se ha visto ninguno, para no avisar de lo viejo al recargar)
 
 // --- Avisos ---------------------------------------------------------------------------------------------------------------
 
@@ -63,6 +68,23 @@ function mostrarAviso(texto) {
 
 function vibrar(patron) {
   try { navigator.vibrate?.(patron); } catch { /* algunos navegadores no dejan */ }
+}
+
+// Un aviso breve junto al dinero con lo que acaba de entrar o salir (hasta tres movimientos, el más nuevo arriba). La primera vez que se
+// ve la lista (al entrar o al recargar la página) solo se anota hasta dónde llega: no se avisa de lo que ya había pasado.
+function avisarDeDinero(d) {
+  const lista = movimientos(d.vista, d.miId);
+  const mayor = lista[0]?.n ?? 0;
+  if (movimientoVisto === null || mayor <= movimientoVisto) {
+    movimientoVisto ??= mayor;
+    return;
+  }
+  const nuevos = lista.filter(m => m.n > movimientoVisto);
+  movimientoVisto = mayor;
+  const filas = nuevos.slice(0, 3).map(m => ({ signo: m.signo, ...textoDeMovimiento(m, d.estado) }));
+  clearTimeout(relojDinero);
+  almacen.cambiar({ avisoDeDinero: { n: mayor, filas } });
+  relojDinero = setTimeout(() => almacen.cambiar({ avisoDeDinero: null }), SEGUNDOS_DE_AVISO_DE_DINERO * 1000);
 }
 
 // Que la pantalla no se apague mientras se juega (el celular es la cartera: se mira de vez en cuando).
@@ -105,8 +127,9 @@ function alCambiar() {
     parche.pendiente = false;
   }
 
-  // Un toque de vibración y un aviso sonoro cuando me toca a mí (tirar, pujar) o me llega un trato.
+  // Un toque de vibración y un aviso sonoro cuando me toca a mí (tirar, pujar) o me llega un trato; y un aviso de lo que cobro o pago.
   if (d.alDia && d.miId) {
+    avisarDeDinero(d);
     const puede = d.vista.puede ?? {};
     const ahora = { tirar: puede.tirar, pujar: puede.pujar, aceptarTrato: puede.aceptarTrato };
     const nuevo = clave => ahora[clave] && !puedeAntes[clave];
@@ -136,8 +159,9 @@ function entrarEnSala(codigo) {
   ultimoError = 0;
   salaVista = false;
   puedeAntes = {};
+  movimientoVisto = null;
   ponerCodigoEnLaDireccion(codigo);
-  almacen.cambiar({ codigo, datos: null, cerrada: false, pendiente: false, aviso: null });
+  almacen.cambiar({ codigo, datos: null, cerrada: false, pendiente: false, aviso: null, avisoDeDinero: null });
   cliente = crearCliente({ transporte, motor, codigo });
   cliente.alCambiar(alCambiar);
   alCambiar();

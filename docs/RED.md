@@ -25,7 +25,7 @@ salas/ABCD/
   meta                { anfitrion: uid, creada: ms, version: 1 }                   solo el tablero
   estado/…            el estado de la partida, sin secretos, por partes             solo el tablero; lo lee todo el mundo
                       (con «publicacion»: el número de cada publicación)
-  vistas/<uid>/       { id, n, puede: {…}, atendidas, error?: {…} }                 solo el tablero; solo lo lee ese uid
+  vistas/<uid>/       { id, n, puede: {…}, atendidas, movimientos?: {…}, error?: {…} }  solo el tablero; solo lo lee ese uid
   acciones/<clave>    { uid, accion: {…} }                                          los celulares las escriben; solo el tablero las lee y las borra
 ```
 
@@ -40,6 +40,13 @@ salas/ABCD/
   `src/engine/posibles.js`, que prueba cada acción con el propio motor sobre una copia del estado: lo que ve el jugador y
   lo que acepta el tablero no pueden contradecirse. Si una acción falla, el tablero le deja ahí el `error` (código, datos y
   un número para saber si es nuevo), y el celular lo traduce con `src/ui/errores.js`.
+- **`movimientos`** (dentro de la vista) son los últimos 12 movimientos de dinero de ese jugador (`MAX_MOVIMIENTOS`), con su motivo:
+  `{ 17: { de, a, cantidad, motivo }, 18: … }`. El tablero los anota de cada evento `dinero` que emite el motor (el banco no tiene
+  historial) y solo los lee su dueño: lo que paga y cobra cada uno no tiene por qué verlo el resto. Van **por número y no por
+  posición** (el número es único, sube siempre y empieza en 1: así el mapa no se confunde con una lista de Firebase): cada movimiento
+  nuevo escribe una sola entrada y borra la más vieja, en vez de reescribir las doce. Con `revancha` se vacían (los números siguen
+  subiendo) y la instantánea para recuperar la partida los lleva. El celular los enseña al tocar su dinero («Mis movimientos») y avisa
+  un momento de lo que entra o sale (`src/ui/jugador/movimientos.js`).
 - **Estado y botones llegan juntos.** El número de la publicación va dentro del propio `estado` y también en la vista:
   el celular sabe que está «al día» cuando coinciden y no actúa con el estado de una publicación y los botones de otra.
 

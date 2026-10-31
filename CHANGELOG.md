@@ -130,6 +130,9 @@ Aquí se anotan los cambios de cada versión. Las versiones siguen el esquema ma
   se apaga con el botón **Sonido**.
 - **Voz del narrador** (opcional, apagada de serie): lee en voz alta las frases del narrador y el texto de las cartas con la mejor voz del
   idioma que tenga el equipo, y el reproductor espera a que acabe cada frase.
+- **Mis movimientos** en el celular: al tocar el dinero de la cabecera se ven los últimos 12 movimientos (de dónde entró y a dónde salió cada
+  peso, con su motivo y con quién), y junto al saldo sale un aviso breve cuando cobras o pagas («−150 $ Alquiler · a Ana»). El tablero los anota
+  de cada movimiento de dinero y los publica solo en la vista privada de cada celular, por número (una escritura por movimiento).
 - **Límite de tiempo** de la partida (45, 60 o 90 minutos, a elegir en la sala): el tablero lleva el reloj (sin contar la pausa y
   conservándolo si se recupera la partida), enseña lo que queda, anuncia la última ronda con un gong y la partida acaba al cerrarse
   esa ronda; los celulares también avisan de la última ronda. Es la opción `limiteMinutos` del motor y la acción `finPorTiempo`, que

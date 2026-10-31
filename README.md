@@ -71,6 +71,11 @@ se lo quites (así la partida no se queda parada). Un celular que se recarga vue
 por accidente la página del tablero, al volver a abrirla (en el mismo navegador) sale **Recuperar la partida**: retoma la misma
 sala y los celulares siguen donde estaban. La partida guardada vale 12 horas.
 
+Para la primera prueba con celulares de verdad hay una guía con lo que conviene probar y cómo anotar un fallo: [`docs/PRUEBA-EN-CASA.md`](docs/PRUEBA-EN-CASA.md).
+
+**Tu dinero:** en el celular, al tocar tu saldo ves tus últimos movimientos (de dónde vino y a dónde fue cada peso), y junto al saldo sale un
+aviso breve cada vez que cobras o pagas.
+
 **La duración:** al abrir la sala se puede poner un tiempo de partida (45, 60 o 90 minutos). El tablero enseña lo que queda; al acabarse el
 tiempo anuncia la última ronda y gana quien tenga más patrimonio al cerrarla. Al terminar la partida, **Jugar otra vez** vuelve a la sala
 con los mismos jugadores y las mismas opciones: los celulares vuelven solos, sin escanear el QR otra vez.

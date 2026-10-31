@@ -198,3 +198,17 @@ export function clasificacion(motor, s, opciones = {}) {
   }));
   return filas.sort((a, b) => Number(a.quebrado) - Number(b.quebrado) || b.patrimonio - a.patrimonio);
 }
+
+// --- Mis movimientos de dinero --------------------------------------------------------------------------------------------
+
+// Los movimientos de dinero de este jugador que le ha publicado el tablero (vista.movimientos), del más nuevo al más viejo:
+// { n, signo: +1 si le entra y −1 si le sale, cantidad, motivo, otro: el jugador del otro lado, o null si es el banco }.
+export function movimientos(vista, id) {
+  return Object.entries(vista?.movimientos ?? {})
+    .map(([n, m]) => {
+      const entra = m.a === id;
+      const otro = entra ? m.de : m.a;
+      return { n: Number(n), signo: entra ? 1 : -1, cantidad: m.cantidad, motivo: m.motivo, otro: otro === 'banco' ? null : otro };
+    })
+    .sort((x, y) => y.n - x.n);
+}

@@ -71,6 +71,11 @@ you take it off (so the game doesn't stall). A phone that reloads goes back to i
 reloaded or closed by accident, opening it again (in the same browser) shows **Resume the game**: it picks up the same room
 and the phones carry on where they were. A saved game is valid for 12 hours.
 
+For the first test with real phones there is a guide with what to check and how to report a problem: [`docs/PRUEBA-EN-CASA.md`](docs/PRUEBA-EN-CASA.md) (in Spanish).
+
+**Your money:** on the phone, tapping your balance shows your latest transactions (where each dollar came from and went to), and a short
+notice appears next to the balance every time you collect or pay.
+
 **Length:** when opening the room you can set a game length (45, 60 or 90 minutes). The board shows what is left; when time runs out it
 announces the last round and whoever has the highest net worth when it ends wins. When a game is over, **Play again** goes back to the room
 with the same players and options: the phones return by themselves, with no need to scan the QR code again.

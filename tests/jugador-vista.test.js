@@ -6,7 +6,7 @@ import { cargarDatos } from '../src/data/cargar.js';
 import { crearMotor } from '../src/engine/index.js';
 import { fichasParaPartida, simularPartida } from '../src/engine/simulador.js';
 import {
-  accionDeHabilidad, bolsa, cartera, clasificacion, habilidadActiva, opcionesDePuja, parteDeTrato, parteVacia, propiedades,
+  accionDeHabilidad, bolsa, cartera, clasificacion, habilidadActiva, movimientos, opcionesDePuja, parteDeTrato, parteVacia, propiedades,
   pantallaActual, propiedadesTratables, rivales, situacion, tratos,
 } from '../src/ui/jugador/vista.js';
 
@@ -299,4 +299,26 @@ test('la pantalla que toca sale de lo que se sabe: conectar, pedir nombre, vest�
   // El tablero sacó al jugador de la sala (su identificador sigue en la vista, pero ya no está en el estado): no se rompe nada.
   assert.equal(pantalla({ miId: 'j7' }), 'nombre');
   assert.equal(pantalla({ miId: 'j7', estado: estadoDe('juego') }), 'empezada');
+});
+
+test('movimientos: los de este jugador, del más nuevo al más viejo, con su signo y el otro lado (o el banco)', () => {
+  const vista = {
+    movimientos: {
+      3: { de: 'j2', a: 'j1', cantidad: 50, motivo: 'alquiler' },
+      5: { de: 'j1', a: 'banco', cantidad: 120, motivo: 'impuesto' },
+      4: { de: 'banco', a: 'j1', cantidad: 200, motivo: 'sueldo' },
+      10: { de: 'j1', a: 'j3', cantidad: 15, motivo: 'peaje' },
+    },
+  };
+  assert.deepEqual(movimientos(vista, 'j1'), [
+    { n: 10, signo: -1, cantidad: 15, motivo: 'peaje', otro: 'j3' },
+    { n: 5, signo: -1, cantidad: 120, motivo: 'impuesto', otro: null },
+    { n: 4, signo: 1, cantidad: 200, motivo: 'sueldo', otro: null },
+    { n: 3, signo: 1, cantidad: 50, motivo: 'alquiler', otro: 'j2' },
+  ]);
+  // Sin movimientos (antes de empezar, o tras una revancha), una lista vacía y no un error.
+  assert.deepEqual(movimientos({}, 'j1'), []);
+  assert.deepEqual(movimientos(undefined, 'j1'), []);
+  // Con la suma de los signos por las cantidades sale lo que ha cambiado el dinero.
+  assert.equal(movimientos(vista, 'j1').reduce((suma, m) => suma + m.signo * m.cantidad, 0), 50 + 200 - 120 - 15);
 });

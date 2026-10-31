@@ -207,6 +207,23 @@ test('un celular entra a la sala, elige ficha y juega con sus botones hasta cons
     assert.equal(anfitrion.estado().jugadores.j1.dinero, antes - costeCasa);
     marca('Ana construyó');
 
+    // El dinero que sale se avisa un momento junto al saldo, y «Mis movimientos» (al tocar el saldo) lo cuenta con su motivo.
+    await ana.esperarSelector('.toast-dinero .sale', 5000);
+    assert.equal(cifras(await texto(ana, '.toast-dinero .sale b')), costeCasa, 'el aviso dice cuánto salió');
+    assert.match(await texto(ana, '.toast-dinero .sale'), new RegExp(await ana.eval(() => window.duenos.t('motivo.construir'))), 'y por qué');
+    await pulsarCuandoEste(ana, '$', 'button.caja-dinero');
+    await ana.esperarSelector('.movimientos li', 5000);
+    await sinClavesSueltas(ana, 'mis movimientos');
+    const filasDeMovimientos = await ana.eval(() => [...document.querySelectorAll('.movimientos li')].map(li => ({ clase: li.className, importe: li.querySelector('.importe').textContent, motivo: li.querySelector('.que b').textContent })));
+    assert.ok(filasDeMovimientos.length >= 3 && filasDeMovimientos.length <= 12, `${filasDeMovimientos.length} movimientos`);
+    assert.deepEqual(filasDeMovimientos.map(f => f.motivo).slice(0, 1), [await ana.eval(() => window.duenos.t('motivo.construir'))], 'el último es la obra');
+    assert.equal(filasDeMovimientos[0].clase, 'sale');
+    assert.equal(cifras(filasDeMovimientos[0].importe), costeCasa);
+    assert.ok(filasDeMovimientos.some(f => f.clase === 'entra'), 'también hay dinero que entró (el inicial, el sueldo…)');
+    await pulsarCuandoEste(ana, 'Cerrar', '.movimientos button');
+    assert.equal(await ana.eval(() => document.querySelector('.movimientos') === null), true, 'se cierra');
+    marca('Ana vio sus movimientos');
+
     // --- La Bolsa abierta: comprar un paquete de acciones --------------------------------------------------------------
     await ana.eval(() => [...document.querySelectorAll('.pestanas button')].find(b => b.textContent.includes('Bolsa')).click());
     await ana.esperarSelector('.bolsa .fila-bolsa', 8000);
@@ -257,6 +274,7 @@ test('un celular entra a la sala, elige ficha y juega con sus botones hasta cons
     assert.equal(await ana.eval(() => window.duenos.cliente().datos().miId), 'j1', 'sigue siendo el mismo jugador');
     assert.equal(cifras(await texto(ana, '.dinero-grande')), dineroAntesDeRecargar);
     assert.equal(anfitrion.estado().ids.length, 3, 'no entró un jugador nuevo');
+    assert.equal(await ana.eval(() => document.querySelector('.toast-dinero') === null), true, 'al recargar no se avisa de lo que ya había pasado');
     marca('Ana recargó y volvió a su sitio');
 
     // --- El aviso sonoro de «te toca»: viene encendido, se apaga en la pestaña Mesa y se recuerda -------------------------

@@ -71,7 +71,7 @@ test('sin «recuperar» todo empieza de cero, y la instantánea de una sala nuev
   assert.equal(anfitrion.publicaciones(), 0);
   assert.deepEqual([...anfitrion.jugadores()], []);
   const foto = JSON.parse(JSON.stringify(anfitrion.instantanea()));
-  assert.deepEqual(Object.keys(foto).sort(), ['atendidas', 'estado', 'jugadores', 'numeroDeError', 'publicaciones', 'version']);
+  assert.deepEqual(Object.keys(foto).sort(), ['atendidas', 'estado', 'jugadores', 'movimientos', 'numeroDeError', 'publicaciones', 'ultimoMovimiento', 'version']);
 });
 
 test('tras recargar el tablero, los celulares siguen jugando donde estaban: la sala se queda en el buzón y el tablero nuevo la retoma', async () => {
@@ -105,6 +105,9 @@ test('tras recargar el tablero, los celulares siguen jugando donde estaban: la s
   const publicacionesAntes = viejo.publicaciones();
   const acuseAntes = celulares.map(c => c.datos().vista.atendidas);
   assert.ok(acuseAntes.every(n => n > 0), 'cada celular ya tiene acciones atendidas');
+  const movimientosAntes = celulares.map(c => JSON.parse(JSON.stringify(c.datos().vista.movimientos)));
+  assert.ok(movimientosAntes.every(m => Object.keys(m).length > 1), 'cada celular ya tiene movimientos de dinero');
+  const mayorAntes = Math.max(...movimientosAntes.flatMap(m => Object.keys(m).map(Number)));
 
   // La página del tablero se recarga: lo guardado es JSON, el tablero viejo desaparece y uno nuevo recupera la sala.
   const foto = JSON.parse(JSON.stringify(viejo.instantanea()));
@@ -116,6 +119,7 @@ test('tras recargar el tablero, los celulares siguen jugando donde estaban: la s
   await esperarHasta(() => celulares.every(c => c.datos().alDia && c.datos().n === nuevo.publicaciones()), 5000, 'los celulares no recibieron la publicación del tablero nuevo');
   assert.ok(nuevo.publicaciones() > publicacionesAntes, 'las publicaciones siguen contando hacia arriba, no empiezan de cero');
   assert.deepEqual(celulares.map(c => c.datos().vista.atendidas), acuseAntes, 'el acuse de cada celular sigue donde estaba');
+  assert.deepEqual(celulares.map(c => c.datos().vista.movimientos), movimientosAntes, 'y sus movimientos de dinero, también');
   assert.deepEqual(nuevo.estado().turnos, turnosAntes);
   assert.deepEqual([...nuevo.jugadores()].sort(), [...viejo.jugadores()].sort(), 'cada celular sigue siendo el mismo jugador');
 
@@ -125,6 +129,8 @@ test('tras recargar el tablero, los celulares siguen jugando donde estaban: la s
     await paso(sala, { asentar });
   }
   assert.ok(nuevo.estado().turnos > turnosAntes, 'la partida avanzó tras la recarga');
+  const mayorDespues = Math.max(...celulares.flatMap(c => Object.keys(c.datos().vista.movimientos ?? {}).map(Number)));
+  assert.ok(mayorDespues > mayorAntes, 'los movimientos nuevos siguen la numeración, no empiezan de uno');
   comprobarEspejos(sala);
   celulares.forEach(c => c.cerrar());
   await Promise.allSettled([...enCamino]);

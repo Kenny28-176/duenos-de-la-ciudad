@@ -111,8 +111,8 @@ src/ui/tablero/          la pantalla del tablero: app.js (arranque), componentes
                          límite de tiempo de la partida) y demo.js (partida de demostración entre bots)
 src/ui/jugador/          la pantalla del celular: app.js (arranque y conexión), pantallas.js (nombre, vestíbulo, final),
                          partida.js (cabecera, botones de abajo y pestañas), propiedades.js, bolsa.js, tratos.js,
-                         subasta.js y mesa.js (una pestaña o panel cada uno), comun.js y vista.js (qué muestra y con qué
-                         cifras: funciones puras que consultan al motor)
+                         subasta.js, mesa.js y movimientos.js (una pestaña o panel cada uno; «Mis movimientos» es la hoja de
+                         dinero), comun.js y vista.js (qué muestra y con qué cifras: funciones puras que consultan al motor)
 tools/                   serve.js (servidor local) y red-local.js (el relé: el buzón de la partida por la wifi),
                          construir-sitio.js (revisa y empaqueta la web para Pages),
                          simular.js (equilibrio con bots), jugar-con-celulares.js (partidas enteras por la interfaz real,
@@ -123,7 +123,8 @@ tools/                   serve.js (servidor local) y red-local.js (el relé: el 
 tests/                   pruebas (node:test, sin dependencias): reglas del motor, partidas entre bots, marcas,
                          documentación, web e imágenes
 docs/                    DISENO.md (las reglas tal como las aplica el motor), VISUALES.md (todo lo que hay que dibujar),
-                         IDEAS.md (para después) y FIREBASE.md (cómo crear el proyecto de Firebase)
+                         IDEAS.md (para después), FIREBASE.md (cómo crear el proyecto de Firebase) y PRUEBA-EN-CASA.md (guía
+                         para la primera partida con celulares de verdad y cómo anotar un fallo)
 ```
 
 Lo que llega en las fases 3 y 4:
