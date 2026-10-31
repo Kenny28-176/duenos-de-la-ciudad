@@ -11,6 +11,7 @@ import { crearTransporteHttp } from '../src/net/http.js';
 import { crearOrquesta } from '../src/net/orquesta.js';
 import { buscarChrome, iniciarNavegador } from '../tools/navegador.js';
 import { crearServidor } from '../tools/serve.js';
+import { revisarAccesibilidad } from './ayuda-accesibilidad.js';
 import { esperarHasta } from './ayuda-red.js';
 
 const motor = crearMotor(await cargarDatos());
@@ -62,6 +63,8 @@ async function sinClavesSueltas(p, donde) {
   const visible = await p.eval(() => document.body.textContent);
   assert.doesNotMatch(visible, /\b(jugador|sala|fmt|estado|habilidad|subasta)\.[a-z_.-]+/, `una clave sin traducir en «${donde}»: ${visible.slice(0, 200)}`);
   assert.doesNotMatch(visible, /\{[a-z_]+(:[a-z]+)?\}/, `un hueco sin rellenar en «${donde}»`);
+  // Y lo básico de la accesibilidad: botones con nombre, campos con etiqueta, imágenes con alt…
+  assert.deepEqual(await revisarAccesibilidad(p), [], `accesibilidad en «${donde}»`);
 }
 
 test('un celular entra a la sala, elige ficha y juega con sus botones hasta construir, comprar acciones, pujar y cerrar un trato', { skip: motivo, timeout: 150000 }, async () => {

@@ -52,9 +52,9 @@ function Trato({ tr, c }) {
 function Contador({ etiqueta, valor, maximo, paso = 1, cambiar }) {
   return html`<div class="contador">
     <span>${etiqueta}</span>
-    <button type="button" aria-label="−" disabled=${valor <= 0} onClick=${() => cambiar(Math.max(0, valor - paso))}>−</button>
+    <button type="button" aria-label=${t('jugador.menos', { que: `${etiqueta}: ${valor}` })} disabled=${valor <= 0} onClick=${() => cambiar(Math.max(0, valor - paso))}>−</button>
     <b>${valor}</b>
-    <button type="button" aria-label="+" disabled=${valor >= maximo} onClick=${() => cambiar(Math.min(maximo, valor + paso))}>+</button>
+    <button type="button" aria-label=${t('jugador.mas', { que: `${etiqueta}: ${valor}` })} disabled=${valor >= maximo} onClick=${() => cambiar(Math.min(maximo, valor + paso))}>+</button>
   </div>`;
 }
 

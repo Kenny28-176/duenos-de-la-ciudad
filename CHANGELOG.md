@@ -159,6 +159,12 @@ Aquí se anotan los cambios de cada versión. Las versiones siguen el esquema ma
 - **Premios de la partida** en la pantalla final del tablero: hasta cuatro, repartidos entre los jugadores (Llave de oro, Grúa de oro,
   Olfato para la Bolsa, Martillo de oro, Apretón de manos, Bolsillo agujereado, Abono del Calabozo y Mano de la suerte). Salen de los
   eventos de la partida (`src/ui/tablero/premios.js`) y se guardan con la partida, por si se recarga el tablero.
+- **Modo TV** en el tablero (botón **TV**, tecla T o `?tv=1`): pantalla completa, letra más grande en el panel, menos líneas en el registro
+  y los controles escondidos hasta que se mueve el ratón; se recuerda en el navegador. **Atajos de teclado**: la barra espaciadora pausa,
+  F pone la pantalla completa y M el sonido.
+- **Accesibilidad**: foco del teclado siempre visible, el registro del tablero se anuncia a los lectores de pantalla, los dados y las
+  habilidades listas se dicen en texto, los botones de idioma, velocidad, «−» y «+» tienen un nombre claro y el campo de la puja libre,
+  su etiqueta. Las pruebas en Chrome revisan en cada pantalla que ningún botón se quede sin nombre ni ningún campo sin etiqueta.
 
 ### Arreglado
 

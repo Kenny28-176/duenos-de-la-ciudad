@@ -70,7 +70,41 @@ voz.poner(preferencias.voz === true);
 const estadoDeSonido = () => ({ efectos: sonido.estado().activo, voz: voz.activa(), hayVoz: voz.disponible });
 for (const tipo of ['pointerdown', 'keydown', 'touchend', 'click']) document.addEventListener(tipo, () => sonido.desbloquear(), { passive: true });
 
-const almacen = crearAlmacen({ ...estadoInicial(), sonido: estadoDeSonido() });
+// --- El modo TV -------------------------------------------------------------------------------------------------------------
+// Para ver el tablero en una tele, desde el sofá: letra más grande en el panel, menos líneas en el registro, pantalla completa y los
+// controles escondidos hasta que se mueve el ratón o se pulsa una tecla (public/tablero.css, «modo-tv»). Se recuerda en este
+// navegador, y con ?tv=1 en la dirección se abre así.
+const CLAVE_TV = 'duenos:tv';
+const tvGuardado = () => { try { return localStorage.getItem(CLAVE_TV) === 'si'; } catch { return false; } };
+const SEGUNDOS_CON_CONTROLES = 3;
+let relojControles = null;
+
+function pantallaCompleta(si) {
+  try {
+    if (si && !document.fullscreenElement) document.documentElement.requestFullscreen?.()?.catch(() => {});
+    else if (!si && document.fullscreenElement) document.exitFullscreen?.()?.catch(() => {});
+  } catch { /* el navegador no deja: no pasa nada */ }
+}
+
+function ponerModoTv(activo, { completa = true } = {}) {
+  document.documentElement.classList.toggle('modo-tv', activo);
+  try { localStorage.setItem(CLAVE_TV, activo ? 'si' : 'no'); } catch { /* sin almacenamiento */ }
+  if (completa) pantallaCompleta(activo);
+  return activo;
+}
+
+// En el modo TV, los controles salen al mover el ratón (o pulsar una tecla) y se esconden solos al rato.
+function mostrarControles() {
+  document.documentElement.classList.add('con-raton');
+  clearTimeout(relojControles);
+  relojControles = setTimeout(() => document.documentElement.classList.remove('con-raton'), SEGUNDOS_CON_CONTROLES * 1000);
+}
+for (const tipo of ['mousemove', 'pointerdown']) window.addEventListener(tipo, mostrarControles, { passive: true });
+
+const almacen = crearAlmacen({
+  ...estadoInicial(), sonido: estadoDeSonido(),
+  tv: ponerModoTv(parametros.get('tv') === '1' || (parametros.get('tv') !== '0' && tvGuardado()), { completa: false }),
+});
 
 let capas = null;
 let reproductor = null;
@@ -502,6 +536,8 @@ const acciones = {
     almacen.cambiar({ sonido: estadoDeSonido() });
     if (voz.activa()) voz.decir(t('voz.activada'), { idioma: almacen.leer().idioma });
   },
+  // El modo TV (con pantalla completa: el clic en el botón es el gesto que piden los navegadores para ponerla).
+  alternarTv: () => almacen.cambiar({ tv: ponerModoTv(!almacen.leer().tv) }),
   velocidad: v => almacen.cambiar({ velocidad: v }),
   nueva: jugadores => nuevaPartida(jugadores, Date.now() % 100000),
   idioma: async lang => {
@@ -517,6 +553,22 @@ const acciones = {
     if (vieja) limpieza = limpieza.then(() => borrarSalas([vieja.codigo]));
   },
 };
+
+// Atajos de teclado (para quien maneja el tablero desde la laptop conectada a la tele): la barra espaciadora pausa, F pone o quita la
+// pantalla completa, T el modo TV y M el sonido. No cuentan mientras se escribe en un campo o con el foco en un botón (la barra
+// espaciadora ya lo pulsa).
+window.addEventListener('keydown', e => {
+  if (e.ctrlKey || e.metaKey || e.altKey || e.repeat) return;
+  mostrarControles();
+  if (e.target?.closest?.('input, select, textarea, button, [contenteditable]')) return;
+  const tecla = e.key.toLowerCase();
+  if (tecla === ' ' && almacen.leer().modo !== 'sala') {
+    e.preventDefault();
+    acciones.pausar();
+  } else if (tecla === 'f') pantallaCompleta(!document.fullscreenElement);
+  else if (tecla === 't') acciones.alternarTv();
+  else if (tecla === 'm') acciones.alternarSonido();
+});
 
 alCambiarIdioma(lang => {
   document.documentElement.lang = lang;

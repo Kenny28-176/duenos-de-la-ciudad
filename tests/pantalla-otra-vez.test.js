@@ -5,6 +5,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { buscarChrome, iniciarNavegador } from '../tools/navegador.js';
 import { crearServidor } from '../tools/serve.js';
+import { revisarAccesibilidad } from './ayuda-accesibilidad.js';
 
 const motivo = buscarChrome() === null ? 'no hay Chrome en este ordenador' : false;
 
@@ -57,6 +58,7 @@ test('con límite de tiempo, el tablero avisa de la última ronda, acaba por tie
     assert.equal(await rapida(), false, 'por defecto, no');
     await pestana.eval(() => [...document.querySelectorAll('.opciones label.interruptor')].find(l => l.textContent.includes('Partida rápida')).querySelector('input').click());
     assert.equal(await rapida(), true);
+    assert.deepEqual(await revisarAccesibilidad(pestana), [], 'accesibilidad en la sala');
 
     // Empieza: la cabecera dice cuánto queda, el reloj se agota enseguida y se anuncia la última ronda; la partida acaba por tiempo.
     await pestana.eval(() => [...document.querySelectorAll('.vestibulo button')].find(b => b.textContent.includes('Empezar')).click());
@@ -75,6 +77,7 @@ test('con límite de tiempo, el tablero avisa de la última ronda, acaba por tie
     const premios = await pestana.eval(() => [...document.querySelectorAll('.final .premios li')].map(li => li.innerText));
     assert.ok(premios.length >= 1 && premios.length <= 4, JSON.stringify(premios));
     assert.ok(premios.every(p => nombres.some(n => p.includes(n)) && /\d/.test(p)), JSON.stringify(premios));
+    assert.deepEqual(await revisarAccesibilidad(pestana), [], 'accesibilidad en la pantalla final');
 
     // Jugar otra vez: el tablero vuelve a la sala con los mismos jugadores y con los 45 minutos elegidos.
     await pestana.eval(() => [...document.querySelectorAll('.botones-final button')].find(b => b.textContent === 'Jugar otra vez').click());

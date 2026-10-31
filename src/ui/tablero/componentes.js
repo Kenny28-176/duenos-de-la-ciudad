@@ -71,7 +71,7 @@ function Dados({ dados }) {
     });
   }, [dados?.n]);
   if (!dados) return null;
-  return html`<div class="dados" data-jugador=${dados.id}>${dados.valores.map((valor, k) => html`<${Dado} key=${k} valor=${valor} nombreRef=${el => { cubos.current[k] = el; }} />`)}</div>`;
+  return html`<div class="dados" data-jugador=${dados.id} role="img" aria-label=${t('tablero.dados', { valores: dados.valores.join(' + ') })}>${dados.valores.map((valor, k) => html`<${Dado} key=${k} valor=${valor} nombreRef=${el => { cubos.current[k] = el; }} />`)}</div>`;
 }
 
 // --- Cartas, subastas, avisos y final --------------------------------------------------------------------------------
@@ -157,7 +157,7 @@ function TarjetaJugador({ j, flotantes, velocidad, delegable = false, delegado =
         ${j.activa ? html`<span class=${`habilidad ${j.activa.lista ? 'lista' : 'enfriando'}`} title=${t(`habilidad.${j.activa.id}`)}>
           <${Imagen} src=${`${BASE}botones/habilidades/activas/${j.activa.id}.webp`} clase="insignia" />
           <span class="nombre-habilidad">${t(`habilidad.${j.activa.id}`)}</span>
-          <span class="turnos">${j.activa.lista ? '' : tn('habilidad.turnos', j.activa.enfriamiento)}</span></span>` : null}
+          <span class="turnos">${j.activa.lista ? html`<span class="solo-lector">${t('panel.lista')}</span>` : tn('habilidad.turnos', j.activa.enfriamiento)}</span></span>` : null}
       </span>
     </span>
     <span class="dinero"><b class="cifra">${dinero(cifra)}</b><span class="patrimonio">${t('panel.patrimonio')} ${dinero(j.patrimonio)}</span></span>
@@ -178,9 +178,10 @@ function Bolsa({ filas }) {
     </li>`)}</ul></section>`;
 }
 
+// Es un «registro» para los lectores de pantalla: anuncian cada línea nueva sin interrumpir.
 function Registro({ lineas }) {
-  return html`<section class="registro"><h3>${t('registro.titulo')}</h3>
-    <ol>${lineas.slice(-12).map(l => html`<li key=${l.n}>${l.texto}${l.veces > 1 ? html` <b class="veces">×${l.veces}</b>` : ''}</li>`)}</ol></section>`;
+  return html`<section class="registro" aria-labelledby="registro-titulo"><h3 id="registro-titulo">${t('registro.titulo')}</h3>
+    <ol role="log">${lineas.slice(-12).map(l => html`<li key=${l.n}>${l.texto}${l.veces > 1 ? html` <b class="veces">×${l.veces}</b>` : ''}</li>`)}</ol></section>`;
 }
 
 const VELOCIDADES = [1, 2, 4, 8];
@@ -189,19 +190,21 @@ function Controles({ d, acciones }) {
   const [jugadores, setJugadores] = useState(d.jugadores);
   const demo = d.modo === 'demo';
   return html`<section class="controles">
-    ${d.modo === 'sala' ? null : html`<button class="boton" onClick=${acciones.pausar}>${d.pausado ? t('controles.seguir') : t('controles.pausa')}</button>
+    ${d.modo === 'sala' ? null : html`<button class="boton" title=${t('controles.pausa.ayuda')} onClick=${acciones.pausar}>${d.pausado ? t('controles.seguir') : t('controles.pausa')}</button>
     <span class="velocidad" role="group" aria-label=${t('controles.velocidad')}>
-      ${VELOCIDADES.map(v => html`<button class=${`boton chico ${d.velocidad === v ? 'activo' : ''}`} onClick=${() => acciones.velocidad(v)}>×${v}</button>`)}
+      ${VELOCIDADES.map(v => html`<button class=${`boton chico ${d.velocidad === v ? 'activo' : ''}`} aria-pressed=${d.velocidad === v} onClick=${() => acciones.velocidad(v)}>×${v}</button>`)}
     </span>`}
     ${demo ? html`<label class="nueva">${t('controles.jugadores')}
       <select value=${jugadores} onChange=${e => setJugadores(Number(e.target.value))}>${[2, 3, 4, 5, 6, 7, 8].map(n => html`<option value=${n}>${n}</option>`)}</select>
     </label>
     <button class="boton" onClick=${() => acciones.nueva(jugadores)}>${t('controles.nueva')}</button>
     ${d.red ? html`<button class="boton principal" onClick=${acciones.abrirSala}>${t('controles.sala')}</button>` : null}` : html`<button class="boton" onClick=${acciones.cerrarSala}>${t('controles.cerrar_sala')}</button>`}
-    <span class="idioma" role="group">${['es', 'en'].map(l => html`<button class=${`boton chico ${d.idioma === l ? 'activo' : ''}`} onClick=${() => acciones.idioma(l)}>${l.toUpperCase()}</button>`)}</span>
-    <span class="sonido" role="group">
+    <span class="idioma" role="group" aria-label=${t('controles.idioma')}>${['es', 'en'].map(l => html`<button class=${`boton chico ${d.idioma === l ? 'activo' : ''}`}
+      lang=${l} aria-label=${t(`idioma.${l}`)} aria-pressed=${d.idioma === l} onClick=${() => acciones.idioma(l)}>${l.toUpperCase()}</button>`)}</span>
+    <span class="sonido" role="group" aria-label=${t('controles.sonidos')}>
       <button class=${`boton chico ${d.sonido.efectos ? 'activo' : ''}`} aria-pressed=${d.sonido.efectos} title=${t('controles.sonido.ayuda')} onClick=${acciones.alternarSonido}>${t('controles.sonido')}</button>
       ${d.sonido.hayVoz ? html`<button class=${`boton chico ${d.sonido.voz ? 'activo' : ''}`} aria-pressed=${d.sonido.voz} title=${t('controles.voz.ayuda')} onClick=${acciones.alternarVoz}>${t('controles.voz')}</button>` : null}
+      <button class=${`boton chico tv ${d.tv ? 'activo' : ''}`} aria-pressed=${Boolean(d.tv)} title=${t('controles.tv.ayuda')} onClick=${acciones.alternarTv}>${t('controles.tv')}</button>
     </span>
   </section>`;
 }

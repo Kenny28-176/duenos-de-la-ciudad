@@ -48,7 +48,7 @@
 | 2. Board | Animated board with a bot demo match | Done (see the [demo](public/tablero.html)) |
 | 3. Phones | The network between the board and the phones, and the phone screen | Done for playing at home (wifi); the online mode (Firebase) is built and tested, the project is still to be created |
 | 4. Management & trading | **v0.1**: building, mortgaging, debt, deals and game saving | Done (the game is saved in the board's browser; saving it elsewhere is missing) |
-| 5. Polish | Room settings, stats, English, accessibility, TV mode | **In progress**: English, sound and voice, the time limit, “play again” and the money log are done; stats, accessibility and TV mode are missing |
+| 5. Polish | Room settings, stats, English, accessibility, TV mode | Done: English, sound and voice, the time limit, the quick game, “play again”, the money log, the end-of-game awards, basic accessibility and TV mode |
 | 6. Release | **v1.0** | Pending: the Firebase project, the brand icon and a test with real phones are missing |
 
 Future ideas, such as a cooperative mode against a corporation, are in [`docs/IDEAS.md`](docs/IDEAS.md) (in Spanish).
@@ -84,6 +84,13 @@ with the same players and options: the phones return by themselves, with no need
 allow sound before that. There are no audio files: the browser synthesises everything. In the panel, **Sound** turns it off and **Voice**
 turns on a narrator that reads out what happens (off by default, and only shown if the device has voices). Each phone chimes, and
 vibrates if it can, when it is that player's turn; turn it off in the **Table** tab. `public/sonidos.html` plays every sound one by one.
+
+**On a TV:** with the laptop plugged into a TV, the **TV** button on the panel (or the T key) goes full screen, enlarges the panel text so it
+can be read from the sofa and hides the controls until the mouse moves. That browser remembers it. More keys: the space bar pauses, F
+turns full screen on or off and M the sound.
+
+**At the end of the game**, besides the ranking, the board hands out up to four awards (the Golden key for whoever collected the most
+rent, the Golden crane for whoever built the most…).
 
 ## Development
 

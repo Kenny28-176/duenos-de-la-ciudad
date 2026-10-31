@@ -18,3 +18,9 @@
 }
 
 * { box-sizing: border-box; }
+
+/* Texto solo para los lectores de pantalla: no se ve, pero se lee (por ejemplo, «lista para usar» junto a una habilidad). */
+.solo-lector { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+/* El foco del teclado se ve siempre, en todos los controles. */
+:where(button, select, input, textarea, a, [tabindex]):focus-visible { outline: 3px solid var(--oro-viejo); outline-offset: 2px; }

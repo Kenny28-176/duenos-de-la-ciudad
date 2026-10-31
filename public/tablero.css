@@ -304,3 +304,15 @@
   .carta, .subasta, .aviso, .final, .flotante, .registro li { animation-duration: 0.01s; }
   .tablero .ficha, .tablero .escala { transition: none; }
 }
+
+/* --- El modo TV: para ver el tablero desde el sofá ---------------------------------------------------------------------------
+   Letra más grande en el panel (lo que va en rem crece; el tablero va en cqw y ya llena la pantalla), menos líneas en el registro y
+   los controles flotando, escondidos hasta que se mueve el ratón o se pulsa una tecla. Lo pone la clase «modo-tv» del <html>. */
+html.modo-tv { font-size: clamp(16px, 1.15vw, 30px); }
+.modo-tv .pantalla { grid-template-columns: minmax(0, 1fr) clamp(21rem, 32vw, 36rem); }
+.modo-tv .registro li:nth-last-child(n + 8) { display: none; }
+.modo-tv .controles { position: fixed; right: 1rem; bottom: 1rem; z-index: 20; max-width: min(46rem, calc(100vw - 2rem)); padding: 0.6rem 0.7rem;
+  background: rgba(30, 36, 43, 0.96); border: 1px solid rgba(201, 164, 76, 0.5); border-radius: 0.7rem; box-shadow: 0 0.5rem 2rem rgba(0, 0, 0, 0.5);
+  opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+.modo-tv.con-raton .controles, .modo-tv .controles:focus-within { opacity: 1; pointer-events: auto; }
+html.modo-tv:not(.con-raton), html.modo-tv:not(.con-raton) * { cursor: none; }

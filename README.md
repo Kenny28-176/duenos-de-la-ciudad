@@ -48,7 +48,7 @@
 | 2. Tablero | Tablero animado con una partida de bots | Hecha (mira la [demostración](public/tablero.html)) |
 | 3. Celulares | La red entre el tablero y los celulares, y la pantalla del celular | Hecha para jugar en casa (wifi); el modo por internet (Firebase) está programado y probado, falta crear el proyecto |
 | 4. Gestión y tratos | **v0.1**: construir, hipotecar, deudas, tratos y guardar la partida | Hecha (la partida se guarda en el navegador del tablero; falta guardarla fuera) |
-| 5. Pulido | Reglas de la sala, estadísticas, inglés, accesibilidad, modo TV | **En marcha**: hechos el inglés, el sonido y la voz, el límite de tiempo, «jugar otra vez» y los movimientos de dinero; faltan las estadísticas, la accesibilidad y el modo TV |
+| 5. Pulido | Reglas de la sala, estadísticas, inglés, accesibilidad, modo TV | Hecha: el inglés, el sonido y la voz, el límite de tiempo, la partida rápida, «jugar otra vez», los movimientos de dinero, los premios del final, la accesibilidad básica y el modo TV |
 | 6. Publicación | **v1.0** | Pendiente: faltan el proyecto de Firebase, el icono de la marca y la prueba con celulares de verdad |
 
 Las ideas para más adelante, como un modo cooperativo contra una corporación, están en [`docs/IDEAS.md`](docs/IDEAS.md).
@@ -84,6 +84,13 @@ con los mismos jugadores y las mismas opciones: los celulares vuelven solos, sin
 dejan sonar antes. No hay archivos de audio: lo sintetiza el navegador. En el panel, **Sonido** lo apaga y **Voz** enciende un narrador que
 lee en voz alta lo que pasa (viene apagado y solo sale si el equipo tiene voces). Cada celular avisa con un sonido, y vibra si puede,
 cuando le toca; se apaga en la pestaña **Mesa**. Con `public/sonidos.html` se oyen uno a uno todos los sonidos.
+
+**En la tele:** con la laptop conectada a una tele, el botón **TV** del panel (o la tecla T) pone la pantalla completa, agranda la letra del
+panel para leerla desde el sofá y esconde los controles hasta que se mueve el ratón. Se recuerda en ese navegador. Más teclas: la barra
+espaciadora pausa, F pone o quita la pantalla completa y M el sonido.
+
+**Al final de la partida**, además de la clasificación, el tablero reparte hasta cuatro premios (la Llave de oro para quien más alquiler
+cobró, la Grúa de oro para quien más construyó…).
 
 ## Desarrollo
 

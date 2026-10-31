@@ -113,7 +113,8 @@ src/ui/tablero/          la pantalla del tablero: app.js (arranque), componentes
                          reproductor.js (anima los eventos en orden), capas.js (fichas, dueños y edificios sobre el
                          SVG), dibujo.js (el tablero en SVG), geometria.js (dónde va cada casilla y cada ficha),
                          vista.js (qué muestra, calculado del estado), vestibulo.js (la sala con su QR), reloj.js (el
-                         límite de tiempo de la partida) y demo.js (partida de demostración entre bots)
+                         límite de tiempo de la partida), premios.js (los premios del final, sacados de los eventos) y
+                         demo.js (partida de demostración entre bots)
 src/ui/jugador/          la pantalla del celular: app.js (arranque y conexión), pantallas.js (nombre, vestíbulo, final),
                          partida.js (cabecera, botones de abajo y pestañas), propiedades.js, bolsa.js, tratos.js,
                          subasta.js, mesa.js y movimientos.js (una pestaña o panel cada uno; «Mis movimientos» es la hoja de
@@ -169,7 +170,8 @@ npm run hoja:visuales                    # hoja de contactos para comparar las i
 - **La pantalla del tablero se prueba de verdad.** `tests/pantalla.test.js` la abre en Chrome sin ssin ventana (se salta si no
   hay Chrome). Con `?depurar=1` en la dirección, `window.duenos` da el almacén de datos para moverlo desde fuera (por ejemplo,
   forzar una carta o la pantalla final y sacarles una captura con `tools/ver.js`). Otros parámetros de la demo: `jugadores`,
-  `semilla`, `velocidad` e `idioma`.
+  `semilla`, `velocidad`, `idioma` y `tv` (`?tv=1`, el modo TV). `tests/ayuda-accesibilidad.js` revisa en cada pantalla que los botones
+  tengan nombre y los campos, etiqueta: úsalo en las pruebas de pantallas nuevas.
 - **Puede haber otra IA trabajando a la vez** en esta carpeta. Su reparto de tareas está en `trabajoParalelo.md`, un
   archivo local que no se sube. Si existe, léelo antes de tocar nada: dice de quién es cada archivo.
 

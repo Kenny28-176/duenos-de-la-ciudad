@@ -36,7 +36,7 @@ export function Partida({ d, motor, acciones }) {
       ${s.subasta ? html`<${PanelSubasta} c=${c} />` : html`<${contenido} c=${c} />`}
     </main>
     ${s.subasta ? null : html`<${Dock} c=${c} />`}
-    ${s.subasta ? null : html`<nav class="pestanas">
+    ${s.subasta ? null : html`<nav class="pestanas" aria-label=${t('jugador.secciones')}>
       ${PESTANAS.map(([clave, icono, grupo]) => html`<button type="button" key=${clave} class=${pestana === clave ? 'activa' : ''} aria-current=${pestana === clave ? 'page' : null} onClick=${() => setPestana(clave)}>
         <${Icono} nombre=${icono} grupo=${grupo} /><span>${t(`jugador.pestana.${clave}`)}</span>
         ${clave === 'tratos' && recibidos ? html`<b class="globo">${recibidos}</b>` : null}
@@ -187,9 +187,9 @@ function EleccionDeHabilidad({ c, hab, usar, cerrar }) {
       ${hab.eleccion === 'casilla' ? hab.casillas.map(i => opcion(i, nombreCasilla(i), i, colorDe(i))) : null}
       ${hab.eleccion === 'objetivo' ? hab.objetivos.map(k => opcion(k, nombreDe(s, k), k, motor.ctx.fichas[s.jugadores[k].ficha].color)) : null}
       ${hab.eleccion === 'cantidad' ? html`<div class="contador">
-        <button type="button" aria-label="−" disabled=${cantidad <= 10} onClick=${() => setCantidad(Math.max(10, cantidad - 10))}>−</button>
+        <button type="button" aria-label=${t('jugador.menos', { que: dinero(cantidad) })} disabled=${cantidad <= 10} onClick=${() => setCantidad(Math.max(10, cantidad - 10))}>−</button>
         <b>${dinero(cantidad)}</b>
-        <button type="button" aria-label="+" disabled=${cantidad >= hab.maximo} onClick=${() => setCantidad(Math.min(hab.maximo, cantidad + 10))}>+</button>
+        <button type="button" aria-label=${t('jugador.mas', { que: dinero(cantidad) })} disabled=${cantidad >= hab.maximo} onClick=${() => setCantidad(Math.min(hab.maximo, cantidad + 10))}>+</button>
         <${Boton} icono="usar-habilidad" tipo="principal" texto=${t('jugador.dock.pedir')} desactivado=${c.ocupado} onClick=${() => usar(cantidad)} />
       </div>` : null}
     </div>

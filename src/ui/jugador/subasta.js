@@ -39,7 +39,8 @@ export function PanelSubasta({ c }) {
       <p class="etiqueta">${t('jugador.subasta.pujar')}</p>
       <div class="rapidas">${rapidas.map(cantidad => html`<${Boton} key=${cantidad} icono="pujar" texto=${dinero(cantidad)} tipo=${cantidad === minima ? 'principal' : ''} desactivado=${c.ocupado} onClick=${() => pujar(cantidad)} />`)}</div>
       <form class="puja-libre" onSubmit=${e => { e.preventDefault(); if (libreValida && !c.ocupado) pujar(cantidadLibre); }}>
-        <input type="number" inputmode="numeric" min=${minima} max=${j.dinero} step="10" placeholder=${t('jugador.subasta.otra')} value=${libre} onInput=${e => setLibre(e.target.value)} />
+        <input type="number" inputmode="numeric" min=${minima} max=${j.dinero} step="10" placeholder=${t('jugador.subasta.otra')} aria-label=${t('jugador.subasta.otra')}
+          value=${libre} onInput=${e => setLibre(e.target.value)} />
         <${Boton} icono="pujar" texto=${t('jugador.subasta.pujar_esa')} desactivado=${c.ocupado || !libreValida} onClick=${() => pujar(cantidadLibre)} />
       </form>
     </div>` : null}
