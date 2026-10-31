@@ -373,6 +373,13 @@ negociando) o declararse en bancarrota. En cuanto lo reúne, la deuda se paga so
 - **Si todos los demás quiebran,** gana el último que queda.
 - **Con límite de tiempo** (opcional), al acabar el tiempo se termina la ronda y gana el mayor patrimonio. Si hay
   empate, gana quien va antes en el orden de juego.
+  - **El reloj lo lleva el tablero**, no el motor: cuenta solo el tiempo en que la partida corre (no en pausa) y, al
+    agotarse, le pide al motor `finPorTiempo`. El motor lo anuncia con el evento `ultimaRonda` («Se acabó el tiempo:
+    esta es la última ronda»), todos acaban su turno de esa ronda y la partida termina con el motivo `tiempo`. Pedirlo
+    dos veces no cambia nada.
+  - **El tablero enseña lo que queda** («Quedan 37 min») y, una vez anunciada, «Última ronda»; los celulares también
+    avisan de la última ronda.
+  - Si se recarga el tablero, la partida recuperada conserva el tiempo ya jugado.
 
 ## 7. Las cartas
 
@@ -411,9 +418,15 @@ trato antes de enviarlo.
 | Habilidades de las fichas | Activadas | Desactivadas |
 | Subastas | Activadas | Desactivadas |
 | Partida rápida | No | Cada jugador empieza con 2 calles al azar |
-| Límite de tiempo | Sin límite | 45, 60 o 90 minutos |
+| Límite de tiempo | Sin límite | 45, 60 o 90 minutos (el motor admite cualquier número entero de minutos, de 1 a 600) |
 | Bots | Ninguno | Hasta completar 8 jugadores |
-| Voz del narrador | Activada | Desactivada |
+| Voz del narrador | **Desactivada** (cambiado el 31-oct: leer cada compra y cada alquiler frena la partida, y no todos los equipos tienen buena voz) | Activada con el botón «Voz» del panel del tablero; se recuerda en ese navegador |
+| Sonido | Activado | Apagado con el botón «Sonido» del panel del tablero. En el celular, el aviso sonoro de «te toca» se apaga en la pestaña Mesa |
+
+**Jugar otra vez.** Al terminar una partida, el tablero ofrece «Jugar otra vez»: vuelve a la sala con los **mismos jugadores
+(con su nombre, su ficha y si son bots) y las mismas opciones**, y se pueden cambiar antes de empezar. Los celulares vuelven solos
+a la sala con su ficha, sin escribir ni escanear nada. El azar sigue donde lo dejó la partida anterior, así que no se repite la misma
+partida. Los bots que el tablero hubiera puesto a jugar por alguien ausente («BOT» en su tarjeta) se quitan.
 
 ## 10. Cómo lo comprueba el simulador
 

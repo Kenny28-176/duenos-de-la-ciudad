@@ -106,6 +106,22 @@ La partida vive en el tablero (la «autoridad»): si su página se recarga o se 
 - **Límites:** la jugada que se estuviera animando en ese momento (aplicada pero aún sin publicar) se pierde, y el celular que la
   mandó puede repetirla; solo funciona en el mismo navegador (es donde está lo guardado); y si otro tablero ha cogido esa sala, no
   se le quita.
+- **El tiempo ya jugado** (si la partida tiene límite) también se guarda (`jugadoMs`) y se retoma.
+
+## El final de la partida: el reloj y jugar otra vez
+
+- **El reloj es del tablero.** El motor no sabe qué hora es: con la opción `limiteMinutos` (null = sin límite) el tablero cuenta el tiempo
+  en que la partida corre (`src/ui/tablero/reloj.js`, una cuenta pura que se prueba sin esperar; no cuenta la pausa ni un portátil
+  dormido) y, al agotarse, manda la acción propia `finPorTiempo`. Los celulares no pueden mandarla (no está en
+  `ACCIONES_DE_CELULAR`). El motor pone `ultimaRonda` en el estado (los celulares lo ven y avisan) y emite el evento `ultimaRonda`
+  (el narrador, el aviso de pantalla y el gong); la partida acaba al cerrarse la ronda con el motivo `tiempo`. Con `?reloj=N` en la
+  dirección del tablero cada segundo cuenta por N: es para las pruebas.
+- **Tras el final, la orquesta devuelve `null`** (la partida ya acabó): el reproductor termina y nadie se queda esperando una acción que no
+  llegará. El tablero enseña «Jugar otra vez» y «Cerrar la sala».
+- **Jugar otra vez** es la acción propia `revancha` (solo vale con la partida acabada, tampoco la pueden mandar los celulares): deja el estado
+  como una sala recién abierta pero con los mismos jugadores (nombre, ficha, si son bots), las mismas opciones y el azar donde estaba. El tablero
+  publica, vuelve al vestíbulo (con las opciones de la partida anterior) y los celulares, que ven `fase: 'sala'` y siguen siendo el mismo jugador,
+  vuelven solos a la pantalla de la sala. `tests/red-revancha.test.js` lo prueba por la red con una segunda partida entera.
 
 ## La pantalla del celular
 

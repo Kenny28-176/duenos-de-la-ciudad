@@ -107,8 +107,8 @@ src/ui/                  preact.js (Preact + htm), almacen.js y usarAlmacen.js (
 src/ui/tablero/          la pantalla del tablero: app.js (arranque), componentes.js (panel, dados, cartas, subasta…),
                          reproductor.js (anima los eventos en orden), capas.js (fichas, dueños y edificios sobre el
                          SVG), dibujo.js (el tablero en SVG), geometria.js (dónde va cada casilla y cada ficha),
-                         vista.js (qué muestra, calculado del estado), vestibulo.js (la sala con su QR) y demo.js
-                         (partida de demostración entre bots)
+                         vista.js (qué muestra, calculado del estado), vestibulo.js (la sala con su QR), reloj.js (el
+                         límite de tiempo de la partida) y demo.js (partida de demostración entre bots)
 src/ui/jugador/          la pantalla del celular: app.js (arranque y conexión), pantallas.js (nombre, vestíbulo, final),
                          partida.js (cabecera, botones de abajo y pestañas), propiedades.js, bolsa.js, tratos.js,
                          subasta.js y mesa.js (una pestaña o panel cada uno), comun.js y vista.js (qué muestra y con qué

@@ -9,10 +9,18 @@ import { svgDeQr } from '../qr.js';
 import { nombreMostrado } from './vista.js';
 
 const METAS = [['corta', 7000], ['normal', 10000], ['larga', 14000], ['ninguna', null]];
+const TIEMPOS = [null, 45, 60, 90]; // minutos de la partida (null = sin límite)
+
+// Las opciones que se eligen aquí, con lo que tenía la sala (si es una revancha, las de la partida anterior) o, si no, lo normal.
+const CLAVES = ['meta', 'mercado', 'habilidades', 'subastas', 'limiteMinutos'];
+const iniciales = previas => ({
+  meta: 10000, mercado: true, habilidades: true, subastas: true, limiteMinutos: null,
+  ...Object.fromEntries(CLAVES.filter(k => previas && k in previas).map(k => [k, previas[k]])),
+});
 
 // colores(ficha) da el color de una ficha.
 export function Vestibulo({ sala, estado, acciones, colores }) {
-  const [opciones, setOpciones] = useState({ meta: 10000, mercado: true, habilidades: true, subastas: true });
+  const [opciones, setOpciones] = useState(() => iniciales(estado?.opciones));
   if (!sala || !estado) return null;
   const jugadores = estado.ids.map(id => estado.jugadores[id]);
   const faltan = Math.max(0, MIN_JUGADORES - jugadores.length);
@@ -30,7 +38,7 @@ export function Vestibulo({ sala, estado, acciones, colores }) {
       ${sala.sinRed ? html`<p class="aviso-local">${t('sala.sin_wifi')}</p>` : null}
       ${sala.otras?.length ? html`<p class="ayuda otras-direcciones">${t('sala.otras', { direcciones: sala.otras.join(' · ') })}</p>` : null}
       <h3>${t('sala.jugadores', { n: jugadores.length, max: MAX_JUGADORES })}</h3>
-      <ul class="lista-jugadores">
+      <ul class=${`lista-jugadores ${jugadores.length <= 4 ? 'una-columna' : ''}`.trim()}>
         ${jugadores.length === 0 ? html`<li class="vacio">${t('sala.esperando')}</li>` : null}
         ${jugadores.map(j => html`<li key=${j.id} style=${{ '--color': j.ficha ? colores(j.ficha) : 'var(--piedra)' }}>
           ${j.ficha ? html`<${Imagen} src=${`${BASE}fichas/piezas/${j.ficha}.webp`} clase="pieza" />` : html`<span class="pieza vacia">?</span>`}
@@ -46,6 +54,11 @@ export function Vestibulo({ sala, estado, acciones, colores }) {
         <label class="meta">${t('sala.meta')}
           <select value=${String(opciones.meta)} onChange=${e => cambiar({ meta: e.target.value === 'null' ? null : Number(e.target.value) })}>
             ${METAS.map(([nombre, meta]) => html`<option value=${String(meta)}>${t(`sala.meta.${nombre}`, { meta })}</option>`)}
+          </select>
+        </label>
+        <label class="meta">${t('sala.tiempo')}
+          <select value=${String(opciones.limiteMinutos)} onChange=${e => cambiar({ limiteMinutos: e.target.value === 'null' ? null : Number(e.target.value) })}>
+            ${TIEMPOS.map(minutos => html`<option value=${String(minutos)}>${minutos === null ? t('sala.tiempo.ninguno') : t('sala.tiempo.minutos', { n: minutos })}</option>`)}
           </select>
         </label>
         ${interruptor('mercado', t('sala.mercado'))}

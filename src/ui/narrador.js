@@ -108,6 +108,8 @@ export function describirEvento(e, nombres) {
       return { clave: 'evento.rachaFinal', datos: { jugador: jugador(e.id) } };
     case 'rachaPerdida':
       return { clave: 'evento.rachaPerdida', datos: { jugador: jugador(e.id) } };
+    case 'ultimaRonda':
+      return { clave: 'evento.ultimaRonda', datos: {} };
     case 'fin':
       return { clave: `evento.fin.${e.motivo}`, datos: { jugador: jugador(e.ganador) } };
     default:

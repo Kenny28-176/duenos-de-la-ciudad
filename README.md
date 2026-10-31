@@ -71,6 +71,10 @@ se lo quites (así la partida no se queda parada). Un celular que se recarga vue
 por accidente la página del tablero, al volver a abrirla (en el mismo navegador) sale **Recuperar la partida**: retoma la misma
 sala y los celulares siguen donde estaban. La partida guardada vale 12 horas.
 
+**La duración:** al abrir la sala se puede poner un tiempo de partida (45, 60 o 90 minutos). El tablero enseña lo que queda; al acabarse el
+tiempo anuncia la última ronda y gana quien tenga más patrimonio al cerrarla. Al terminar la partida, **Jugar otra vez** vuelve a la sala
+con los mismos jugadores y las mismas opciones: los celulares vuelven solos, sin escanear el QR otra vez.
+
 **El sonido:** el tablero suena (dados, pasos, monedas, subastas, cartas…) en cuanto alguien toca la pantalla, porque los navegadores no
 dejan sonar antes. No hay archivos de audio: lo sintetiza el navegador. En el panel, **Sonido** lo apaga y **Voz** enciende un narrador que
 lee en voz alta lo que pasa (viene apagado y solo sale si el equipo tiene voces). Cada celular avisa con un sonido, y vibra si puede,

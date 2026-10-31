@@ -71,6 +71,10 @@ you take it off (so the game doesn't stall). A phone that reloads goes back to i
 reloaded or closed by accident, opening it again (in the same browser) shows **Resume the game**: it picks up the same room
 and the phones carry on where they were. A saved game is valid for 12 hours.
 
+**Length:** when opening the room you can set a game length (45, 60 or 90 minutes). The board shows what is left; when time runs out it
+announces the last round and whoever has the highest net worth when it ends wins. When a game is over, **Play again** goes back to the room
+with the same players and options: the phones return by themselves, with no need to scan the QR code again.
+
 **Sound:** the board plays sounds (dice, steps, coins, auctions, cards…) as soon as someone taps the screen, because browsers do not
 allow sound before that. There are no audio files: the browser synthesises everything. In the panel, **Sound** turns it off and **Voice**
 turns on a narrator that reads out what happens (off by default, and only shown if the device has voices). Each phone chimes, and

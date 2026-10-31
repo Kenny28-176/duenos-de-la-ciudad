@@ -178,6 +178,7 @@ Al crear la partida en el tablero, el anfitrión puede personalizar la experienc
 
 - **Meta personalizada:** 7.000 $ (partida corta), 10.000 $ (la normal), 14.000 $ (partida larga) o sin meta (hasta que solo quede un jugador).
 - **Partida rápida:** cada jugador comienza con 2 calles al azar ya en su poder.
-- **Límite de tiempo:** cronómetro de 45, 60 o 90 minutos; al sonar la campana, gana el mayor patrimonio.
+- **Límite de tiempo:** cronómetro de 45, 60 o 90 minutos; el tablero enseña lo que queda. Cuando se acaba, suena un gong y se juega la **última ronda**: al cerrarse, gana el mayor patrimonio (si hay empate, quien juega antes).
+- **Jugar otra vez:** al terminar, el tablero ofrece otra partida con los mismos jugadores y las mismas opciones; los celulares vuelven solos a la sala.
 - **Reglas clásicas:** posibilidad de desactivar las habilidades de las fichas, las subastas o el mercado de acciones si se prefiere una experiencia tradicional.
 - **Bots:** añade jugadores automáticos con inteligencia artificial para completar mesas de hasta 8 jugadores.

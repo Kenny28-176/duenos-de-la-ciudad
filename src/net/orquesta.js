@@ -57,8 +57,10 @@ export function crearOrquesta({ anfitrion, motor, velocidad = () => 1, pensarMs 
     // Vuelve a mirar qué tiene que hacer el tablero (cuando cambian los delegados mientras se espera a una persona).
     reprogramar,
     // La siguiente acción que se aplique, venga de un celular o del propio tablero (un bot, una subasta). Devuelve
-    // { accion, eventos, uid }, o null si se cerró la sala.
+    // { accion, eventos, uid }, o null si se cerró la sala o la partida ya acabó (así nadie se queda esperando una acción
+    // que no llegará, y el tablero puede ofrecer otra partida).
     async paso() {
+      if (anfitrion.estado().fase === 'fin') return null;
       reprogramar();
       try {
         return await anfitrion.siguientePaso();

@@ -132,7 +132,9 @@ test('el sonido arranca con el primer toque, suena durante la partida, se apaga 
     assert.deepEqual(await pestana.eval(() => JSON.parse(localStorage.getItem('duenos:sonido'))), { efectos: false, voz: false });
 
     // Y al abrir la página otra vez, sigue apagado.
-    await pestana.eval(() => location.reload());
+    // (la recarga se pide con un temporizador: si no, la evaluación se queda esperando una página que ya no existe)
+    await pestana.eval(() => { setTimeout(() => location.reload(), 0); });
+    await new Promise(listo => setTimeout(listo, 500));
     await pestana.esperarSelector('.sonido button', 30000);
     assert.equal(await pestana.eval(() => document.querySelector('.sonido button').getAttribute('aria-pressed')), 'false');
     assert.equal(await pestana.eval(() => window.duenos.sonido.estado().activo), false);

@@ -130,6 +130,13 @@ Aquí se anotan los cambios de cada versión. Las versiones siguen el esquema ma
   se apaga con el botón **Sonido**.
 - **Voz del narrador** (opcional, apagada de serie): lee en voz alta las frases del narrador y el texto de las cartas con la mejor voz del
   idioma que tenga el equipo, y el reproductor espera a que acabe cada frase.
+- **Límite de tiempo** de la partida (45, 60 o 90 minutos, a elegir en la sala): el tablero lleva el reloj (sin contar la pausa y
+  conservándolo si se recupera la partida), enseña lo que queda, anuncia la última ronda con un gong y la partida acaba al cerrarse
+  esa ronda; los celulares también avisan de la última ronda. Es la opción `limiteMinutos` del motor y la acción `finPorTiempo`, que
+  ahora emite el evento `ultimaRonda`.
+- **Jugar otra vez**: al acabar, el tablero vuelve a la sala con los mismos jugadores, fichas y opciones (acción `revancha` del motor) y los
+  celulares vuelven solos a su sitio, sin escanear el QR otra vez. Tras el final, la orquesta ya no se queda esperando acciones.
+- El vestíbulo muestra enteros los nombres de los jugadores (antes «C…» por «Cisne Negro») y sus botones quedan siempre a la vista con 8.
 - **Aviso sonoro en el celular** cuando le toca (además de la vibración, que los iPhone no tienen), que se apaga en la pestaña Mesa.
 - **Banco de sonidos** (`public/sonidos.html`): un botón por sonido para oírlos y ajustarlos sin jugar una partida.
 - Si la conexión de un celular se queda muerta (se le apagó la pantalla), se recupera sola.

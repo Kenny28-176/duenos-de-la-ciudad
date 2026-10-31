@@ -74,7 +74,8 @@ test('un celular entra a la sala, elige ficha y juega con sus botones hasta cons
   // El tablero: un anfitrión con su orquesta, que atiende lo que llegue y lo publica.
   const transporte = crearTransporteHttp({ uid: 'tablero', base, esperaReintento: 30 });
   const anfitrion = crearAnfitrion({ transporte, motor, codigo, semilla: 21 });
-  const orquesta = crearOrquesta({ anfitrion, motor, velocidad: () => 100, pensarMs: 50 });
+  const delegados = new Set(); // a quién juega un bot (al final de la prueba, a Ana, para que la partida acabe sola)
+  const orquesta = crearOrquesta({ anfitrion, motor, velocidad: () => 100, pensarMs: 50, delegados: () => delegados });
   await anfitrion.abrir();
   const eventos = [];
   let corre = true;
@@ -270,6 +271,35 @@ test('un celular entra a la sala, elige ficha y juega con sus botones hasta cons
     assert.deepEqual(await aviso(), { pulsado: 'false', guardado: 'no', activo: false });
     await sinClavesSueltas(ana, 'mesa');
     marca('el aviso sonoro se apaga y se recuerda');
+
+    // --- Se acaba el tiempo: la última ronda se avisa, la partida acaba y el tablero propone jugar otra vez --------------------
+    assert.equal(await ana.eval(() => document.querySelector('.ultima-ronda') === null), true, 'antes no hay aviso de última ronda');
+    anfitrion.accionPropia({ type: 'finPorTiempo' });
+    await esperarHasta(() => anfitrion.estado().ultimaRonda === true, 8000, 'el tablero no aplicó el fin por tiempo');
+    await alDia(ana);
+    assert.match(await esperarTexto(ana, '.ultima-ronda', /Última ronda/), /mayor patrimonio/);
+    await sinClavesSueltas(ana, 'última ronda');
+    delegados.add('j1');
+    orquesta.reprogramar();
+    await esperarHasta(() => anfitrion.estado().fase === 'fin', 20000, 'la partida no acabó tras el aviso de tiempo');
+    assert.equal(anfitrion.estado().motivoFin, 'tiempo');
+    await ana.esperarSelector('main.final', 15000);
+    assert.match(await texto(ana, 'main.final .etiqueta'), /Se acabó el tiempo/);
+    assert.match(await texto(ana, 'main.final .nota'), /vuelve sola a la sala/);
+    await sinClavesSueltas(ana, 'final');
+    marca('acabó por tiempo');
+
+    // El tablero propone otra partida: el celular vuelve a la sala con su ficha, sin pedir el nombre ni nada.
+    await bucle; // tras el final, la orquesta ya no espera nada más
+    anfitrion.accionPropia({ type: 'revancha' });
+    await anfitrion.siguientePaso();
+    await anfitrion.publicar();
+    await ana.esperarSelector('.fichas-elegir', 15000);
+    assert.equal(await ana.eval(() => document.querySelector('.campo-nombre') === null), true, 'no vuelve a pedir el nombre');
+    assert.equal(await ana.eval(() => document.querySelector('main.final') === null), true, 'ya no está la pantalla final');
+    assert.equal(await ana.eval(() => [...document.querySelectorAll('.ficha-elegir')].find(b => b.textContent.includes('Toro')).getAttribute('aria-pressed')), 'true', 'su ficha sigue elegida');
+    await sinClavesSueltas(ana, 'sala tras la revancha');
+    marca('Ana vuelve a la sala con la revancha');
 
     // Nunca hubo un error de JavaScript en el celular.
     assert.deepEqual(nav.errores, []);

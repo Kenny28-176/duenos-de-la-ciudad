@@ -62,6 +62,11 @@ test('el tablero abre una sala, entran celulares, empieza la partida y juegan ha
     // Un bot de más se quita con la × de su fila, y se puede volver a añadir.
     await pestana.eval(() => [...document.querySelectorAll('.vestibulo .lista-jugadores li')].find(li => li.querySelector('.etiqueta-bot')).querySelector('.quitar').click());
     await esperarHasta(() => celulares.every(({ celular }) => celular.datos().estado?.ids.length === 2), 10000, 'el bot no salió de la sala');
+    // (se espera a que la lista del tablero también lo muestre: si no, la espera de abajo podría darse por cumplida con la lista vieja)
+    const filas = () => pestana.eval(() => document.querySelectorAll('.vestibulo .lista-jugadores li').length);
+    const finQuitar = Date.now() + 10000;
+    while (Date.now() < finQuitar && (await filas()) !== 2) await new Promise(listo => setTimeout(listo, 50));
+    assert.equal(await filas(), 2, 'el tablero quitó al bot de su lista');
     await pestana.eval(() => [...document.querySelectorAll('.vestibulo button')].find(b => b.textContent.includes('Añadir un bot')).click());
     await pestana.esperarSelector('.vestibulo .lista-jugadores li', 20000, 3);
     assert.equal(await pestana.eval(() => document.querySelectorAll('.vestibulo .etiqueta-bot').length), 1);

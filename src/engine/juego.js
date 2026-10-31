@@ -12,9 +12,12 @@ import { quebrar } from './quiebra.js';
 import { usarHabilidad } from './habilidades.js';
 
 // Opciones de la sala (docs/DISENO.md, sección 9). «dadosDePrueba» deja elegir los dados: solo para las pruebas.
+// «limiteMinutos» (null = sin límite) lo vigila el tablero, que lleva el reloj: el motor no sabe qué hora es, solo aplica
+// finPorTiempo cuando el tablero se lo pide.
 export const OPCIONES = {
-  meta: 10000, mercado: true, subastas: true, habilidades: true, partidaRapida: false, dadosDePrueba: false,
+  meta: 10000, mercado: true, subastas: true, habilidades: true, partidaRapida: false, dadosDePrueba: false, limiteMinutos: null,
 };
+export const MAX_LIMITE_MINUTOS = 600;
 export { MAX_JUGADORES };
 
 const err = (state, codigo, mensaje, datos = {}) => ({ state, events: [], error: { codigo, mensaje, datos } });
@@ -101,9 +104,12 @@ function configurar(ctx, s, a) {
   if (s.fase !== 'sala') return no('empezada', 'La partida ya empezó.');
   const o = a.opciones ?? {};
   if ('meta' in o && o.meta !== null && !(Number.isInteger(o.meta) && o.meta > 0)) return no('meta', 'La meta tiene que ser una cantidad positiva o ninguna.');
+  if ('limiteMinutos' in o && o.limiteMinutos !== null && !(Number.isInteger(o.limiteMinutos) && o.limiteMinutos > 0 && o.limiteMinutos <= MAX_LIMITE_MINUTOS)) {
+    return no('limite', 'El límite de tiempo tiene que ser una cantidad de minutos (un número entero) o ninguno.', { maximo: MAX_LIMITE_MINUTOS });
+  }
   for (const clave of Object.keys(o)) {
     if (!(clave in OPCIONES)) return no('opcion', `Opción desconocida: ${clave}`, { variante: 'desconocida', clave });
-    if (clave !== 'meta' && typeof o[clave] !== 'boolean') return no('opcion', `La opción ${clave} es sí o no.`, { variante: 'booleana', clave });
+    if (clave !== 'meta' && clave !== 'limiteMinutos' && typeof o[clave] !== 'boolean') return no('opcion', `La opción ${clave} es sí o no.`, { variante: 'booleana', clave });
   }
   Object.assign(s.opciones, o);
   return undefined;
@@ -241,8 +247,25 @@ function declararBancarrota(ctx, s, a, ev) {
   return undefined;
 }
 
-function finPorTiempo(ctx, s) {
+// Se acabó el tiempo: se juega la ronda en curso (todos acaban su turno) y gana el mayor patrimonio. Anunciarlo dos veces no cambia nada.
+function finPorTiempo(ctx, s, a, ev) {
+  if (s.ultimaRonda) return undefined;
   s.ultimaRonda = true;
+  ev.push({ type: 'ultimaRonda' });
+  return undefined;
+}
+
+// Otra partida con los mismos jugadores (con su nombre, su ficha y si son bots) y las mismas opciones: vuelve a la sala, con el
+// azar donde lo dejó la anterior, y quien manda en la sala puede cambiar las opciones y empezar.
+function revancha(ctx, s) {
+  const jugadores = s.ids.map(id => ({ id, nombre: s.jugadores[id].nombre, ficha: s.jugadores[id].ficha, bot: s.jugadores[id].bot === true }));
+  const nueva = { ...nuevaPartida(ctx, { sala: s.sala, semilla: s.rng }), opciones: { ...s.opciones } };
+  for (const clave of Object.keys(s)) delete s[clave];
+  Object.assign(s, nueva);
+  for (const j of jugadores) {
+    s.ids.push(j.id);
+    s.jugadores[j.id] = { ...nuevoJugador(j.id, j.nombre, j.bot), ficha: j.ficha };
+  }
   return undefined;
 }
 
@@ -282,10 +305,12 @@ const ACCIONES = {
   rechazarTrato: { trato: rechazarTrato },
   declararBancarrota: { deudor: declararBancarrota },
   finPorTiempo: { anfitrion: finPorTiempo },
+  revancha: { fin: revancha },
 };
 
 function permiso(ctx, s, regla, a) {
   if (regla.sala) return null;
+  if (regla.fin) return s.fase === 'fin' ? null : no('no_ha_terminado', 'La partida todavía no ha terminado.');
   if (s.fase !== 'juego') return no('fuera_de_juego', s.fase === 'sala' ? 'La partida no ha empezado.' : 'La partida ha terminado.', { variante: s.fase === 'sala' ? 'sala' : 'fin' });
   if (regla.anfitrion) return null;
   const j = s.jugadores[a.id];

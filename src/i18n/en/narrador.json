@@ -105,6 +105,7 @@
   "evento.frenesi": "{jugador} lands on {casilla} under the effect of feeding frenzy.",
   "evento.rachaFinal": "{jugador} reaches the net worth goal: needs only to reach Start.",
   "evento.rachaPerdida": "{jugador} drops below the net worth goal and loses the streak.",
+  "evento.ultimaRonda": "Time is up: this is the last round.",
   "evento.fin.meta": "Victory! {jugador} reaches Start having achieved the goal and wins.",
   "evento.fin.bancarrota": "Victory! {jugador} prevails after all opponents go bankrupt.",
   "evento.fin.tiempo": "Time is up: {jugador} wins with the highest net worth."

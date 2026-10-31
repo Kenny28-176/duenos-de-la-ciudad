@@ -110,14 +110,16 @@ function Aviso({ aviso }) {
   return html`<div class=${`aviso aviso-${aviso.tipo}`} key=${aviso.clave}>${aviso.texto}</div>`;
 }
 
-function Final({ fin, filas, alNueva, texto }) {
+// «botones»: lo que se puede hacer al acabar, [{ texto, alPulsar, principal }]: en la demostración, otra partida; en una sala,
+// jugar otra vez con los mismos jugadores o cerrarla.
+function Final({ fin, filas, botones }) {
   if (!fin) return null;
   const ganador = filas.find(f => f.id === fin.ganador);
   return html`<div class="final">
     <p class="etiqueta">${t(`fin.${fin.motivo}`)}</p>
     <h2>${t('fin.titulo', { jugador: ganador?.nombre ?? '' })}</h2>
     <ol>${[...filas].sort((a, b) => b.patrimonio - a.patrimonio).map(f => html`<li><span>${f.nombre}</span><b>${dinero(f.patrimonio)}</b></li>`)}</ol>
-    <button class="boton" onClick=${alNueva}>${texto}</button>
+    <div class="botones-final">${botones.map(b => html`<button class=${`boton ${b.principal ? 'principal' : ''}`.trim()} onClick=${b.alPulsar}>${b.texto}</button>`)}</div>
   </div>`;
 }
 
@@ -207,6 +209,9 @@ export function Pantalla({ almacen, motor, alMontar, acciones }) {
   const filas = enJuego ? resumenJugadores(motor, d.estado, { dinero: d.dinero, nombreDeFicha }) : [];
   const nombres = Object.fromEntries(filas.map(f => [f.id, f.nombre]));
   const bolsa = enJuego ? filasBolsa(motor, d.estado, d.preciosPrevios) : [];
+  // El tiempo de la partida, si tiene límite: lo que queda o, una vez anunciada, «Última ronda».
+  const tiempo = !enJuego || d.estado.fase !== 'juego' ? null : d.estado.ultimaRonda ? t('tablero.ultima_ronda')
+    : d.tiempo.minutos !== null ? t('tablero.quedan', { n: d.tiempo.minutos }) : null;
   return html`<div class="pantalla" data-jugadores=${filas.length}>
     <section class="zona-tablero">
       <div class="caja-tablero">
@@ -215,7 +220,9 @@ export function Pantalla({ almacen, motor, alMontar, acciones }) {
         <${Carta} carta=${d.carta} n=${d.cartaN} />
         <${Subasta} subasta=${d.subasta} nombres=${nombres} cuenta=${d.modo === 'partida' ? SEGUNDOS_DE_SUBASTA / d.velocidad : 0} reinicio=${d.publicadas} />
         <${Aviso} aviso=${d.aviso} />
-        <${Final} fin=${d.fin} filas=${filas} alNueva=${() => (d.modo === 'demo' ? acciones.nueva(d.jugadores) : acciones.cerrarSala())} texto=${t(d.modo === 'demo' ? 'controles.nueva' : 'controles.cerrar_sala')} />
+        <${Final} fin=${d.fin} filas=${filas} botones=${d.modo === 'demo'
+          ? [{ texto: t('controles.nueva'), alPulsar: () => acciones.nueva(d.jugadores), principal: true }]
+          : [{ texto: t('fin.otra_vez'), alPulsar: acciones.jugarOtraVez, principal: true }, { texto: t('controles.cerrar_sala'), alPulsar: acciones.cerrarSala }]} />
         ${d.modo === 'sala' ? html`<${Vestibulo} sala=${d.sala} estado=${d.estado} acciones=${acciones} colores=${f => motor.ctx.fichas[f].color} />` : null}
         ${d.modo === 'demo' && d.recuperable ? html`<${Recuperar} guardada=${d.recuperable} acciones=${acciones} />` : null}
         ${d.error ? html`<div class="error-sala" role="alert">${d.error}</div>` : null}
@@ -224,7 +231,7 @@ export function Pantalla({ almacen, motor, alMontar, acciones }) {
     <aside class="panel">
       <header class="cabecera">
         <h1>${t('tablero.nombre')}</h1>
-        <p>${enJuego ? t('tablero.ronda', { ronda: d.estado.ronda }) : ''}${enJuego && d.estado.opciones.meta ? ` · ${t('tablero.meta', { meta: d.estado.opciones.meta })}` : ''}</p>
+        <p>${enJuego ? t('tablero.ronda', { ronda: d.estado.ronda }) : ''}${enJuego && d.estado.opciones.meta ? ` · ${t('tablero.meta', { meta: d.estado.opciones.meta })}` : ''}${tiempo ? ` · ${tiempo}` : ''}</p>
         <span class="demo">${t(d.modo === 'demo' ? 'tablero.demo' : 'tablero.partida')}</span>
       </header>
       <ul class="jugadores">${filas.map(j => html`<${TarjetaJugador} key=${j.id} j=${j} velocidad=${d.velocidad} flotantes=${d.flotantes.filter(f => f.id === j.id)}

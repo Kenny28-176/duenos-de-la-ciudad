@@ -11,7 +11,7 @@ const espera = ms => new Promise(listo => setTimeout(listo, ms));
 const AVISOS = {
   habilidad: [1700, 'habilidad'], alCalabozo: [1500, 'calabozo'], saleDelCalabozo: [1000, 'calabozo'], pierdeTurno: [1400, 'habilidad'],
   frenesi: [1400, 'habilidad'], bancarrota: [2200, 'malo'], rachaFinal: [2000, 'bueno'], rachaPerdida: [1200, 'malo'],
-  tratoAceptado: [1200, 'neutro'], prestamoDevuelto: [900, 'neutro'], deuda: [1200, 'malo'],
+  tratoAceptado: [1200, 'neutro'], prestamoDevuelto: [900, 'neutro'], deuda: [1200, 'malo'], ultimaRonda: [2400, 'malo'],
 };
 
 // demo: crearDemo(); almacen: el almacén de la pantalla; capas: () → las capas del tablero de ahora (crearCapas; cambian

@@ -7,7 +7,7 @@
 const HABLADOS = new Set([
   'empieza', 'compra', 'subasta', 'subastaGanada', 'subastaDesierta', 'alquiler', 'deuda', 'bancarrota', 'alCalabozo', 'saleDelCalabozo',
   'carta', 'masPobre', 'construir', 'venderEdificio', 'hipotecar', 'deshipotecar', 'accionesCompradas', 'accionesVendidas',
-  'tratoPropuesto', 'tratoAceptado', 'tratoRechazado', 'habilidad', 'finEfecto', 'pierdeTurno', 'frenesi', 'rachaFinal', 'rachaPerdida', 'fin',
+  'tratoPropuesto', 'tratoAceptado', 'tratoRechazado', 'habilidad', 'finEfecto', 'pierdeTurno', 'frenesi', 'rachaFinal', 'rachaPerdida', 'ultimaRonda', 'fin',
 ]);
 
 export const seLee = e => HABLADOS.has(e.type);

@@ -23,6 +23,7 @@ import { Pantalla } from './componentes.js';
 import { crearDemo } from './demo.js';
 import { dibujarTablero } from './dibujo.js';
 import { geometriaTablero } from './geometria.js';
+import { crearReloj } from './reloj.js';
 import { crearReproductor } from './reproductor.js';
 import { datosDeCarta, nombreMostrado } from './vista.js';
 
@@ -48,7 +49,7 @@ const estadoInicial = () => ({
   estado: null, dinero: {}, precios: {}, preciosPrevios: {}, registro: [], flotantes: [], turnoDe: null,
   dados: null, carta: null, cartaN: 0, subasta: null, aviso: null, fin: null, error: null,
   pausado: false, velocidad: numero('velocidad', 1, 1, 100), idioma, jugadores: numero('jugadores', 4, 2, 8),
-  modo: 'demo', sala: null, red: null, delegados: [], publicadas: 0,
+  modo: 'demo', sala: null, red: null, delegados: [], publicadas: 0, tiempo: { limite: null, minutos: null },
 });
 
 // --- Sonido y voz -------------------------------------------------------------------------------------------------------
@@ -138,6 +139,47 @@ function datosDeSala(red, codigo) {
   return { codigo, url, direccion: new URL(url).host + ruta, sinRed, otras: otras.map(o => new URL(o).host + ruta) };
 }
 
+// --- El reloj de la partida (el límite de tiempo) ---------------------------------------------------------------------------
+
+// Con límite de tiempo, el tablero lleva la cuenta (solo mientras la partida corre: no en pausa) y, al acabarse, anuncia la última ronda
+// (el motor termina la partida al cerrarse la ronda en curso). Con ?reloj=N cada segundo cuenta por N: para probarlo sin esperar.
+let reloj = null;
+let relojPulso = null;
+
+function pararReloj() {
+  clearInterval(relojPulso);
+  relojPulso = null;
+  reloj = null;
+  almacen.cambiar({ tiempo: { limite: null, minutos: null } });
+}
+
+function arrancarReloj(esta, jugadoMs = 0) {
+  pararReloj();
+  const limite = esta.anfitrion.estado().opciones.limiteMinutos;
+  if (!limite) return;
+  reloj = crearReloj({ limiteMinutos: limite, jugadoMs, factor: numero('reloj', 1, 1, 100000) });
+  almacen.cambiar({ tiempo: { limite, minutos: reloj.minutosQueQuedan() } });
+  let antes = Date.now();
+  relojPulso = setInterval(() => {
+    const ahora = Date.now();
+    const pasado = Math.min(ahora - antes, 5000); // si el portátil se durmió, no se come la partida de golpe
+    antes = ahora;
+    const s = esta.anfitrion.estado();
+    if (esta.cerrada || s.fase !== 'juego') {
+      pararReloj();
+      return;
+    }
+    if (almacen.leer().pausado) return;
+    reloj.avanzar(pasado);
+    const minutos = reloj.minutosQueQuedan();
+    if (almacen.leer().tiempo.minutos !== minutos) almacen.cambiar({ tiempo: { limite, minutos } });
+    if (reloj.vencido() && !s.ultimaRonda && !esta.tiempoAvisado) {
+      esta.tiempoAvisado = true;
+      esta.anfitrion.accionPropia({ type: 'finPorTiempo' });
+    }
+  }, 1000);
+}
+
 // --- Guardar la partida, para poder recuperarla -------------------------------------------------------------------------
 
 // Tras cada jugada se guarda en el navegador una instantánea de la sala. Si la página del tablero se recarga o se cierra por accidente,
@@ -182,7 +224,8 @@ function guardarPartida(esta) {
     // Una partida que ha acabado ya no hay que recuperarla.
     if (esta.anfitrion.estado().fase !== 'juego') { olvidarSiEsDe(esta.codigo); return; }
     localStorage.setItem(CLAVE_PARTIDA, JSON.stringify({
-      version: 1, guardada: Date.now(), codigo: esta.codigo, bots: esta.bots, delegados: [...esta.delegados], instantanea: esta.anfitrion.instantanea(),
+      version: 1, guardada: Date.now(), codigo: esta.codigo, bots: esta.bots, delegados: [...esta.delegados], jugadoMs: reloj?.jugado() ?? 0,
+      instantanea: esta.anfitrion.instantanea(),
     }));
   } catch { /* sin sitio o sin almacenamiento: la partida sigue, pero no se podrá recuperar */ }
 }
@@ -229,7 +272,7 @@ async function recuperarSala() {
     await anfitrion.abrir();
     sala = {
       transporte, anfitrion, codigo: guardada.codigo, cerrada: false, bots: guardada.bots ?? 0, fichasPedidas: new Set(),
-      delegados: new Set(guardada.delegados ?? []), orquesta: null,
+      delegados: new Set(guardada.delegados ?? []), orquesta: null, jugadoMs: guardada.jugadoMs ?? 0,
     };
     almacen.cambiar({ red, recuperable: null, sala: datosDeSala(red, guardada.codigo) });
     empezarPartida(sala, null);
@@ -279,6 +322,7 @@ function empezarPartida(esta, primerPaso) {
     dinero: Object.fromEntries(estado.orden.map(id => [id, primerPaso ? 0 : estado.jugadores[id].dinero])),
   });
   montarTablero();
+  arrancarReloj(esta, esta.jugadoMs ?? 0);
   // Al publicar se cuenta una publicación más: la cuenta atrás de la subasta vuelve a empezar (la orquesta también cuenta desde ahí).
   const despuesDePaso = async () => {
     await esta.anfitrion.publicar();
@@ -289,11 +333,40 @@ function empezarPartida(esta, primerPaso) {
   reproductor.correr();
 }
 
+// Otra partida con los mismos jugadores: el tablero vuelve a la sala y los celulares, también (con su ficha, sin escribir nada), y se
+// pueden cambiar las opciones antes de empezar. Solo vale cuando la partida ha terminado.
+async function jugarOtraVez() {
+  const esta = sala;
+  // «volviendo»: un segundo clic mientras se aplica el primero no debe pedir otra revancha (se quedaría esperando una acción que no llega).
+  if (!esta || esta.cerrada || esta.volviendo || esta.anfitrion.estado().fase !== 'fin') return;
+  esta.volviendo = true;
+  try {
+    reproductor?.parar();
+    pararReloj();
+    esta.delegados.clear();
+    esta.fichasPedidas.clear();
+    esta.orquesta = null;
+    esta.jugadoMs = 0;
+    esta.tiempoAvisado = false;
+    esta.anfitrion.accionPropia({ type: 'revancha' });
+    const paso = await esta.anfitrion.siguientePaso();
+    if (!paso || esta.cerrada) return;
+    await esta.anfitrion.publicar();
+    const { velocidad, idioma: lang, red, sala: datosSala } = almacen.leer();
+    almacen.cambiar({ ...estadoInicial(), velocidad, idioma: lang, red, modo: 'sala', sala: datosSala, estado: esta.anfitrion.estado() });
+    montarTablero();
+    atenderVestibulo(esta);
+  } finally {
+    esta.volviendo = false;
+  }
+}
+
 async function cerrarSala() {
   const esta = sala;
   if (!esta) return;
   sala = null;
   esta.cerrada = true;
+  pararReloj();
   reproductor?.parar();
   olvidarSiEsDe(esta.codigo);
   try {
@@ -348,7 +421,7 @@ function empezar(opciones) {
 // --- La pantalla -------------------------------------------------------------------------------------------------------
 
 // Con ?depurar=1, la pantalla enseña su almacén en window.duenos (para probarla desde fuera, p. ej. tools/ver.js).
-if (parametros.has('depurar')) window.duenos = { almacen, motor, t, sala: () => sala, sonido, voz };
+if (parametros.has('depurar')) window.duenos = { almacen, motor, t, sala: () => sala, sonido, voz, reloj: () => reloj };
 
 const acciones = {
   pausar: () => reproductor?.pausar(),
@@ -373,7 +446,7 @@ const acciones = {
     almacen.cambiar({ idioma: lang });
     montarTablero();
   },
-  abrirSala, cerrarSala, anadirBot, quitarJugador, empezar, delegar, recuperarSala,
+  abrirSala, cerrarSala, jugarOtraVez, anadirBot, quitarJugador, empezar, delegar, recuperarSala,
   descartarPartida: () => { olvidarPartidaGuardada(); almacen.cambiar({ recuperable: null }); },
 };
 

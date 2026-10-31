@@ -101,6 +101,7 @@ small { color: var(--piedra); }
 .situacion { display: flex; justify-content: space-between; gap: 0.75rem; padding: 0.5rem 1rem; background: var(--noche-3); font-size: 0.92rem; }
 .situacion.sit-mi-turno { background: var(--ambar); color: #1b1710; font-weight: 600; }
 .situacion.sit-deuda-mia { background: var(--rojo-baja); font-weight: 600; }
+.situacion.ultima-ronda { justify-content: center; background: var(--noche-2); color: var(--ambar); font-weight: 600; }
 .dados-ultimos { font-variant-numeric: tabular-nums; white-space: nowrap; opacity: 0.85; }
 .contenido { overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 0.8rem 1rem 1rem; display: flex; flex-direction: column; gap: 0.75rem; }
 

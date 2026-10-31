@@ -153,6 +153,7 @@ function Final({ d, motor, acciones }) {
         <small>${f.quebrado ? t('jugador.mesa.quebrado') : t('jugador.mesa.patrimonio', { cantidad: f.patrimonio })}</small></div>
       <span class="dinero">${f.quebrado ? '' : dinero(f.dinero)}</span>
     </li>`)}</ol>
+    <p class="nota">${t('jugador.final.otra_vez')}</p>
     <${Boton} tipo="principal" texto=${t('jugador.final.salir')} onClick=${acciones.salir} />
   </main>`;
 }

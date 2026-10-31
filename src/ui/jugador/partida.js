@@ -92,7 +92,8 @@ function Situacion({ c }) {
   return html`<div class=${`situacion sit-${sit.tipo}`}>
     <span>${texto}</span>
     ${dados ? html`<span class="dados-ultimos">${dados.join(' + ')} = ${dados.reduce((x, y) => x + y, 0)}</span>` : null}
-  </div>`;
+  </div>
+  ${s.ultimaRonda && s.fase === 'juego' ? html`<div class="situacion ultima-ronda">${t('jugador.ultima_ronda')}</div>` : null}`;
 }
 
 // Los botones de lo que puedo hacer ahora mismo, abajo del todo.

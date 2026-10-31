@@ -213,6 +213,11 @@ export const SONIDOS = {
   meta: (c, s, t) => dura(t,
     ...[523.25, 659.25, 783.99, 1046.5].map((f, k) => nota(c, s, t + k * 0.09, { f, tipo: 'triangle', vol: 0.14, caida: 0.35 })),
     campana(c, s, t + 0.36, { f: 1568, vol: 0.12, caida: 1 })),
+  // Un gong grave: se acabó el tiempo, esta es la última ronda.
+  gong: (c, s, t) => dura(t,
+    campana(c, s, t, { f: 196, vol: 0.2, caida: 1.8 }),
+    campana(c, s, t + 0.02, { f: 392, vol: 0.08, caida: 1.4 }),
+    ruido(c, s, t, { dur: 0.15, f: 350, q: 0.8, vol: 0.12 })),
   sello: (c, s, t) => dura(t,
     nota(c, s, t, { f: 140, f2: 60, vol: 0.28, caida: 0.1 }),
     ruido(c, s, t, { dur: 0.04, f: 600, q: 1, vol: 0.15 }),
@@ -279,6 +284,7 @@ export function sonidoDeEvento(e) {
     case 'pierdeTurno':
     case 'rachaPerdida': return { nombre: 'desierta', prioridad: 1 };
     case 'rachaFinal': return { nombre: 'meta', prioridad: 2 };
+    case 'ultimaRonda': return { nombre: 'gong', prioridad: 2 };
     case 'fin': return { nombre: 'victoria', prioridad: 2 };
     default: return null;
   }

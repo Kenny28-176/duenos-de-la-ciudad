@@ -134,6 +134,8 @@
 .final ol { list-style: none; margin: 0; padding: 0; width: 70%; display: grid; gap: 0.5cqw; font-size: 2cqw; }
 .final li { display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding: 0.3cqw 0; }
 .final li b { font-variant-numeric: tabular-nums; }
+.botones-final { display: flex; flex-wrap: wrap; justify-content: center; gap: 1cqw; margin-top: 0.6cqw; }
+.botones-final .boton { font-size: max(0.9rem, 1.7cqw); padding: 0.7cqw 1.8cqw; }
 @keyframes aparece { from { opacity: 0; transform: translate(var(--tx, 0), calc(var(--ty, 0px) + 0.8cqw)); } }
 .subasta { --tx: -50%; --ty: -50%; }
 .aviso { --tx: -50%; }
@@ -225,6 +227,11 @@
   .jugadores { gap: 0.3rem; }
   .habilidad .insignia { width: 1.35rem; height: 1.35rem; }
   .estados { min-height: 1.3rem; }
+  /* Los controles son tres filas (pausa y velocidad, partida e idioma, sonido): en una pantalla baja se aprietan un poco para que
+     nunca se salgan por abajo. */
+  .controles { gap: 0.3rem; }
+  .controles .boton { padding-block: 0.3rem; }
+  .controles .boton.chico { padding-block: 0.22rem; }
 }
 @media (max-height: 700px) {
   .patrimonio { display: none; }
@@ -255,7 +262,18 @@
 .lista-jugadores .vacio { grid-column: 1 / -1; background: none; border: 1px dashed rgba(255, 255, 255, 0.2); color: var(--piedra); border-left-width: 1px; }
 .lista-jugadores .pieza { width: 2.1rem; height: 2.1rem; object-fit: contain; flex: none; }
 .lista-jugadores .pieza.vacia { display: grid; place-items: center; border-radius: 50%; border: 2px dashed var(--piedra); color: var(--piedra); }
-.lista-jugadores .nombre { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* Con hasta 4 jugadores, una columna (cabe el nombre entero, la etiqueta BOT y la ×). Con más, dos columnas muy ajustadas: sin la
+   etiqueta BOT, con la pieza más chica y los nombres largos partidos en dos líneas en vez de quedarse en «E…». */
+.lista-jugadores.una-columna { grid-template-columns: minmax(0, 1fr); }
+.lista-jugadores:not(.una-columna) li { gap: 0.25rem; padding: 0.2rem 0.3rem; }
+.lista-jugadores:not(.una-columna) .pieza { width: 1.5rem; height: 1.5rem; }
+.lista-jugadores:not(.una-columna) .nombre { font-size: 0.85rem; overflow-wrap: break-word; }
+.lista-jugadores:not(.una-columna) .quitar { width: 1.25rem; height: 1.25rem; }
+.lista-jugadores:not(.una-columna) .etiqueta-bot { display: none; }
+/* Si la columna no cabe (8 jugadores en una pantalla baja), se desplaza, pero los botones de abajo se quedan siempre a la vista. */
+.vestibulo-derecha { overflow-y: auto; min-height: 0; }
+.vestibulo .botones-vestibulo { position: sticky; bottom: 0; padding: 0.5rem 0 0.1rem; background: var(--noche); }
+.lista-jugadores .nombre { font-weight: 600; font-size: 0.92rem; line-height: 1.1; overflow: hidden; text-overflow: clip; white-space: normal; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
 /* El botón para quitar a alguien del vestíbulo: discreto, al final de su fila. */
 .lista-jugadores .nombre { flex: 1 1 auto; min-width: 0; }
 .lista-jugadores .quitar { flex: none; width: 1.5rem; height: 1.5rem; padding: 0; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 50%; background: transparent;

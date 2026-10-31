@@ -79,7 +79,10 @@ function restaurarVacios(estado) {
       parte.acciones ??= {};
     }
   }
-  if (estado.opciones) estado.opciones.meta ??= null;
+  if (estado.opciones) {
+    estado.opciones.meta ??= null;
+    estado.opciones.limiteMinutos ??= null;
+  }
 }
 
 const esObjeto = valor => valor !== null && typeof valor === 'object';

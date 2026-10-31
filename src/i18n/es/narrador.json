@@ -105,6 +105,7 @@
   "evento.frenesi": "{jugador} cae en {casilla} bajo los efectos del frenesí.",
   "evento.rachaFinal": "{jugador} alcanza la meta de patrimonio: le basta volver a la Salida.",
   "evento.rachaPerdida": "{jugador} pierde la racha al caer por debajo de la meta.",
+  "evento.ultimaRonda": "Se acabó el tiempo: esta es la última ronda.",
   "evento.fin.meta": "¡Victoria! {jugador} llega a la Salida con la meta cumplida y gana.",
   "evento.fin.bancarrota": "¡Victoria! {jugador} se corona tras la bancarrota de los rivales.",
   "evento.fin.tiempo": "Fin del tiempo: {jugador} gana por mayor patrimonio."
