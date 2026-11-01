@@ -248,6 +248,7 @@
   "jugador.sin_conexion": "No connection to the board. Reconnecting…",
   "jugador.mesa.quebrado": "Bankrupt",
   "jugador.mesa.patrimonio": "Net worth {cantidad:dinero}",
+  "jugador.mesa.patrimonio_aprox": "Net worth ≈ {cantidad:dinero}",
   "jugador.mesa.propiedades.uno": "1 property",
   "jugador.mesa.propiedades.otros": "{n} properties",
   "jugador.dock.quebrado": "You went bankrupt. You can keep watching the game.",

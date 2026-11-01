@@ -58,10 +58,13 @@ function Contador({ etiqueta, valor, maximo, paso = 1, cambiar }) {
   </div>`;
 }
 
-// Lo que pone un jugador en el trato: dinero, propiedades, acciones y salvoconductos. Solo se ofrece lo que tiene.
+// Lo que pone un jugador en el trato: dinero, propiedades, acciones y salvoconductos. Solo se ofrece lo que tiene. El dinero del otro no
+// se ve (es secreto): se le puede pedir cualquier cantidad, y si no la tiene, el tablero lo dice.
 function Editor({ titulo, quien, parte, cambiar, c }) {
   const { motor, s } = c;
   const j = s.jugadores[quien];
+  const mio = quien === c.id;
+  const tope = mio ? j.dinero : 1000000;
   const propiedades = propiedadesTratables(motor, s, quien);
   const paquete = motor.ctx.eco.bolsa.paquete;
   const poner = parche => cambiar({ ...parte, ...parche });
@@ -70,9 +73,9 @@ function Editor({ titulo, quien, parte, cambiar, c }) {
     <h4>${titulo}</h4>
     <label class="campo-dinero">
       <span>${t('jugador.tratos.dinero')}</span>
-      <input type="number" inputmode="numeric" min="0" max=${j.dinero} step="10" placeholder="0" value=${parte.dinero || ''}
-        onInput=${e => poner({ dinero: Math.min(j.dinero, Math.max(0, Math.floor(Number(e.target.value) || 0))) })} />
-      <small>${t('jugador.tratos.tiene', { cantidad: dinero(j.dinero) })}</small>
+      <input type="number" inputmode="numeric" min="0" max=${tope} step="10" placeholder="0" value=${parte.dinero || ''}
+        onInput=${e => poner({ dinero: Math.min(tope, Math.max(0, Math.floor(Number(e.target.value) || 0))) })} />
+      ${mio ? html`<small>${t('jugador.tratos.tiene', { cantidad: dinero(j.dinero) })}</small>` : null}
     </label>
     ${propiedades.length ? html`<div class="propiedades-trato">${propiedades.map(i => html`<button type="button" key=${i}
       class=${`chip ${parte.propiedades.includes(i) ? 'elegida' : ''}`} style=${{ '--color': colorDe(motor, i) }} aria-pressed=${parte.propiedades.includes(i)}
@@ -99,7 +102,7 @@ function ConstructorDeTrato({ c, cerrar }) {
       <h3>${t('jugador.tratos.con_quien')}</h3>
       <ul class="rivales">${posibles.map(k => html`<li key=${k}><button type="button" onClick=${() => setPara(k)}>
         <${Retrato} ficha=${s.jugadores[k].ficha} color=${motor.ctx.fichas[s.jugadores[k].ficha].color} pieza />
-        <span class="nombre">${nombreDe(s, k)}</span><small>${dinero(s.jugadores[k].dinero)}</small></button></li>`)}</ul>
+        <span class="nombre">${nombreDe(s, k)}</span></button></li>`)}</ul>
       <${Boton} icono="volver" texto=${t('jugador.tratos.volver')} onClick=${cerrar} />
     </div>`;
   }

@@ -190,6 +190,9 @@ export function accionDeHabilidad(habilidad, valor) {
 // --- Los demás jugadores y el final -------------------------------------------------------------------------------------
 
 // Los jugadores, ordenados por patrimonio (los que quebraron, al final), con lo que se necesita para la mesa y el final.
+// El patrimonio de los demás se enseña redondeado a 100 $: con la cifra exacta (y sus calles, que se ven) se sabría su dinero.
+export const patrimonioAproximado = cantidad => Math.round(cantidad / 100) * 100;
+
 export function clasificacion(motor, s, opciones = {}) {
   const filas = resumenJugadores(motor, s, opciones).map(f => ({
     ...f,

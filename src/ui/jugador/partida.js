@@ -3,7 +3,7 @@
 import { t, tn } from '../../i18n/idioma.js';
 import { html, useState } from '../preact.js';
 import { PestanaBolsa } from './bolsa.js';
-import { Barra, Boton, Icono, Retrato, dinero, nombreBarrio, nombreCasilla, nombreDe, nombreFicha } from './comun.js';
+import { Barra, Boton, Icono, Ilustracion, Retrato, dinero, nombreBarrio, nombreCasilla, nombreDe, nombreFicha } from './comun.js';
 import { PestanaMesa } from './mesa.js';
 import { AvisoDeDinero, PanelMovimientos } from './movimientos.js';
 import { PestanaCalles } from './propiedades.js';
@@ -112,7 +112,7 @@ function Dock({ c }) {
   const hab = habilidadActiva(puede);
   const enfriamiento = motor.ficha(s, id)?.activa ? yo.hab.enfriamiento : 0;
 
-  if (yo.quebrado) return html`<footer class="dock"><p class="nota">${t('jugador.dock.quebrado')}</p></footer>`;
+  if (yo.quebrado) return html`<footer class="dock quebrado"><${Ilustracion} nombre="bancarrota" clase="pequena" /><p class="nota">${t('jugador.dock.quebrado')}</p></footer>`;
 
   const filas = [];
   // Decidir la compra de la calle donde se cayó.

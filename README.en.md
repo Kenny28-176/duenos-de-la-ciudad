@@ -49,7 +49,7 @@
 | 3. Phones | The network between the board and the phones, and the phone screen | Done: at home (wifi) and over the internet (Firebase) |
 | 4. Management & trading | **v0.1**: building, mortgaging, debt, deals and game saving | Done (the game is saved in the board's browser; saving it elsewhere is missing) |
 | 5. Polish | Room settings, stats, English, accessibility, TV mode | Done: English, sound and voice, the time limit, the quick game, “play again”, the money log, the end-of-game awards, basic accessibility and TV mode |
-| 6. Release | **v1.0** | Pending: the brand icon and a test with real phones are missing |
+| 6. Release | **v1.0** | **Almost**: the art is complete (141 images) and the game installs as an app on phones; a test with real phones is missing |
 
 Future ideas, such as a cooperative mode against a corporation, are in [`docs/IDEAS.md`](docs/IDEAS.md) (in Spanish).
 

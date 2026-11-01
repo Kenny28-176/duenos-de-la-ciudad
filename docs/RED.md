@@ -14,7 +14,8 @@
   - y otro **con Firebase** (`src/net/firebase.js`), para jugar por internet desde la web publicada (más abajo).
 
   Cambiar de uno a otro no toca el motor ni las pantallas.
-- **Todo es público, salvo el azar.** Cualquier celular puede leer el estado de la partida (el dinero de cada uno, sus
+- **Todo es público, salvo el azar.** (Las pantallas no enseñan el dinero en efectivo de los demás, docs/DISENO.md sección 8, pero va en
+  el estado.) Cualquier celular puede leer el estado de la partida (el dinero de cada uno, sus
   calles…), porque en el juego es público. Lo único que no sale son el estado del azar y el orden de los mazos: si
   salieran, se podría saber qué dado o qué carta viene.
 

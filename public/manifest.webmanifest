@@ -1,0 +1,16 @@
+{
+  "name": "Dueños de la Ciudad",
+  "short_name": "Dueños",
+  "description": "Juego de compraventa de propiedades para jugar en persona: la tele es el tablero y tu celular, tu cartera.",
+  "lang": "es",
+  "start_url": "jugador.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#1e242b",
+  "theme_color": "#1e242b",
+  "icons": [
+    { "src": "visuales/marca/icono-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "visuales/marca/icono-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

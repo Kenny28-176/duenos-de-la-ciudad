@@ -22,7 +22,7 @@ local hace de buzón (`tools/red-local.js`), el tablero abre una sala con QR y c
 elige ficha y juega, con sonido, voz opcional, límite de tiempo, «jugar otra vez» y recuperación de la partida si se recarga el
 tablero. **También se juega por internet** desde la web publicada, con Firebase (`src/net/firebase.js`; el proyecto
 `duenos-de-la-ciudad`, configurado en `src/net/firebase-config.js`, con las reglas publicadas y comprobadas: `node tools/comprobar-reglas.js`).
-Falta probar con celulares de verdad ([`docs/PRUEBA-EN-CASA.md`](docs/PRUEBA-EN-CASA.md)) y 31 imágenes. Las
+Las 141 imágenes están hechas y colocadas. Falta probar con celulares de verdad ([`docs/PRUEBA-EN-CASA.md`](docs/PRUEBA-EN-CASA.md)). Las
 reglas están en [`docs/DISENO.md`](docs/DISENO.md) (con sus preguntas abiertas) y las ideas para después, en
 [`docs/IDEAS.md`](docs/IDEAS.md).
 

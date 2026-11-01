@@ -147,20 +147,21 @@ function Recuperar({ guardada, acciones }) {
 
 // «delegable»: se puede poner un bot a jugar por esta persona (solo en una partida con celulares). «delegado»: ya lo tiene.
 function TarjetaJugador({ j, flotantes, velocidad, delegable = false, delegado = false, alDelegar = () => {} }) {
-  const cifra = useNumeroAnimado(j.dinero, 500 / velocidad);
+  const cifra = useNumeroAnimado(j.patrimonioVisible, 500 / velocidad);
   return html`<li class=${`jugador ${j.turno ? 'turno' : ''} ${j.quebrado ? 'quebrado' : ''}`} style=${{ '--color': j.color }}>
     <span class="ficha-mini"><${Imagen} src=${`${BASE}fichas/piezas/${j.ficha}.webp`} /></span>
     <span class="datos">
       <span class="nombre">${j.nombre}</span>
       <span class="estados">
         ${j.estados.map(e => html`<${Imagen} src=${`${BASE}tablero/marcadores/${e}.svg`} clase="estado" alt=${t(`estado.${e}`)} key=${e} />`)}
+        ${j.pasiva ? html`<span class="habilidad pasiva" title=${t(`habilidad.${j.pasiva}`)}><${Imagen} src=${`${BASE}botones/habilidades/pasivas/${j.pasiva}.webp`} clase="insignia" alt=${t(`habilidad.${j.pasiva}`)} /></span>` : null}
         ${j.activa ? html`<span class=${`habilidad ${j.activa.lista ? 'lista' : 'enfriando'}`} title=${t(`habilidad.${j.activa.id}`)}>
-          <${Imagen} src=${`${BASE}botones/habilidades/activas/${j.activa.id}.webp`} clase="insignia" />
+          <${Imagen} src=${`${BASE}botones/habilidades/activas/${j.activa.id}.webp`} clase="insignia" alt=${t(`habilidad.${j.activa.id}`)} />
           <span class="nombre-habilidad">${t(`habilidad.${j.activa.id}`)}</span>
           <span class="turnos">${j.activa.lista ? html`<span class="solo-lector">${t('panel.lista')}</span>` : tn('habilidad.turnos', j.activa.enfriamiento)}</span></span>` : null}
       </span>
     </span>
-    <span class="dinero"><b class="cifra">${dinero(cifra)}</b><span class="patrimonio">${t('panel.patrimonio')} ${dinero(j.patrimonio)}</span></span>
+    <span class="dinero"><b class="cifra">${j.exacto ? '' : '≈ '}${dinero(cifra)}</b><span class="patrimonio">${t('panel.patrimonio')}</span></span>
     ${j.avance === null ? null : html`<span class="barra" title=${t('panel.avance')}><i style=${{ width: `${Math.round(j.avance * 100)}%` }}></i></span>`}
     ${flotantes.map(f => html`<span class=${`flotante ${f.delta > 0 ? 'sube' : 'baja'}`} key=${f.clave}>${dineroConSigno(f.delta)}</span>`)}
     ${delegable ? html`<button type="button" class=${`delegar ${delegado ? 'activo' : ''}`} aria-pressed=${delegado} onClick=${alDelegar}

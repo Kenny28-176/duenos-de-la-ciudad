@@ -248,6 +248,7 @@
   "jugador.sin_conexion": "Sin conexión con el tablero. Reconectando…",
   "jugador.mesa.quebrado": "En bancarrota",
   "jugador.mesa.patrimonio": "Patrimonio {cantidad:dinero}",
+  "jugador.mesa.patrimonio_aprox": "Patrimonio ≈ {cantidad:dinero}",
   "jugador.mesa.propiedades.uno": "1 propiedad",
   "jugador.mesa.propiedades.otros": "{n} propiedades",
   "jugador.dock.quebrado": "Quebraste. Puedes seguir mirando la partida.",

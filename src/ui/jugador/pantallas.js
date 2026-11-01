@@ -5,7 +5,7 @@ import { t } from '../../i18n/idioma.js';
 import { CODIGO, limpiarCodigo } from '../../net/protocolo.js';
 import { html, useEffect, useState } from '../preact.js';
 import { usarAlmacen } from '../usarAlmacen.js';
-import { Boton, Retrato, dinero, nombreDe, nombreFicha } from './comun.js';
+import { Boton, Ilustracion, Retrato, dinero, nombreDe, nombreFicha } from './comun.js';
 import { Partida } from './partida.js';
 import { clasificacion, pantallaActual } from './vista.js';
 
@@ -19,7 +19,7 @@ export function Aplicacion({ almacen, acciones, motor }) {
     case 'sin-red': contenido = html`<${Aparte} titulo=${t(d.sinRed === 'conexion' ? 'jugador.sin_servidor' : 'jugador.sin_red')} />`; break;
     case 'sin-sala': contenido = html`<${Aparte} titulo=${t('jugador.sin_sala', { codigo: d.codigo })} acciones=${acciones} />`; break;
     case 'cerrada': contenido = html`<${Aparte} titulo=${t('jugador.cerrada')} acciones=${acciones} />`; break;
-    case 'empezada': contenido = html`<${Aparte} titulo=${t('jugador.empezada')} acciones=${acciones} />`; break;
+    case 'empezada': contenido = html`<${Aparte} titulo=${t('jugador.empezada')} acciones=${acciones} ilustracion="mirando-el-tablero" />`; break;
     case 'nombre': contenido = html`<${PideNombre} d=${d} acciones=${acciones} />`; break;
     case 'vestibulo': contenido = html`<${Vestibulo} d=${d} motor=${motor} acciones=${acciones} />`; break;
     case 'final': contenido = html`<${Final} d=${d} motor=${motor} acciones=${acciones} />`; break;
@@ -79,6 +79,7 @@ function Conectando() {
   }, []);
   return html`<main class="entrada centrado">
     <${Marca} />
+    <${Ilustracion} nombre="mirando-el-tablero" />
     <div class="girando" aria-hidden="true"></div>
     <p>${t('jugador.conectando')}</p>
     ${lento ? html`<p class="ayuda">${t('jugador.conectando_lento')}</p>` : null}
@@ -86,9 +87,10 @@ function Conectando() {
 }
 
 // Una pantalla con un mensaje y, si se puede, la manera de volver a empezar.
-function Aparte({ titulo, acciones }) {
+function Aparte({ titulo, acciones, ilustracion = null }) {
   return html`<main class="entrada centrado">
     <${Marca} />
+    ${ilustracion ? html`<${Ilustracion} nombre=${ilustracion} />` : null}
     <p class="mensaje">${titulo}</p>
     ${acciones ? html`<${Boton} tipo="principal" texto=${t('jugador.otra_sala')} onClick=${acciones.otraSala} />` : null}
   </main>`;
@@ -103,6 +105,7 @@ function Vestibulo({ d, motor, acciones }) {
   const mia = s.jugadores[id].ficha;
   return html`<main class="vestibulo-celular">
     <header class="encabezado-sala"><span class="etiqueta">${t('sala.codigo')}</span><b class="codigo">${d.codigo}</b></header>
+    <${Ilustracion} nombre="sala-de-espera" clase="ancha" />
     <h2>${t('jugador.elige_ficha')}</h2>
     <div class="fichas-elegir">${fichas.map(f => {
       const dueno = duenoDe(f);
@@ -145,6 +148,7 @@ function Final({ d, motor, acciones }) {
   const filas = clasificacion(motor, s, { nombreDeFicha: nombreFicha });
   const ganador = filas.find(f => f.ganador);
   return html`<main class="final">
+    <${Ilustracion} nombre=${s.jugadores[id]?.quebrado ? 'bancarrota' : 'victoria'} />
     <p class="etiqueta">${t(`fin.${s.motivoFin}`)}</p>
     <h1>${ganador?.id === id ? t('jugador.final.ganaste') : t('fin.titulo', { jugador: ganador?.nombre ?? '' })}</h1>
     <ol class="mesa">${filas.map((f, k) => html`<li key=${f.id} class=${`fila-mesa ${f.id === id ? 'yo' : ''} ${f.ganador ? 'turno' : ''} ${f.quebrado ? 'quebrado' : ''}`.trim()} style=${{ '--color': f.color }}>

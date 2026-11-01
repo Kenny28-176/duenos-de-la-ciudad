@@ -49,7 +49,7 @@
 | 3. Celulares | La red entre el tablero y los celulares, y la pantalla del celular | Hecha: en casa (wifi) y por internet (Firebase) |
 | 4. Gestión y tratos | **v0.1**: construir, hipotecar, deudas, tratos y guardar la partida | Hecha (la partida se guarda en el navegador del tablero; falta guardarla fuera) |
 | 5. Pulido | Reglas de la sala, estadísticas, inglés, accesibilidad, modo TV | Hecha: el inglés, el sonido y la voz, el límite de tiempo, la partida rápida, «jugar otra vez», los movimientos de dinero, los premios del final, la accesibilidad básica y el modo TV |
-| 6. Publicación | **v1.0** | Pendiente: faltan el icono de la marca y la prueba con celulares de verdad |
+| 6. Publicación | **v1.0** | **Casi**: el arte está completo (141 imágenes) y el juego se instala como app en el celular; falta la prueba con celulares de verdad |
 
 Las ideas para más adelante, como un modo cooperativo contra una corporación, están en [`docs/IDEAS.md`](docs/IDEAS.md).
 

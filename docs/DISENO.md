@@ -403,11 +403,15 @@ mercado vivo. Estos son los tipos de efecto:
 
 | Pantalla | Qué muestra |
 |---|---|
-| **Tablero** | La ciudad, las fichas, los dados y la pizarra de la Bolsa. El patrimonio de cada jugador y lo que le falta para la meta. Las habilidades de cada ficha y su enfriamiento. La carta robada, la subasta, los tratos y el registro de lo que ha pasado. Al final, la clasificación por patrimonio y hasta cuatro premios de la partida, repartidos entre los jugadores: Llave de oro (más alquiler cobrado), Grúa de oro (más edificios levantados), Olfato para la Bolsa (más dividendos), Martillo de oro (más subastas ganadas), Apretón de manos (más tratos cerrados), Bolsillo agujereado (más alquiler pagado), Abono del Calabozo (más visitas al Calabozo) y Mano de la suerte (más dobles). Un empate no se lleva premio. |
+| **Tablero** | La ciudad, las fichas, los dados y la pizarra de la Bolsa. El patrimonio de cada jugador (redondeado a 100 $) y lo que le falta para la meta. Las habilidades de cada ficha y su enfriamiento. La carta robada, la subasta, los tratos y el registro de lo que ha pasado. Al final, la clasificación por patrimonio y hasta cuatro premios de la partida, repartidos entre los jugadores: Llave de oro (más alquiler cobrado), Grúa de oro (más edificios levantados), Olfato para la Bolsa (más dividendos), Martillo de oro (más subastas ganadas), Apretón de manos (más tratos cerrados), Bolsillo agujereado (más alquiler pagado), Abono del Calabozo (más visitas al Calabozo) y Mano de la suerte (más dobles). Un empate no se lleva premio. |
 | **Celular** | Tu dinero y tu patrimonio, y el botón que toca en cada momento. El botón de tu habilidad activa, con los turnos que le faltan. Tus calles (con su tabla de alquileres) y tus acciones. Los tratos, la subasta y tus movimientos. |
 
-**Qué información es pública:** todo, incluido el dinero de cada uno. Solo es privado lo que estás preparando, como un
-trato antes de enviarlo.
+**Qué información es pública:** casi todo: las calles, los edificios, las acciones, las cartas y lo que pasa en cada turno. **El dinero en
+efectivo de cada uno es secreto** (decidido el 1-nov): solo lo ve su dueño, en su celular. El tablero y la pestaña Mesa enseñan el patrimonio
+de los demás redondeado a 100 $ y la barra hacia la meta, para que se vea quién va ganando sin saber cuánto puede pujar nadie; al pedir dinero
+en un trato tampoco se ve cuánto tiene el otro (si no le alcanza, el tablero lo dice). Al acabar la partida se ve todo. También es privado lo
+que estás preparando, como un trato antes de enviarlo. (Los datos de la partida viajan igual a todos los celulares: alguien con conocimientos
+técnicos podría leerlos; entre amigos es aceptable.)
 
 ## 9. Opciones de la sala
 

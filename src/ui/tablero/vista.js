@@ -25,6 +25,10 @@ export function resumenJugadores(motor, s, { dinero = {}, nombreDeFicha = f => f
       color: motor.ctx.fichas[j.ficha].color,
       dinero: dinero[id] ?? j.dinero,
       patrimonio,
+      // Lo que enseña el tablero: el dinero en efectivo de cada uno es secreto (solo lo ve su dueño, en el celular: así nadie sabe cuánto
+      // puede pujar otro), y el patrimonio va redondeado a 100 $ hasta que acaba la partida (docs/DISENO.md, sección 8).
+      patrimonioVisible: s.fase === 'fin' ? patrimonio : Math.round(patrimonio / 100) * 100,
+      exacto: s.fase === 'fin',
       avance: meta ? Math.min(1, patrimonio / meta) : null,
       turno: s.fase === 'juego' && s.turno?.id === id,
       quebrado: j.quebrado,
@@ -35,6 +39,7 @@ export function resumenJugadores(motor, s, { dinero = {}, nombreDeFicha = f => f
         s.efectos.some(e => e.tipo === 'hibernar' && e.jugador === id) && 'hibernando',
         s.enRacha[id] && 'en-racha-final',
       ].filter(Boolean),
+      pasiva: ficha ? ficha.pasiva.id : null,
       activa: ficha
         ? { id: ficha.activa.id, enfriamiento: j.hab.enfriamiento, lista: j.hab.enfriamiento === 0 && !j.hab.prestamo }
         : null,

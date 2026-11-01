@@ -229,3 +229,11 @@ button.caja-dinero { background: none; border: 0; padding: 0.1rem 0; color: inhe
   .aviso, .girando { animation: none; }
   .barra span { transition: none; }
 }
+
+/* Las ilustraciones (public/visuales/interfaz/ilustraciones): cuadradas, con su borde de papel pintado. */
+.ilustracion { display: block; width: min(62%, 15rem); aspect-ratio: 1; margin: 0 auto; border-radius: 0.9rem; box-shadow: 0 0.5rem 1.6rem rgba(0, 0, 0, 0.35); }
+.ilustracion.ancha { width: min(48%, 11rem); }
+.ilustracion.pequena { width: 6.5rem; }
+.dock.quebrado { display: flex; align-items: center; gap: 0.8rem; }
+.dock.quebrado .nota { margin: 0; text-align: left; }
+.ilustracion.por-cargar { display: none; }

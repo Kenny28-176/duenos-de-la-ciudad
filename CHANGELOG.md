@@ -154,6 +154,11 @@ Aquí se anotan los cambios de cada versión. Las versiones siguen el esquema ma
 - **Una imitación de Firebase** (`tools/firebase-falso.js`) que aplica las reglas de seguridad (`tools/reglas-firebase.js`): con ella se
   prueba el modo por internet de punta a punta, también en Chrome, sin el proyecto de verdad. `node tools/comprobar-reglas.js` comprueba
   las reglas contra el proyecto real (27 cosas que deben permitirse o rechazarse).
+- **El dinero de cada uno es secreto:** el tablero y la pestaña Mesa enseñan el patrimonio de los demás redondeado a 100 $ (y la barra hacia la
+  meta), y en un trato no se ve cuánto tiene el otro; al final se ve todo. Así nadie sabe cuánto puede pujar otro en una subasta.
+- **Las imágenes nuevas, en su sitio:** el icono de la marca (pestaña, pantalla de inicio del celular y manifiesto para instalar el juego
+  como app), la imagen al compartir el enlace, la portada con su emblema (con el estado real: ya se puede jugar), las insignias pasivas en
+  las tarjetas del tablero y las ilustraciones del celular (sala de espera, victoria, quiebra y conectando).
 - **El proyecto de Firebase, conectado** (`duenos-de-la-ciudad`): las reglas publicadas pasan las 27 comprobaciones contra la base de datos
   real y una partida de prueba con 4 celulares va a unos 0,5 s por jugada. Firebase se elige solo en la web publicada (https).
 - El tablero borra las salas que dejó abiertas al cerrar la página (pasadas 12 horas) y la de una partida guardada que se descarta.

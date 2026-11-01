@@ -12,6 +12,10 @@ export function Icono({ nombre, grupo = 'botones/acciones', clase = '' }) {
 
 export const dinero = cantidad => t('fmt.dinero', { cantidad });
 
+// Una ilustración de public/visuales/interfaz/ilustraciones (la sala de espera, la victoria, la quiebra, mirando el tablero). Es decorativa:
+// lo que dice ya está escrito al lado.
+export const Ilustracion = ({ nombre, clase = '' }) => html`<${Imagen} src=${`${BASE}interfaz/ilustraciones/${nombre}.webp`} clase=${`ilustracion ${clase}`.trim()} />`;
+
 export const nombreFicha = ficha => t(`ficha.${ficha}`);
 export const nombreCasilla = i => t(`casilla.${i}`);
 export const nombreBarrio = barrio => t(`barrio.${barrio}`);
