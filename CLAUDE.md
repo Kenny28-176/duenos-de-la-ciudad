@@ -20,9 +20,9 @@ primero que llega a la meta y vuelve a la Salida). Todo funciona en el navegador
 funcionan; el tablero se ve y se anima (`public/tablero.html`) y se juega con celulares **en la wifi de casa**: el servidor
 local hace de buzón (`tools/red-local.js`), el tablero abre una sala con QR y cada celular (`public/jugador.html`) entra,
 elige ficha y juega, con sonido, voz opcional, límite de tiempo, «jugar otra vez» y recuperación de la partida si se recarga el
-tablero. El transporte con Firebase para jugar por internet (`src/net/firebase.js`) está hecho y probado contra una imitación
-de Firebase con sus reglas; falta el proyecto de verdad (`docs/FIREBASE.md`: su configuración va en `src/net/firebase-config.js`),
-probar con celulares de verdad ([`docs/PRUEBA-EN-CASA.md`](docs/PRUEBA-EN-CASA.md)) y 31 imágenes. Las
+tablero. **También se juega por internet** desde la web publicada, con Firebase (`src/net/firebase.js`; el proyecto
+`duenos-de-la-ciudad`, configurado en `src/net/firebase-config.js`, con las reglas publicadas y comprobadas: `node tools/comprobar-reglas.js`).
+Falta probar con celulares de verdad ([`docs/PRUEBA-EN-CASA.md`](docs/PRUEBA-EN-CASA.md)) y 31 imágenes. Las
 reglas están en [`docs/DISENO.md`](docs/DISENO.md) (con sus preguntas abiertas) y las ideas para después, en
 [`docs/IDEAS.md`](docs/IDEAS.md).
 
@@ -137,8 +137,8 @@ docs/                    DISENO.md (las reglas tal como las aplica el motor), VI
 
 Lo que llega en las fases 3 y 4:
 
-- el proyecto de Firebase de verdad (`docs/FIREBASE.md`): el transporte ya está; falta poner su configuración en
-  `src/net/firebase-config.js`, publicar las reglas y pasar `node tools/comprobar-reglas.js`;
+- restringir la clave de API de Firebase tras la primera partida por internet (`docs/FIREBASE.md`, paso 7); si cambian las reglas,
+  volver a publicarlas en la consola y pasar `node tools/comprobar-reglas.js`;
 - guardar la partida **ya está hecho en el navegador del tablero** (`localStorage`, «Recuperar la partida»; ver `docs/RED.md`):
   falta guardarla también fuera del navegador (en Firebase) para poder retomar una partida en otro dispositivo.
 

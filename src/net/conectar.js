@@ -62,9 +62,11 @@ async function releLocal(peticion) {
 //   - si no (la web publicada), «firebase», cuando el proyecto de Firebase está configurado (src/net/firebase-config.js).
 // Para probar: con ?red=firebase se usa Firebase aunque haya relé, y con ?firebase=http://127.0.0.1:9100 (solo en una página abierta
 // desde la propia laptop) la imitación de Firebase (tools/firebase-falso.js) en vez del proyecto de verdad.
+// Firebase solo se elige solo en una página segura (https: la web publicada). Una página servida por la laptop (http) usa su relé; si
+// el relé no contestara un momento, el celular no debe irse a Firebase mientras el tablero sigue en la wifi: ahí hace falta ?red=firebase.
 export async function redDisponible({
   peticion = (...a) => fetch(...a), parametros = parametrosDeLaPagina(), config = configuracionFirebase,
-  servidor = globalThis.location?.hostname ?? '',
+  servidor = globalThis.location?.hostname ?? '', protocolo = globalThis.location?.protocol ?? '',
 } = {}) {
   const local = await releLocal(peticion);
   const falso = parametros.get('firebase');
@@ -72,8 +74,9 @@ export async function redDisponible({
     ? { apiKey: 'clave-falsa', databaseURL: falso, urlCuentas: `${falso}/v1`, urlTokens: `${falso}/v1` }
     : config;
   const conFirebase = Boolean(proyecto?.apiKey && proyecto?.databaseURL);
-  if (local && !(conFirebase && parametros.get('red') === 'firebase')) return { modo: 'local', direcciones: local.direcciones };
-  if (conFirebase) return { modo: 'firebase', config: proyecto, direcciones: local?.direcciones ?? [] };
+  const pedido = parametros.get('red') === 'firebase';
+  if (local && !(conFirebase && pedido)) return { modo: 'local', direcciones: local.direcciones };
+  if (conFirebase && (pedido || protocolo === 'https:')) return { modo: 'firebase', config: proyecto, direcciones: local?.direcciones ?? [] };
   return null;
 }
 

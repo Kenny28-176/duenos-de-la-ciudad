@@ -9,8 +9,8 @@
   buy, bid, build, mortgage, invest and trade.
 
 > 🚧 **Under construction.** A test game can already be played at home, with the laptop as the board and the phones on
-> the same wifi (see [“Play at home”](#play-at-home-local-mode)). Playing over the internet without installing anything
-> is already built and tested: only the Firebase project is missing. The draft rules are in [`docs/DISENO.md`](docs/DISENO.md) (in Spanish).
+> the same wifi (see [“Play at home”](#play-at-home-local-mode)), or over the internet without installing anything, from the
+> [published site](https://kenny28-176.github.io/duenos-de-la-ciudad/public/tablero.html): it still needs testing with real phones. The draft rules are in [`docs/DISENO.md`](docs/DISENO.md) (in Spanish).
 
 > A **free, open-source, non-profit** project under the [MIT](LICENSE) license. Sibling of
 > [Villagers vs Wolves](https://github.com/Kenny28-176/aldeanos-vs-lobos). Not affiliated with any commercial game
@@ -37,7 +37,7 @@
 |---|---|
 | 🖥️ **A laptop or tablet** | Acts as the board. Landscape orientation works best; a TV also works. |
 | 📱 **One phone per player** | 2 to 8 players, on Android (recent Chrome) or iPhone (iOS 15 or later) using any modern browser. |
-| 📶 **A wifi network** | For now, all devices on the same wifi. Playing over the internet will come later. |
+| 📶 **Internet or a wifi network** | From the published site, each device on its own connection (mobile data works too). At home, with the laptop as the mailbox, all on the same wifi. |
 
 ## Status and roadmap
 
@@ -46,10 +46,10 @@
 | 0. Foundation | Repository, content guidelines, tests and publishing | Done |
 | 1. Engine | All rules, bots and a simulator to balance the economy | Done |
 | 2. Board | Animated board with a bot demo match | Done (see the [demo](public/tablero.html)) |
-| 3. Phones | The network between the board and the phones, and the phone screen | Done for playing at home (wifi); the online mode (Firebase) is built and tested, the project is still to be created |
+| 3. Phones | The network between the board and the phones, and the phone screen | Done: at home (wifi) and over the internet (Firebase) |
 | 4. Management & trading | **v0.1**: building, mortgaging, debt, deals and game saving | Done (the game is saved in the board's browser; saving it elsewhere is missing) |
 | 5. Polish | Room settings, stats, English, accessibility, TV mode | Done: English, sound and voice, the time limit, the quick game, “play again”, the money log, the end-of-game awards, basic accessibility and TV mode |
-| 6. Release | **v1.0** | Pending: the Firebase project, the brand icon and a test with real phones are missing |
+| 6. Release | **v1.0** | Pending: the brand icon and a test with real phones are missing |
 
 Future ideas, such as a cooperative mode against a corporation, are in [`docs/IDEAS.md`](docs/IDEAS.md) (in Spanish).
 

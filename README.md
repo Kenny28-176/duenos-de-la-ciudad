@@ -9,8 +9,8 @@
   compra, puja, construye, hipoteca, invierte y negocia.
 
 > 🚧 **En construcción.** Ya se puede jugar una partida de prueba en casa, con la laptop de tablero y los celulares en
-> la misma wifi (mira [«Jugar en casa»](#jugar-en-casa-modo-local)). Jugar por internet sin instalar nada ya está programado y
-> probado: solo falta crear el proyecto de Firebase. Las reglas están en borrador en [`docs/DISENO.md`](docs/DISENO.md).
+> la misma wifi (mira [«Jugar en casa»](#jugar-en-casa-modo-local)), o por internet sin instalar nada, desde la
+> [web publicada](https://kenny28-176.github.io/duenos-de-la-ciudad/public/tablero.html): falta probarlo con celulares de verdad. Las reglas están en borrador en [`docs/DISENO.md`](docs/DISENO.md).
 
 > Proyecto **libre, gratuito y sin ánimo de lucro**, bajo licencia [MIT](LICENSE). Es hermano de
 > [Aldeanos vs Lobos](https://github.com/Kenny28-176/aldeanos-vs-lobos). No está afiliado a ningún editor de juegos
@@ -37,7 +37,7 @@
 |---|---|
 | 🖥️ **Una laptop o tablet** | Es el tablero. Mejor en horizontal; también sirve una TV. |
 | 📱 **Un celular por jugador** | De 2 a 8 jugadores, con Android (Chrome reciente) o iPhone (iOS 15 o posterior) y cualquier navegador moderno. |
-| 📶 **Una wifi** | Por ahora, todos los dispositivos en la misma wifi. Más adelante, también por internet. |
+| 📶 **Internet o una wifi** | Desde la web publicada, cada uno con su conexión (también datos móviles). En casa, con la laptop de buzón, todos en la misma wifi. |
 
 ## Estado y hoja de ruta
 
@@ -46,10 +46,10 @@
 | 0. Base | Repositorio, normas de contenido, pruebas y publicación | Hecha |
 | 1. Motor | Todas las reglas, bots y un simulador para equilibrar la economía | Hecha |
 | 2. Tablero | Tablero animado con una partida de bots | Hecha (mira la [demostración](public/tablero.html)) |
-| 3. Celulares | La red entre el tablero y los celulares, y la pantalla del celular | Hecha para jugar en casa (wifi); el modo por internet (Firebase) está programado y probado, falta crear el proyecto |
+| 3. Celulares | La red entre el tablero y los celulares, y la pantalla del celular | Hecha: en casa (wifi) y por internet (Firebase) |
 | 4. Gestión y tratos | **v0.1**: construir, hipotecar, deudas, tratos y guardar la partida | Hecha (la partida se guarda en el navegador del tablero; falta guardarla fuera) |
 | 5. Pulido | Reglas de la sala, estadísticas, inglés, accesibilidad, modo TV | Hecha: el inglés, el sonido y la voz, el límite de tiempo, la partida rápida, «jugar otra vez», los movimientos de dinero, los premios del final, la accesibilidad básica y el modo TV |
-| 6. Publicación | **v1.0** | Pendiente: faltan el proyecto de Firebase, el icono de la marca y la prueba con celulares de verdad |
+| 6. Publicación | **v1.0** | Pendiente: faltan el icono de la marca y la prueba con celulares de verdad |
 
 Las ideas para más adelante, como un modo cooperativo contra una corporación, están en [`docs/IDEAS.md`](docs/IDEAS.md).
 

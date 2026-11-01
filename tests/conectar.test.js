@@ -53,8 +53,11 @@ test('sin relé y con el proyecto de Firebase configurado (la web publicada), se
   const conRele = async () => ({ ok: true, json: async () => ({ ok: true, direcciones: ['http://192.168.1.5:8080'] }) });
   const config = { apiKey: 'AIza-de-prueba', databaseURL: 'https://juego-default-rtdb.firebaseio.com', projectId: 'juego' };
   const sinParametros = new URLSearchParams();
-  assert.deepEqual(await redDisponible({ peticion: sinRele, config, parametros: sinParametros }), { modo: 'firebase', config, direcciones: [] });
-  assert.equal(await redDisponible({ peticion: sinRele, config: { apiKey: 'x' }, parametros: sinParametros }), null, 'una configuración a medias no vale');
+  const publicada = { servidor: 'kenny28-176.github.io', protocolo: 'https:' };
+  assert.deepEqual(await redDisponible({ peticion: sinRele, config, parametros: sinParametros, ...publicada }), { modo: 'firebase', config, direcciones: [] });
+  assert.equal(await redDisponible({ peticion: sinRele, config: { apiKey: 'x' }, parametros: sinParametros, ...publicada }), null, 'una configuración a medias no vale');
+  // Una página de la laptop (http) cuyo relé no contesta un momento no se va a Firebase: el tablero sigue en la wifi.
+  assert.equal(await redDisponible({ peticion: sinRele, config, parametros: sinParametros, servidor: '192.168.1.5', protocolo: 'http:' }), null);
   // Con el relé delante gana el relé (jugar en casa no gasta Firebase), salvo que se pida Firebase.
   assert.equal((await redDisponible({ peticion: conRele, config, parametros: sinParametros })).modo, 'local');
   const pedida = await redDisponible({ peticion: conRele, config, parametros: new URLSearchParams('red=firebase') });
@@ -65,7 +68,7 @@ test('sin relé y con el proyecto de Firebase configurado (la web publicada), se
   assert.equal(enLaLaptop.modo, 'firebase');
   assert.equal(enLaLaptop.config.databaseURL, 'http://127.0.0.1:9100');
   assert.equal(enLaLaptop.config.urlCuentas, 'http://127.0.0.1:9100/v1');
-  const desdeFuera = await redDisponible({ peticion: sinRele, config, parametros: falso, servidor: 'kenny28-176.github.io' });
+  const desdeFuera = await redDisponible({ peticion: sinRele, config, parametros: falso, servidor: 'kenny28-176.github.io', protocolo: 'https:' });
   assert.equal(desdeFuera.config, config, 'en la web publicada, un enlace no puede llevar a los celulares a otro servidor');
   assert.equal(parametrosDeRed(falso), 'red=firebase&firebase=http%3A%2F%2F127.0.0.1%3A9100');
   assert.equal(parametrosDeRed(new URLSearchParams('sala=1&velocidad=3')), '', 'en la web publicada, el enlace no lleva nada más');

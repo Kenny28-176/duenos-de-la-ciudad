@@ -106,9 +106,10 @@ GET  /red/info        { ok, direcciones }: dónde encontrar la laptop en la wifi
 Firebase: no hay código de terceros que descargar ni que mantener al día, y pesa unos pocos KB.
 
 - **Cuándo se usa.** `redDisponible()` (`src/net/conectar.js`) elige: si la página la sirve la laptop (`node tools/serve.js`), el relé
-  local; si no (la web publicada), Firebase, en cuanto esté la configuración del proyecto en `src/net/firebase-config.js` (el bloque
-  `firebaseConfig` de la consola: `apiKey` y `databaseURL`; no es secreto). Con `?red=firebase` se usa Firebase aunque haya relé. El
-  enlace del QR lleva a los celulares a la misma red que el tablero.
+  local; si no, en una página segura (https: la web publicada), Firebase, con la configuración de `src/net/firebase-config.js` (el bloque
+  `firebaseConfig` de la consola: `apiKey` y `databaseURL`; no es secreto). Una página de la laptop (http) nunca se va sola a Firebase: si
+  su relé no contestara un momento, el celular no debe acabar en otra red que el tablero. Con `?red=firebase` se usa Firebase aunque haya
+  relé. El enlace del QR lleva a los celulares a la misma red que el tablero.
 - **Quién es cada uno.** El inicio de sesión anónimo (`accounts:signUp`) da el `uid` con el que trabajan las reglas. El token dura una hora
   y se renueva solo (antes de caducar, y si Firebase contesta 401 o manda `auth_revoked`). La sesión se guarda en el navegador
   (`duenos:firebase-tablero` y `duenos:firebase-celular`): al recargar, el celular sigue siendo el mismo jugador y el tablero, el dueño de

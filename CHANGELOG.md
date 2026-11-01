@@ -154,6 +154,8 @@ Aquí se anotan los cambios de cada versión. Las versiones siguen el esquema ma
 - **Una imitación de Firebase** (`tools/firebase-falso.js`) que aplica las reglas de seguridad (`tools/reglas-firebase.js`): con ella se
   prueba el modo por internet de punta a punta, también en Chrome, sin el proyecto de verdad. `node tools/comprobar-reglas.js` comprueba
   las reglas contra el proyecto real (27 cosas que deben permitirse o rechazarse).
+- **El proyecto de Firebase, conectado** (`duenos-de-la-ciudad`): las reglas publicadas pasan las 27 comprobaciones contra la base de datos
+  real y una partida de prueba con 4 celulares va a unos 0,5 s por jugada. Firebase se elige solo en la web publicada (https).
 - El tablero borra las salas que dejó abiertas al cerrar la página (pasadas 12 horas) y la de una partida guardada que se descarta.
 - **Partida rápida** en las opciones de la sala (cada jugador empieza con 2 calles al azar); se conserva al jugar otra vez.
 - **Premios de la partida** en la pantalla final del tablero: hasta cuatro, repartidos entre los jugadores (Llave de oro, Grúa de oro,
